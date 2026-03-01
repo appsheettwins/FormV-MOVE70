@@ -3,264 +3,169 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ระบบออกใบอนุโมทนาบัตร</title>
+<title>ลงทะเบียนกิจกรรมบุญ</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
-*{box-sizing:border-box;font-family:'Sarabun','Segoe UI',sans-serif}
-body{
-background:linear-gradient(135deg,#667eea,#764ba2);
-padding:14px;min-height:100vh}
-
-.container{max-width:900px;margin:auto}
-
-/* ---------- Card ---------- */
-.card{
-background:#fff;border-radius:22px;
-padding:28px;margin-bottom:20px;
-box-shadow:0 20px 45px rgba(0,0,0,.25)}
-
-/* ---------- Form ---------- */
-label{font-size:1.15em;font-weight:600}
-.form-group{margin-bottom:18px}
-input,select{
-width:100%;padding:16px;
-font-size:1.35em;border-radius:14px;
-border:2px solid #e0e0e0}
-button{
-width:100%;padding:18px;
-font-size:1.25em;border-radius:16px;
-border:none;font-weight:600;
-background:linear-gradient(135deg,#667eea,#764ba2);
-color:#fff}
-.btn-secondary{background:#6c757d}
-
-/* ---------- Amount quick buttons ---------- */
-.amount-quick{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(90px,1fr));
-gap:10px;
-margin-bottom:10px}
-
-.amount-quick button{
-padding:12px;
-font-size:1.1em;
-border-radius:12px;
-border:2px solid #ddd;
-background:#f8f8f8;
-color:#333;
-font-weight:600;
-cursor:pointer}
-
-.amount-quick button:hover{
-background:#eef1ff;
-border-color:#667eea}
-
-/* ---------- Theme selector ---------- */
-.theme-select{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:12px;margin-bottom:18px}
-
-.theme-btn{
-padding:14px;
-border-radius:16px;
-border:3px solid #ddd;
-text-align:center;
-cursor:pointer;
-font-weight:600;
-background:#f8f8f8;
-transition:.2s}
-
-.theme-btn.active{
-border-color:#667eea;
-background:#eef1ff}
-
-/* ---------- Certificate ---------- */
-.certificate{
-position:relative;
-padding:40px 28px;
-border-radius:20px;
-text-align:center;
-overflow:hidden}
-
-.theme-thai{background:#fffaf0;border:10px double #c19a6b}
-.theme-modern{background:linear-gradient(135deg,#f3f4f6,#e5e7eb);border:6px solid #6366f1}
-.theme-nature{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:6px solid #22c55e}
-
-/* ---------- Text ---------- */
-.cert-header{font-weight:bold}
-.cert-body{line-height:1.9}
-.cert-name{font-weight:bold}
-.cert-amount{font-weight:bold}
-.cert-footer{margin-top:28px;color:#555}
-
-/* ---------- Utility ---------- */
-.hidden{display:none}
-.button-group{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:12px;margin-top:20px}
+body{font-family:'Kanit',sans-serif;background:#f8fafc;}
+.gradient-bg{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);}
+.glass-effect{background:rgba(255,255,255,.2);backdrop-filter:blur(10px);}
+.active-tab{border-bottom:3px solid #6366f1;color:#4338ca;}
 </style>
 </head>
 
-<body>
-<div class="container">
+<body class="min-h-screen pb-12">
+
+<!-- HEADER -->
+<div class="gradient-bg text-white pt-10 pb-24 px-6 rounded-b-[3rem] shadow-lg mb-[-40px]">
+<div class="max-w-md mx-auto">
+<h1 class="text-2xl font-bold">ลงทะเบียนร่วมบุญ</h1>
+<p class="text-xs opacity-80">กรุณากรอกข้อมูลเพื่อสำรองที่นั่ง</p>
+<p id="lineName" class="text-sm mt-2 opacity-90"></p>
+</div>
+</div>
 
 <!-- FORM -->
-<div class="card" id="formSection">
-<h2 style="text-align:center;color:#764ba2">🙏 ระบบออกใบอนุโมทนาบัตร</h2>
+<div class="max-w-md mx-auto px-4 relative z-10">
+<div class="bg-white rounded-3xl shadow-xl p-8 border">
 
-<div class="form-group">
-<label>ชื่อ-นามสกุล</label>
-<input id="donorName">
+<form id="meritForm" class="space-y-6">
+
+<div>
+<label class="text-sm">ชื่อ-นามสกุล</label>
+<input id="fullname" required class="w-full px-4 py-3 rounded-xl border mt-1">
 </div>
 
-<div class="form-group">
-<label>จำนวนเงิน (บาท)</label>
-
-<!-- QUICK AMOUNT -->
-<div class="amount-quick">
-<button type="button" onclick="setAmount(100)">100</button>
-<button type="button" onclick="setAmount(200)">200</button>
-<button type="button" onclick="setAmount(300)">300</button>
-<button type="button" onclick="setAmount(500)">500</button>
-<button type="button" onclick="setAmount(1000)">1,000</button>
-<button type="button" onclick="setAmount(2000)">2,000</button>
-<button type="button" onclick="setAmount(3000)">3,000</button>
+<div>
+<label class="text-sm">เบอร์โทรศัพท์</label>
+<input id="phone" required maxlength="10" pattern="[0-9]{10}"
+oninput="this.value=this.value.replace(/[^0-9]/g,'')"
+class="w-full px-4 py-3 rounded-xl border mt-1">
 </div>
 
-<input id="amount" type="number" placeholder="กรอกจำนวนเงินเองได้">
+<div>
+<label class="text-sm">เลือกกิจกรรม</label>
+<select id="activity" required class="w-full px-4 py-3 rounded-xl border mt-1">
+<option value="">เลือกกิจกรรม</option>
+<option value="ธรรมยาตรา">ธรรมยาตรา</option>
+<option value="จุดประทีป">จุดประทีป</option>
+<option value="ตักบาตร">ตักบาตร</option>
+</select>
 </div>
 
-<div class="form-group">
-<label>วัตถุประสงค์</label>
-<select id="purpose"></select>
+<div>
+<label class="text-sm">รายละเอียด</label>
+<input id="subOption" class="w-full px-4 py-3 rounded-xl border mt-1">
 </div>
 
-<button onclick="saveDonation()">💾 บันทึกข้อมูลการทำบุญ</button>
-</div>
+<button class="w-full gradient-bg text-white py-4 rounded-2xl font-bold">
+ลงทะเบียนตอนนี้
+</button>
 
-<!-- THEME -->
-<div class="card hidden" id="themeSection">
-<h3>🎨 เลือกรูปแบบใบอนุโมทนาบัตร</h3>
+</form>
 
-<div class="theme-select">
-<div class="theme-btn active" data-theme="theme-thai">🟡 ลายไทย</div>
-<div class="theme-btn" data-theme="theme-modern">🟣 ทันสมัย</div>
-<div class="theme-btn" data-theme="theme-nature">🌿 ธรรมชาติ</div>
-</div>
-
-<div id="certificate" class="certificate theme-thai"></div>
-
-<div class="button-group">
-<button onclick="saveImage()">💾 บันทึกภาพ</button>
-<button class="btn-secondary" onclick="newDonation()">➕ เพิ่มรายการใหม่</button>
-</div>
+<div id="successBox" class="hidden text-center mt-6">
+<h3 class="text-xl font-bold text-green-600">บันทึกสำเร็จ</h3>
+<button onclick="location.reload()" class="mt-4 bg-gray-200 px-6 py-2 rounded-xl">
+ลงทะเบียนเพิ่ม
+</button>
 </div>
 
 </div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</div>
 
 <script>
-const scriptUrl="https://script.google.com/macros/s/AKfycby9pH_JP8PpdGWzazdTjZw72hhsKnj_Uzd0TI-kHidhuK7qI4vmPMq-CspmaoHcKITQ/exec";
-let selectedTheme="theme-thai";
-let config={headerSize:2.4,bodySize:1.35,nameSize:1.7,amountSize:2,footerSize:1.2};
+/**********************
+CONFIG
+**********************/
+const LIFF_ID="2008940385-theIq9K7";
+const WEBAPP_URL="https://script.google.com/macros/s/AKfycbynMJZfK0llXJeSd8_thnWndhwMIVGB16MqFHW3qvsP2pyYdNTK-Tu04KLsM8S2DYat/exec";
 
-window.onload=()=>{
-loadPurposes();
-loadConfig();
-};
+let lineProfile=null;
 
-/* ---------- Amount ---------- */
-function setAmount(val){
-amount.value=val;
-amount.focus();
-}
+/**********************
+INIT LINE
+**********************/
+async function initLine(){
+await liff.init({liffId:LIFF_ID});
 
-/* ---------- Purpose ---------- */
-async function loadPurposes(){
-const r=await fetch(scriptUrl+"?action=getPurposes");
-const d=await r.json();
-purpose.innerHTML="";
-(d.purposes||[]).forEach(p=>{
-const o=document.createElement("option");
-o.value=o.textContent=p;
-purpose.appendChild(o);
-});
-}
-
-/* ---------- Config ---------- */
-async function loadConfig(){
-try{
-const r=await fetch(scriptUrl+"?action=getConfig");
-const d=await r.json();
-if(d.config)config={...config,...d.config};
-}catch(e){}
-}
-
-/* ---------- Save ---------- */
-function saveDonation(){
-if(!donorName.value||!amount.value){
-alert("กรุณากรอกข้อมูลให้ครบ");
+if(!liff.isLoggedIn()){
+liff.login();
 return;
 }
-const fd=new FormData();
-fd.append("name",donorName.value);
-fd.append("amount",amount.value);
-fd.append("purpose",purpose.value);
-fetch(scriptUrl,{method:"POST",body:fd});
 
-formSection.classList.add("hidden");
-themeSection.classList.remove("hidden");
-renderCertificate();
+lineProfile=await liff.getProfile();
+
+document.getElementById("lineName").innerText=
+"เข้าสู่ระบบโดย: "+lineProfile.displayName;
+
+// บันทึก user
+await postToGas({
+action:"saveUser",
+userId:lineProfile.userId,
+displayName:lineProfile.displayName,
+pictureUrl:lineProfile.pictureUrl,
+statusMessage:lineProfile.statusMessage
+});
+
+// บันทึก log login
+await postToGas({
+action:"logLogin",
+userId:lineProfile.userId,
+displayName:lineProfile.displayName
+});
 }
 
-/* ---------- Theme ---------- */
-document.querySelectorAll(".theme-btn").forEach(btn=>{
-btn.onclick=()=>{
-document.querySelectorAll(".theme-btn").forEach(b=>b.classList.remove("active"));
-btn.classList.add("active");
-selectedTheme=btn.dataset.theme;
-renderCertificate();
+/**********************
+POST TO GAS
+**********************/
+async function postToGas(payload){
+await fetch(WEBAPP_URL,{
+method:"POST",
+body:JSON.stringify(payload)
+});
+}
+
+/**********************
+FORM SUBMIT
+**********************/
+document.getElementById("meritForm")
+.addEventListener("submit",async function(e){
+
+e.preventDefault();
+
+if(!lineProfile){
+alert("กำลังเชื่อมต่อ LINE...");
+return;
+}
+
+const payload={
+action:"submitForm",
+userId:lineProfile.userId,
+displayName:lineProfile.displayName,
+profileName:lineProfile.displayName,
+inputName:document.getElementById("fullname").value,
+phone:document.getElementById("phone").value,
+activity:document.getElementById("activity").value,
+item:document.getElementById("subOption").value
 };
+
+await postToGas(payload);
+
+this.classList.add("hidden");
+document.getElementById("successBox").classList.remove("hidden");
+
 });
 
-/* ---------- Render ---------- */
-function renderCertificate(){
-certificate.className="certificate "+selectedTheme;
-certificate.innerHTML=`
-<div class="cert-header" style="font-size:${config.headerSize}em">ใบอนุโมทนาบัตร</div>
-<div class="cert-body" style="font-size:${config.bodySize}em">
-ขอเป็นสักขีพยานว่า
-<div class="cert-name" style="font-size:${config.nameSize}em">${donorName.value}</div>
-ได้ร่วมทำบุญ ${purpose.value}
-<div class="cert-amount" style="font-size:${config.amountSize}em">
-${Number(amount.value).toLocaleString()} บาท
-</div>
-</div>
-<div class="cert-footer" style="font-size:${config.footerSize}em">
-วันที่ ${new Date().toLocaleDateString("th-TH")}<br>🙏 สาธุ 🙏
-</div>`;
-}
-
-/* ---------- Image ---------- */
-function saveImage(){
-html2canvas(certificate,{scale:2}).then(c=>{
-const a=document.createElement("a");
-a.download="ใบอนุโมทนาบัตร.png";
-a.href=c.toDataURL();
-a.click();
-});
-}
-
-/* ---------- New ---------- */
-function newDonation(){
-donorName.value="";
-amount.value="";
-formSection.classList.remove("hidden");
-themeSection.classList.add("hidden");
-}
+/**********************
+START
+**********************/
+window.onload=initLine;
 </script>
+
 </body>
 </html>
