@@ -11,6 +11,8 @@
         body { font-family: 'Kanit', sans-serif; background-color: #f8fafc; }
         .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
         .glass-effect { background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .animate-in { animation: fadeIn 0.3s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         #loadingOverlay { display: none; position: fixed; inset: 0; background: rgba(255,255,255,0.8); z-index: 100; align-items: center; justify-content: center; flex-direction: column; }
     </style>
 </head>
@@ -20,134 +22,206 @@
         <p class="font-bold text-indigo-600">กำลังประมวลผล...</p>
     </div>
 
-    <div class="gradient-bg text-white pt-10 pb-24 px-6 rounded-b-[3rem] shadow-lg mb-[-40px] relative">
+    <div id="appHeader" class="gradient-bg text-white pt-10 pb-24 px-6 rounded-b-[3rem] shadow-lg mb-[-40px] relative transition-all duration-500">
         <div class="max-w-md mx-auto flex justify-between items-start">
             <div class="flex gap-3 items-start">
-                <div id="lineProfile" class="w-12 h-12 rounded-2xl bg-white/20 overflow-hidden border-2 border-white/30">
-                    <img id="userPicture" src="" class="w-full h-full object-cover hidden">
-                </div>
+                <button id="adminLoginBtn" onclick="toggleAdminLogin(true)" class="glass-effect p-3 rounded-2xl hover:bg-white/30">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                    </svg>
+                </button>
                 <div>
-                    <h1 class="text-2xl font-bold">ลงทะเบียนร่วมบุญ</h1>
-                    <p class="opacity-90 font-light text-xs text-yellow-300" id="welcomeMsg">กรุณารอสักครู่...</p>
+                    <h1 id="headerTitle" class="text-2xl font-bold">ลงทะเบียนร่วมบุญ</h1>
+                    <p class="opacity-90 font-light text-xs">สวัสดีคุณ <span id="userNameDisplay">...</span></p>
                 </div>
+            </div>
+            <button id="searchBtn" onclick="toggleSearchModal(true)" class="glass-effect p-3 rounded-2xl">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <div id="userView" class="max-w-md mx-auto px-4 relative z-10">
+        <div class="bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
+            <form id="meritForm" class="space-y-6">
+                <div class="space-y-2 text-center mb-4">
+                    <img id="userPicture" src="" class="w-16 h-16 rounded-full mx-auto border-2 border-indigo-100 hidden">
+                </div>
+                <div class="space-y-2">
+                    <label class="text-sm font-medium text-gray-700 ml-1">ชื่อ-นามสกุล</label>
+                    <input type="text" id="fullname" required class="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none" placeholder="ชื่อผู้ร่วมบุญ">
+                </div>
+                <div class="space-y-2">
+                    <label class="text-sm font-medium text-gray-700 ml-1">เบอร์โทรศัพท์</label>
+                    <input type="tel" id="phone" required minlength="10" maxlength="10" pattern="[0-9]{10}" class="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none" placeholder="08xxxxxxxx">
+                </div>
+                <div class="space-y-2">
+                    <label class="text-sm font-medium text-gray-700 ml-1">เลือกกิจกรรม</label>
+                    <select id="activity" required class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white outline-none"></select>
+                </div>
+                <div id="subOptionContainer" class="space-y-2 hidden">
+                    <label class="text-sm font-medium text-gray-700 ml-1 text-indigo-600">ระบุวันที่และสถานที่</label>
+                    <select id="subOption" class="w-full px-4 py-3 rounded-xl border border-indigo-200 bg-indigo-50 outline-none"></select>
+                </div>
+                <button type="submit" class="w-full gradient-bg text-white font-semibold py-4 rounded-2xl shadow-lg active:scale-95 transition-all text-lg">ลงทะเบียนตอนนี้</button>
+            </form>
+
+                <div id="successMessage" class="hidden animate-in">
+                    <div class="text-center mb-6">
+                        <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 text-green-500 text-3xl">✓</div>
+                        <h3 class="text-2xl font-bold text-gray-800">สำเร็จ!</h3>
+                    </div>
+                    <button onclick="location.reload()" class="w-full py-4 bg-gray-100 text-gray-700 font-semibold rounded-2xl hover:bg-gray-200">ลงทะเบียนเพิ่ม</button>
+                </div>
+        </div>
+    </div>
+
+    <div id="searchModal" class="fixed inset-0 bg-black/50 z-50 hidden transition-opacity duration-300">
+        <div id="searchContent" class="fixed bottom-0 left-0 right-0 bg-white rounded-t-[2.5rem] p-8 max-h-[85vh] overflow-y-auto transform translate-y-full transition-transform duration-300">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-gray-800">ค้นหาประวัติ</h3>
+                <button onclick="toggleSearchModal(false)" class="p-2 bg-gray-100 rounded-full text-gray-500">✕</button>
+            </div>
+            <input type="tel" oninput="handleSearch(this.value)" placeholder="กรอกเบอร์โทรศัพท์..." class="w-full px-6 py-4 bg-gray-50 rounded-2xl border-none outline-none ring-2 ring-gray-100 focus:ring-indigo-500 text-lg mb-6">
+            <div id="searchResults" class="space-y-4">
+                <p class="text-center text-gray-400 py-10">กรอกเบอร์โทรเพื่อค้นหา</p>
             </div>
         </div>
     </div>
 
-    <div id="mainContent" class="max-w-md mx-auto px-4 relative z-10">
-        <div class="bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
-            <form id="meritForm" class="space-y-6">
-                <div class="space-y-2">
-                    <label class="text-sm font-medium text-gray-700 ml-1">ชื่อ-นามสกุล</label>
-                    <input type="text" id="fullname" name="fullname" required class="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none focus:border-indigo-500" placeholder="ชื่อผู้ร่วมบุญ">
-                </div>
-                <div class="space-y-2">
-                    <label class="text-sm font-medium text-gray-700 ml-1">เบอร์โทรศัพท์</label>
-                    <input type="tel" id="phone" name="phone" required minlength="10" maxlength="10" class="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none" placeholder="08xxxxxxxx">
-                </div>
-                <div class="space-y-2">
-                    <label class="text-sm font-medium text-gray-700 ml-1">เลือกกิจกรรม</label>
-                    <select id="activity" required class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white outline-none">
-                        <option value="" disabled selected>เลือกกิจกรรม</option>
-                        <option value="dhammayatra">ธรรมยาตรา</option>
-                        <option value="lighting">จุดประทีป</option>
-                        <option value="almsgiving">ตักบาตร</option>
-                    </select>
-                </div>
-                <div id="subContainer" class="space-y-2 hidden">
-                    <label class="text-sm font-medium text-gray-700 ml-1">วัน/เวลา/สถานที่</label>
-                    <select id="subOption" class="w-full px-4 py-3 rounded-xl border border-indigo-200 bg-indigo-50 outline-none"></select>
-                </div>
-                <button type="submit" class="w-full gradient-bg text-white font-semibold py-4 rounded-2xl shadow-lg active:scale-95 transition-all text-lg">ยืนยันลงทะเบียน</button>
-            </form>
-
-            <div id="successView" class="hidden text-center py-10">
-                <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 text-green-500 text-4xl">✓</div>
-                <h3 class="text-2xl font-bold text-gray-800">ลงทะเบียนสำเร็จ!</h3>
-                <p class="text-gray-500 mt-2">ข้อมูลของคุณถูกบันทึกเรียบร้อยแล้ว</p>
-                <button onclick="location.reload()" class="mt-8 w-full py-3 bg-gray-100 rounded-xl text-gray-600 font-medium">ทำรายการอื่นเพิ่ม</button>
+    <div id="adminLoginModal" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-6">
+        <div class="bg-white rounded-3xl p-8 w-full max-w-sm">
+            <h3 class="text-xl font-bold mb-4">สำหรับเจ้าหน้าที่</h3>
+            <input type="password" id="adminPass" placeholder="กรอกรหัสผ่าน" class="w-full p-3 border rounded-xl mb-4 outline-none">
+            <div class="flex gap-2">
+                <button onclick="toggleAdminLogin(false)" class="flex-1 py-2 text-gray-500">ยกเลิก</button>
+                <button onclick="checkAdmin()" class="flex-1 py-2 bg-indigo-600 text-white rounded-xl">เข้าสู่ระบบ</button>
             </div>
         </div>
     </div>
 
     <script>
         const LIFF_ID = '2008940385-theIq9K7';
-        const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbynMJZfK0llXJeSd8_thnWndhwMIVGB16MqFHW3qvsP2pyYdNTK-Tu04KLsM8S2DYat/exec'; // ใส่ URL ที่ได้จาก Google Script ตรงนี้
+        const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbynMJZfK0llXJeSd8_thnWndhwMIVGB16MqFHW3qvsP2pyYdNTK-Tu04KLsM8S2DYat/exec';
 
-        const activityData = {
-            'dhammayatra': ['2 ม.ค. - วัดพระธรรมกาย', '5 ม.ค. - อนุสรณ์สถาน'],
-            'lighting': ['15 ม.ค. - ลานธรรม', '25 ม.ค. - วันมาฆบูชา'],
-            'almsgiving': ['ทุกวันเสาร์ - หอฉัน', 'ตักบาตรปีใหม่']
+        let liffProfile = {};
+        const activityConfig = {
+            'dhammayatra': { label: 'ธรรมยาตรา', color: '#6366f1', list: ['2 ม.ค. - วัดพระธรรมกาย', '5 ม.ค. - อนุสรณ์สถาน'] },
+            'lighting': { label: 'จุดประทีป', color: '#f59e0b', list: ['15 ม.ค. - ลานธรรม', '25 ม.ค. - วันมาฆบูชา'] },
+            'almsgiving': { label: 'ตักบาตร', color: '#10b981', list: ['ทุกวันเสาร์ - หอฉัน', 'ตักบาตรปีใหม่'] }
         };
 
-        let profile = {};
-
-        // 1. เริ่มต้น LIFF และบังคับ Login
-        async function initLiff() {
+        // Initialize App
+        async function initApp() {
             try {
                 await liff.init({ liffId: LIFF_ID });
                 if (!liff.isLoggedIn()) {
                     liff.login();
                 } else {
-                    profile = await liff.getProfile();
-                    document.getElementById('welcomeMsg').textContent = 'สวัสดีคุณ ' + profile.displayName;
-                    if (profile.pictureUrl) {
+                    liffProfile = await liff.getProfile();
+                    document.getElementById('userNameDisplay').textContent = liffProfile.displayName;
+                    if (liffProfile.pictureUrl) {
                         const img = document.getElementById('userPicture');
-                        img.src = profile.pictureUrl;
+                        img.src = liffProfile.pictureUrl;
                         img.classList.remove('hidden');
                     }
                 }
-            } catch (err) { console.error('LIFF Error:', err); }
+            } catch (err) { console.error('LIFF Init Error', err); }
+
+            // Render Activity Select
+            const select = document.getElementById('activity');
+            select.innerHTML = '<option value="" disabled selected>เลือกกิจกรรม</option>';
+            Object.keys(activityConfig).forEach(key => {
+                select.innerHTML += `<option value="${key}">${activityConfig[key].label}</option>`;
+            });
         }
 
-        // 2. จัดการเรื่อง Select Options
-        document.getElementById('activity').addEventListener('change', function() {
+        // Select Change Logic
+        document.getElementById('activity').onchange = function() {
             const sub = document.getElementById('subOption');
-            const container = document.getElementById('subContainer');
-            const options = activityData[this.value];
+            const container = document.getElementById('subOptionContainer');
+            const config = activityConfig[this.value];
             sub.innerHTML = '';
-            if (options) {
-                options.forEach(opt => sub.innerHTML += `<option value="${opt}">${opt}</option>`);
+            if (config) {
+                config.list.forEach(item => sub.innerHTML += `<option value="${item}">${item}</option>`);
                 container.classList.remove('hidden');
             }
-        });
+        };
 
-        // 3. ส่งข้อมูลไป Google Sheets
-        document.getElementById('meritForm').addEventListener('submit', async function(e) {
+        // Form Submission
+        document.getElementById('meritForm').onsubmit = async function(e) {
             e.preventDefault();
             document.getElementById('loadingOverlay').style.display = 'flex';
 
             const payload = {
                 action: 'register',
-                userId: profile.userId,
-                displayName: profile.displayName,
-                pictureUrl: profile.pictureUrl,
-                statusMessage: profile.statusMessage,
+                userId: liffProfile.userId,
+                displayName: liffProfile.displayName,
+                pictureUrl: liffProfile.pictureUrl,
+                statusMessage: liffProfile.statusMessage,
                 fullname: document.getElementById('fullname').value,
                 phone: document.getElementById('phone').value,
-                activity: document.getElementById('activity').options[document.getElementById('activity').selectedIndex].text,
+                activity: activityConfig[document.getElementById('activity').value].label,
                 subOption: document.getElementById('subOption').value
             };
 
             try {
-                // ส่งข้อมูลเข้า Script (no-cors สำหรับ GitHub)
                 await fetch(WEB_APP_URL, {
                     method: 'POST',
                     mode: 'no-cors',
-                    cache: 'no-cache',
                     body: JSON.stringify(payload)
                 });
+                
+                // เก็บลง LocalStorage เพื่อใช้ค้นหาในเครื่อง
+                const history = JSON.parse(localStorage.getItem('merit_history') || '[]');
+                history.unshift(payload);
+                localStorage.setItem('merit_history', JSON.stringify(history));
 
                 document.getElementById('meritForm').classList.add('hidden');
-                document.getElementById('successView').classList.remove('hidden');
+                document.getElementById('successMessage').classList.remove('hidden');
             } catch (err) {
-                alert('การสื่อสารผิดพลาด แต่ข้อมูลอาจถูกส่งแล้ว กรุณาตรวจสอบในชีต');
+                alert('เกิดข้อผิดพลาดในการเชื่อมต่อ');
             } finally {
                 document.getElementById('loadingOverlay').style.display = 'none';
             }
-        });
+        };
 
-        window.onload = initLiff;
+        // UI Helpers (Search & Admin)
+        function toggleSearchModal(show) {
+            const m = document.getElementById('searchModal');
+            const c = document.getElementById('searchContent');
+            if (show) { m.classList.remove('hidden'); setTimeout(() => c.classList.replace('translate-y-full', 'translate-y-0'), 10); }
+            else { c.classList.replace('translate-y-0', 'translate-y-full'); setTimeout(() => m.classList.add('hidden'), 300); }
+        }
+
+        function handleSearch(q) {
+            const res = document.getElementById('searchResults');
+            if (q.length < 4) { res.innerHTML = '<p class="text-center text-gray-400 py-10">กรอกอย่างน้อย 4 หลัก</p>'; return; }
+            const history = JSON.parse(localStorage.getItem('merit_history') || '[]');
+            const filtered = history.filter(h => h.phone.includes(q) || h.fullname.includes(q));
+            res.innerHTML = filtered.length ? filtered.map(h => `
+                <div class="p-4 bg-gray-50 rounded-2xl border-l-4 border-indigo-500">
+                    <div class="font-bold text-gray-800">${h.fullname}</div>
+                    <div class="text-xs text-gray-500">${h.activity} - ${h.subOption}</div>
+                    <div class="text-xs text-indigo-400 font-mono mt-1">${h.phone}</div>
+                </div>
+            `).join('') : '<p class="text-center text-gray-400 py-10">ไม่พบข้อมูลในประวัติเครื่องนี้</p>';
+        }
+
+        function toggleAdminLogin(show) {
+            document.getElementById('adminLoginModal').style.display = show ? 'flex' : 'none';
+        }
+
+        function checkAdmin() {
+            if (document.getElementById('adminPass').value === '1234') { // รหัสผ่านชั่วคราว
+                alert('กำลังเข้าสู่ระบบจัดการ (ฟีเจอร์นี้ต้องเชื่อมต่อชีตเพิ่มเติม)');
+                toggleAdminLogin(false);
+            } else { alert('รหัสผ่านไม่ถูกต้อง'); }
+        }
+
+        window.onload = initApp;
     </script>
 </body>
 </html>
