@@ -11,135 +11,143 @@
         body { font-family: 'Kanit', sans-serif; background-color: #f8fafc; }
         .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
         .glass-effect { background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        #loading { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; align-items: center; justify-content: center; color: white; }
+        #loadingOverlay { display: none; position: fixed; inset: 0; background: rgba(255,255,255,0.8); z-index: 100; align-items: center; justify-content: center; flex-direction: column; }
     </style>
 </head>
 <body class="min-h-screen pb-12">
-    <div id="loading"><div class="animate-spin rounded-full h-12 w-12 border-t-2 border-white"></div></div>
+    <div id="loadingOverlay">
+        <div class="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-4"></div>
+        <p class="font-bold text-indigo-600">กำลังประมวลผล...</p>
+    </div>
 
-    <div id="appHeader" class="gradient-bg text-white pt-10 pb-24 px-6 rounded-b-[3rem] shadow-lg mb-[-40px] relative">
+    <div class="gradient-bg text-white pt-10 pb-24 px-6 rounded-b-[3rem] shadow-lg mb-[-40px] relative">
         <div class="max-w-md mx-auto flex justify-between items-start">
             <div class="flex gap-3 items-start">
-                <div id="profileImg" class="w-12 h-12 rounded-2xl bg-white/20 overflow-hidden border-2 border-white/30">
-                    <img id="userImg" src="" alt="" class="hidden w-full h-full object-cover">
+                <div id="lineProfile" class="w-12 h-12 rounded-2xl bg-white/20 overflow-hidden border-2 border-white/30">
+                    <img id="userPicture" src="" class="w-full h-full object-cover hidden">
                 </div>
                 <div>
                     <h1 class="text-2xl font-bold">ลงทะเบียนร่วมบุญ</h1>
-                    <p class="opacity-90 font-light text-xs">สวัสดีคุณ <span id="displayName">...</span></p>
+                    <p class="opacity-90 font-light text-xs text-yellow-300" id="welcomeMsg">กรุณารอสักครู่...</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="userView" class="max-w-md mx-auto px-4 relative z-10">
+    <div id="mainContent" class="max-w-md mx-auto px-4 relative z-10">
         <div class="bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
             <form id="meritForm" class="space-y-6">
                 <div class="space-y-2">
                     <label class="text-sm font-medium text-gray-700 ml-1">ชื่อ-นามสกุล</label>
-                    <input type="text" id="fullname" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none">
+                    <input type="text" id="fullname" name="fullname" required class="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none focus:border-indigo-500" placeholder="ชื่อผู้ร่วมบุญ">
                 </div>
                 <div class="space-y-2">
                     <label class="text-sm font-medium text-gray-700 ml-1">เบอร์โทรศัพท์</label>
-                    <input type="tel" id="phone" required minlength="10" maxlength="10" pattern="[0-9]{10}" class="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none">
+                    <input type="tel" id="phone" name="phone" required minlength="10" maxlength="10" class="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none" placeholder="08xxxxxxxx">
                 </div>
                 <div class="space-y-2">
                     <label class="text-sm font-medium text-gray-700 ml-1">เลือกกิจกรรม</label>
-                    <select id="activity" required class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white outline-none"></select>
+                    <select id="activity" required class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white outline-none">
+                        <option value="" disabled selected>เลือกกิจกรรม</option>
+                        <option value="dhammayatra">ธรรมยาตรา</option>
+                        <option value="lighting">จุดประทีป</option>
+                        <option value="almsgiving">ตักบาตร</option>
+                    </select>
                 </div>
-                <div id="subOptionContainer" class="space-y-2 hidden">
-                    <label class="text-sm font-medium text-gray-700 ml-1">ระบุวันที่และสถานที่</label>
+                <div id="subContainer" class="space-y-2 hidden">
+                    <label class="text-sm font-medium text-gray-700 ml-1">วัน/เวลา/สถานที่</label>
                     <select id="subOption" class="w-full px-4 py-3 rounded-xl border border-indigo-200 bg-indigo-50 outline-none"></select>
                 </div>
-                <button type="submit" class="w-full gradient-bg text-white font-semibold py-4 rounded-2xl shadow-lg hover:opacity-90 active:scale-95 transition-all">บันทึกข้อมูล</button>
+                <button type="submit" class="w-full gradient-bg text-white font-semibold py-4 rounded-2xl shadow-lg active:scale-95 transition-all text-lg">ยืนยันลงทะเบียน</button>
             </form>
 
-            <div id="successMessage" class="hidden text-center py-6">
-                <div class="text-green-500 text-5xl mb-4">✓</div>
-                <h3 class="text-xl font-bold">ลงทะเบียนสำเร็จ</h3>
-                <button onclick="location.reload()" class="mt-6 text-indigo-600 font-medium">ลงทะเบียนเพิ่ม</button>
+            <div id="successView" class="hidden text-center py-10">
+                <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 text-green-500 text-4xl">✓</div>
+                <h3 class="text-2xl font-bold text-gray-800">ลงทะเบียนสำเร็จ!</h3>
+                <p class="text-gray-500 mt-2">ข้อมูลของคุณถูกบันทึกเรียบร้อยแล้ว</p>
+                <button onclick="location.reload()" class="mt-8 w-full py-3 bg-gray-100 rounded-xl text-gray-600 font-medium">ทำรายการอื่นเพิ่ม</button>
             </div>
         </div>
     </div>
 
     <script>
         const LIFF_ID = '2008940385-theIq9K7';
-        const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbynMJZfK0llXJeSd8_thnWndhwMIVGB16MqFHW3qvsP2pyYdNTK-Tu04KLsM8S2DYat/exec';
+        const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbynMJZfK0llXJeSd8_thnWndhwMIVGB16MqFHW3qvsP2pyYdNTK-Tu04KLsM8S2DYat/exec'; // ใส่ URL ที่ได้จาก Google Script ตรงนี้
 
-        let userProfile = {};
-        const activities = {
-            'act1': { label: 'ธรรมยาตรา', list: ['2 ม.ค. - วัดพระธรรมกาย', '5 ม.ค. - อนุสรณ์สถาน'] },
-            'act2': { label: 'จุดประทีป', list: ['15 ม.ค. - ลานธรรม', '25 ม.ค. - มาฆบูชา'] }
+        const activityData = {
+            'dhammayatra': ['2 ม.ค. - วัดพระธรรมกาย', '5 ม.ค. - อนุสรณ์สถาน'],
+            'lighting': ['15 ม.ค. - ลานธรรม', '25 ม.ค. - วันมาฆบูชา'],
+            'almsgiving': ['ทุกวันเสาร์ - หอฉัน', 'ตักบาตรปีใหม่']
         };
 
-        async function init() {
+        let profile = {};
+
+        // 1. เริ่มต้น LIFF และบังคับ Login
+        async function initLiff() {
             try {
                 await liff.init({ liffId: LIFF_ID });
                 if (!liff.isLoggedIn()) {
                     liff.login();
                 } else {
-                    userProfile = await liff.getProfile();
-                    document.getElementById('displayName').textContent = userProfile.displayName;
-                    if (userProfile.pictureUrl) {
-                        const img = document.getElementById('userImg');
-                        img.src = userProfile.pictureUrl;
+                    profile = await liff.getProfile();
+                    document.getElementById('welcomeMsg').textContent = 'สวัสดีคุณ ' + profile.displayName;
+                    if (profile.pictureUrl) {
+                        const img = document.getElementById('userPicture');
+                        img.src = profile.pictureUrl;
                         img.classList.remove('hidden');
                     }
                 }
-            } catch (err) { console.error(err); }
-
-            // Setup Activity Dropdown
-            const actSelect = document.getElementById('activity');
-            actSelect.innerHTML = '<option value="" disabled selected>เลือกกิจกรรม</option>';
-            for (let key in activities) {
-                actSelect.innerHTML += `<option value="${key}">${activities[key].label}</option>`;
-            }
+            } catch (err) { console.error('LIFF Error:', err); }
         }
 
-        document.getElementById('activity').onchange = function() {
+        // 2. จัดการเรื่อง Select Options
+        document.getElementById('activity').addEventListener('change', function() {
             const sub = document.getElementById('subOption');
-            const container = document.getElementById('subOptionContainer');
-            const selected = activities[this.value];
+            const container = document.getElementById('subContainer');
+            const options = activityData[this.value];
             sub.innerHTML = '';
-            if (selected) {
-                selected.list.forEach(item => sub.innerHTML += `<option value="${item}">${item}</option>`);
+            if (options) {
+                options.forEach(opt => sub.innerHTML += `<option value="${opt}">${opt}</option>`);
                 container.classList.remove('hidden');
             }
-        };
+        });
 
-        document.getElementById('meritForm').onsubmit = async function(e) {
+        // 3. ส่งข้อมูลไป Google Sheets
+        document.getElementById('meritForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            document.getElementById('loading').style.display = 'flex';
+            document.getElementById('loadingOverlay').style.display = 'flex';
 
             const payload = {
                 action: 'register',
-                userId: userProfile.userId,
-                displayName: userProfile.displayName,
-                pictureUrl: userProfile.pictureUrl,
-                statusMessage: userProfile.statusMessage,
+                userId: profile.userId,
+                displayName: profile.displayName,
+                pictureUrl: profile.pictureUrl,
+                statusMessage: profile.statusMessage,
                 fullname: document.getElementById('fullname').value,
                 phone: document.getElementById('phone').value,
-                activity: activities[document.getElementById('activity').value].label,
+                activity: document.getElementById('activity').options[document.getElementById('activity').selectedIndex].text,
                 subOption: document.getElementById('subOption').value
             };
 
             try {
-                // ส่งข้อมูลเข้า Google Sheets แบบ POST
+                // ส่งข้อมูลเข้า Script (no-cors สำหรับ GitHub)
                 await fetch(WEB_APP_URL, {
                     method: 'POST',
-                    mode: 'no-cors', // สำคัญมากสำหรับ GitHub -> Google Script
+                    mode: 'no-cors',
+                    cache: 'no-cache',
                     body: JSON.stringify(payload)
                 });
-                
-                document.getElementById('meritForm').classList.add('hidden');
-                document.getElementById('successMessage').classList.remove('hidden');
-            } catch (err) {
-                alert('บันทึกไม่สำเร็จ กรุณาลองใหม่');
-            } finally {
-                document.getElementById('loading').style.display = 'none';
-            }
-        };
 
-        init();
+                document.getElementById('meritForm').classList.add('hidden');
+                document.getElementById('successView').classList.remove('hidden');
+            } catch (err) {
+                alert('การสื่อสารผิดพลาด แต่ข้อมูลอาจถูกส่งแล้ว กรุณาตรวจสอบในชีต');
+            } finally {
+                document.getElementById('loadingOverlay').style.display = 'none';
+            }
+        });
+
+        window.onload = initLiff;
     </script>
 </body>
 </html>
