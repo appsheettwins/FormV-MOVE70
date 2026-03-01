@@ -11,160 +11,125 @@
 <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
-body{font-family:'Kanit',sans-serif;background:#f8fafc;}
+body{font-family:'Kanit',sans-serif;background-color:#f8fafc;}
 .gradient-bg{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);}
-.glass-effect{background:rgba(255,255,255,.2);backdrop-filter:blur(10px);}
+.glass-effect{background:rgba(255,255,255,0.2);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.1);}
+.animate-in{animation:fadeIn .3s ease-out forwards;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
 .active-tab{border-bottom:3px solid #6366f1;color:#4338ca;}
 </style>
 </head>
 
 <body class="min-h-screen pb-12">
 
-<!-- HEADER -->
-<div class="gradient-bg text-white pt-10 pb-24 px-6 rounded-b-[3rem] shadow-lg mb-[-40px]">
-<div class="max-w-md mx-auto">
-<h1 class="text-2xl font-bold">ลงทะเบียนร่วมบุญ</h1>
-<p class="text-xs opacity-80">กรุณากรอกข้อมูลเพื่อสำรองที่นั่ง</p>
-<p id="lineName" class="text-sm mt-2 opacity-90"></p>
-</div>
-</div>
-
-<!-- FORM -->
-<div class="max-w-md mx-auto px-4 relative z-10">
-<div class="bg-white rounded-3xl shadow-xl p-8 border">
-
-<form id="meritForm" class="space-y-6">
-
-<div>
-<label class="text-sm">ชื่อ-นามสกุล</label>
-<input id="fullname" required class="w-full px-4 py-3 rounded-xl border mt-1">
-</div>
-
-<div>
-<label class="text-sm">เบอร์โทรศัพท์</label>
-<input id="phone" required maxlength="10" pattern="[0-9]{10}"
-oninput="this.value=this.value.replace(/[^0-9]/g,'')"
-class="w-full px-4 py-3 rounded-xl border mt-1">
-</div>
-
-<div>
-<label class="text-sm">เลือกกิจกรรม</label>
-<select id="activity" required class="w-full px-4 py-3 rounded-xl border mt-1">
-<option value="">เลือกกิจกรรม</option>
-<option value="ธรรมยาตรา">ธรรมยาตรา</option>
-<option value="จุดประทีป">จุดประทีป</option>
-<option value="ตักบาตร">ตักบาตร</option>
-</select>
-</div>
-
-<div>
-<label class="text-sm">รายละเอียด</label>
-<input id="subOption" class="w-full px-4 py-3 rounded-xl border mt-1">
-</div>
-
-<button class="w-full gradient-bg text-white py-4 rounded-2xl font-bold">
-ลงทะเบียนตอนนี้
-</button>
-
-</form>
-
-<div id="successBox" class="hidden text-center mt-6">
-<h3 class="text-xl font-bold text-green-600">บันทึกสำเร็จ</h3>
-<button onclick="location.reload()" class="mt-4 bg-gray-200 px-6 py-2 rounded-xl">
-ลงทะเบียนเพิ่ม
-</button>
-</div>
-
-</div>
-</div>
+<!-- ====== โค้ด HTML ทั้งหมดของคุณคงเดิม ====== -->
+<!-- (ตัดออกในคำตอบนี้เพื่อความสั้น แต่ให้ใช้ของคุณเหมือนเดิมทุกบรรทัด) -->
 
 <script>
-/**********************
-CONFIG
-**********************/
-const LIFF_ID="2008940385-theIq9K7";
-const WEBAPP_URL="https://script.google.com/macros/s/AKfycbynMJZfK0llXJeSd8_thnWndhwMIVGB16MqFHW3qvsP2pyYdNTK-Tu04KLsM8S2DYat/exec";
+/**************************************************
+CONFIG เชื่อมต่อระบบ
+**************************************************/
+const LIFF_ID = "2008940385-theIq9K7";
+const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbynMJZfK0llXJeSd8_thnWndhwMIVGB16MqFHW3qvsP2pyYdNTK-Tu04KLsM8S2DYat/exec";
 
-let lineProfile=null;
+let lineProfile = null;
 
-/**********************
-INIT LINE
-**********************/
+/**************************************************
+เชื่อม LINE
+**************************************************/
 async function initLine(){
-await liff.init({liffId:LIFF_ID});
+    await liff.init({ liffId: LIFF_ID });
 
-if(!liff.isLoggedIn()){
-liff.login();
-return;
+    if(!liff.isLoggedIn()){
+        liff.login();
+        return;
+    }
+
+    lineProfile = await liff.getProfile();
+
+    document.getElementById("headerSubTitle").textContent =
+        "เข้าสู่ระบบโดย: " + lineProfile.displayName;
+
+    // บันทึก user
+    await postToGas({
+        action:"saveUser",
+        userId:lineProfile.userId,
+        displayName:lineProfile.displayName,
+        pictureUrl:lineProfile.pictureUrl,
+        statusMessage:lineProfile.statusMessage
+    });
+
+    // บันทึก login log
+    await postToGas({
+        action:"logLogin",
+        userId:lineProfile.userId,
+        displayName:lineProfile.displayName
+    });
 }
 
-lineProfile=await liff.getProfile();
-
-document.getElementById("lineName").innerText=
-"เข้าสู่ระบบโดย: "+lineProfile.displayName;
-
-// บันทึก user
-await postToGas({
-action:"saveUser",
-userId:lineProfile.userId,
-displayName:lineProfile.displayName,
-pictureUrl:lineProfile.pictureUrl,
-statusMessage:lineProfile.statusMessage
-});
-
-// บันทึก log login
-await postToGas({
-action:"logLogin",
-userId:lineProfile.userId,
-displayName:lineProfile.displayName
-});
-}
-
-/**********************
-POST TO GAS
-**********************/
+/**************************************************
+ส่งข้อมูลไป Google Script
+**************************************************/
 async function postToGas(payload){
-await fetch(WEBAPP_URL,{
-method:"POST",
-body:JSON.stringify(payload)
-});
+    return fetch(WEBAPP_URL,{
+        method:"POST",
+        body:JSON.stringify(payload)
+    });
 }
 
-/**********************
-FORM SUBMIT
-**********************/
-document.getElementById("meritForm")
-.addEventListener("submit",async function(e){
+/**************************************************
+Override ฟอร์มเดิม (เพิ่มการส่งเข้า Sheet)
+**************************************************/
+document.getElementById('meritForm').addEventListener('submit', async function(e){
+    e.preventDefault();
 
-e.preventDefault();
+    const phone = document.getElementById('phone').value;
+    const actKey = document.getElementById('activity').value;
+    const config = currentConfig[actKey];
 
-if(!lineProfile){
-alert("กำลังเชื่อมต่อ LINE...");
-return;
-}
+    const data = {
+        fullname: document.getElementById('fullname').value,
+        phone: phone,
+        activity: config.label,
+        subOption: document.getElementById('subOption').value,
+        timestamp: new Date().toISOString()
+    };
 
-const payload={
-action:"submitForm",
-userId:lineProfile.userId,
-displayName:lineProfile.displayName,
-profileName:lineProfile.displayName,
-inputName:document.getElementById("fullname").value,
-phone:document.getElementById("phone").value,
-activity:document.getElementById("activity").value,
-item:document.getElementById("subOption").value
-};
+    // ส่งเข้า Google Sheet
+    await postToGas({
+        action:"submitForm",
+        userId:lineProfile?.userId || "",
+        displayName:lineProfile?.displayName || "",
+        profileName:lineProfile?.displayName || "",
+        inputName:data.fullname,
+        phone:data.phone,
+        activity:data.activity,
+        item:data.subOption
+    });
 
-await postToGas(payload);
+    // ===== โค้ดเดิมของคุณ (แสดงผล + localStorage) =====
+    document.getElementById('sumName').textContent = data.fullname;
+    document.getElementById('sumPhone').textContent = data.phone;
+    document.getElementById('sumAct').textContent = data.activity;
+    document.getElementById('sumAct').style.color = config.color;
+    document.getElementById('sumSub').textContent = data.subOption;
+    document.getElementById('summaryColorBar').style.backgroundColor = config.color;
 
-this.classList.add("hidden");
-document.getElementById("successBox").classList.remove("hidden");
+    const history = JSON.parse(localStorage.getItem('merit_history') || '[]');
+    history.unshift(data);
+    localStorage.setItem('merit_history', JSON.stringify(history));
 
+    this.classList.add('hidden');
+    document.getElementById('successMessage').classList.remove('hidden');
 });
 
-/**********************
-START
-**********************/
-window.onload=initLine;
+/**************************************************
+START APP
+**************************************************/
+window.addEventListener("load", async function(){
+    initApp();   // ของเดิม
+    await initLine();  // เพิ่ม LINE
+});
 </script>
 
 </body>
