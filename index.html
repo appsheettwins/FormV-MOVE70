@@ -21,7 +21,7 @@
 
     <div id="loadingOverlay">
         <div class="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-4"></div>
-        <p class="font-bold text-indigo-600 animate-pulse">กำลังประมวลผล... ☁️</p>
+        <p class="font-bold text-indigo-600 animate-pulse">กำลังบันทึกข้อมูล... ☁️</p>
     </div>
 
     <div id="appHeader" class="gradient-bg text-white pt-10 pb-24 px-6 rounded-b-[3rem] shadow-lg mb-[-40px] relative z-10">
@@ -60,30 +60,21 @@
                     <label class="text-sm font-medium text-gray-700 ml-1">📍 ระบุรายละเอียด/สถานที่</label>
                     <select id="subOption" class="w-full px-4 py-3 rounded-xl border border-indigo-200 bg-indigo-50 outline-none"></select>
                 </div>
-                <button type="submit" class="w-full gradient-bg text-white font-bold py-4 rounded-2xl shadow-lg active:scale-95 transition-all text-lg">✨ ลงทะเบียนตอนนี้</button>
+                <button type="submit" class="w-full gradient-bg text-white font-bold py-4 rounded-2xl shadow-lg active:scale-95 transition-all text-lg">✨ ยืนยันจองที่นั่ง</button>
             </form>
 
             <div id="successMessage" class="hidden animate-in text-center py-6">
                 <div class="text-6xl mb-4">✅</div>
                 <h3 class="text-xl font-bold text-green-600 mb-2">ลงทะเบียนสำเร็จ!</h3>
-                <p class="text-gray-500 text-sm mb-6 px-4">ระบบบันทึกข้อมูลแล้ว รอการยืนยันการสำรองที่นั่งทาง LINE นะคะ 🙏</p>
+                <p class="text-gray-500 text-sm mb-6 px-4">รอการยืนยันการสำรองที่นั่งทาง LINE นะคะ 🙏</p>
                 
                 <div id="summaryCard" class="bg-gray-50 rounded-2xl p-6 space-y-3 border border-gray-100 mb-6 text-left relative overflow-hidden">
                     <div id="summaryColorBar" class="absolute left-0 top-0 bottom-0 w-2"></div>
-                    <p class="text-[10px] uppercase tracking-widest text-gray-400 font-bold">Registration Summary</p>
-                    <div class="flex justify-between items-center">
-                        <span class="text-gray-500">ชื่อผู้จอง:</span>
-                        <span id="sumName" class="font-bold text-gray-800"></span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-gray-500">กิจกรรม:</span>
-                        <span id="sumAct" class="font-bold"></span>
-                    </div>
-                    <div class="pt-2 border-t border-dashed">
-                        <p id="sumSub" class="text-gray-600 text-sm italic"></p>
-                    </div>
+                    <div class="flex justify-between border-b pb-2 text-sm"><span>ผู้จอง:</span><span id="sumName" class="font-bold"></span></div>
+                    <div class="flex justify-between border-b pb-2 text-sm"><span>กิจกรรม:</span><span id="sumAct" class="font-bold"></span></div>
+                    <p id="sumSub" class="text-gray-500 text-xs italic pt-1"></p>
                 </div>
-                <button onclick="resetRegistrationForm()" class="w-full py-4 bg-gray-100 text-gray-700 font-bold rounded-2xl hover:bg-gray-200 transition-colors">➕ ลงทะเบียนเพิ่ม</button>
+                <button onclick="resetRegistrationForm()" class="w-full py-4 bg-gray-100 text-gray-700 font-bold rounded-2xl hover:bg-gray-200">➕ ลงทะเบียนเพิ่ม</button>
             </div>
         </div>
     </div>
@@ -91,7 +82,7 @@
     <div id="adminView" class="max-w-4xl mx-auto px-4 relative z-10 hidden">
         <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
             <div class="flex border-b bg-gray-50">
-                <button onclick="switchAdminTab('list')" id="tabBtn-list" class="flex-1 py-4 font-bold active-tab">📋 รายชื่อผู้ลงทะเบียน</button>
+                <button onclick="switchAdminTab('list')" id="tabBtn-list" class="flex-1 py-4 font-bold active-tab">📋 รายชื่อ</button>
                 <button onclick="switchAdminTab('manage')" id="tabBtn-manage" class="flex-1 py-4 font-bold text-gray-400">🏷️ จัดการกิจกรรม</button>
             </div>
 
@@ -101,16 +92,16 @@
                     <select id="filterActivity" onchange="renderHistoryList()" class="px-4 py-3 border rounded-xl outline-none"></select>
                 </div>
                 <div class="overflow-x-auto">
-                    <table class="w-full text-left">
-                        <thead class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-gray-50 text-gray-500 uppercase tracking-wider">
                             <tr>
-                                <th class="p-4">ลำดับ</th>
+                                <th class="p-4">#</th>
                                 <th class="p-4">ชื่อ-นามสกุล</th>
                                 <th class="p-4">เบอร์โทร</th>
                                 <th class="p-4">กิจกรรม</th>
                             </tr>
                         </thead>
-                        <tbody id="historyTableBody" class="divide-y text-sm"></tbody>
+                        <tbody id="historyTableBody" class="divide-y"></tbody>
                     </table>
                 </div>
             </div>
@@ -119,16 +110,12 @@
                 <div class="bg-indigo-50 p-6 rounded-2xl mb-8 border border-indigo-100">
                     <h4 class="font-bold text-indigo-900 mb-4">🚀 เพิ่มกิจกรรมใหม่</h4>
                     <div class="flex flex-wrap gap-3">
-                        <input type="text" id="newActInput" class="flex-1 min-w-[200px] px-4 py-3 border rounded-xl outline-none" placeholder="ชื่อกิจกรรม เช่น ตักบาตร...">
-                        <input type="color" id="newActColor" value="#6366f1" class="w-14 h-12 p-1 rounded-xl border bg-white cursor-pointer">
-                        <button onclick="addActivity()" class="px-8 py-3 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 shadow-md">เพิ่ม</button>
+                        <input type="text" id="newActInput" class="flex-1 min-w-[200px] px-4 py-3 border rounded-xl outline-none" placeholder="ชื่อกิจกรรม...">
+                        <input type="color" id="newActColor" value="#6366f1" class="w-14 h-12 p-1 rounded-xl border cursor-pointer bg-white">
+                        <button onclick="addActivity()" class="px-8 py-3 bg-indigo-600 text-white font-bold rounded-xl shadow-md">เพิ่ม</button>
                     </div>
                 </div>
                 <div id="adminActList" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
-                <div class="mt-10 flex flex-col items-center">
-                    <button onclick="saveConfigToCloud()" class="bg-green-600 text-white px-10 py-4 rounded-2xl font-bold shadow-xl hover:bg-green-700 active:scale-95 transition-all">💾 บันทึกข้อมูลทั้งหมดลงระบบ</button>
-                    <p class="text-xs text-gray-400 mt-2">* ต้องกดปุ่มสีเขียวเพื่อยืนยันการเปลี่ยนแปลงลง Google Sheet</p>
-                </div>
             </div>
             
             <div class="p-6 bg-gray-50 border-t text-center">
@@ -154,54 +141,49 @@
             <input type="password" id="adminPassword" placeholder="รหัสผ่าน" class="w-full px-4 py-4 border rounded-xl mb-6 text-center text-2xl outline-none focus:ring-2 focus:ring-indigo-500">
             <div class="flex gap-3">
                 <button onclick="toggleAdminLogin(false)" class="flex-1 py-3 text-gray-400">ปิด</button>
-                <button onclick="checkAdminPassword()" class="flex-1 py-4 bg-indigo-600 text-white font-bold rounded-xl shadow-lg">ตกลง</button>
+                <button onclick="checkAdminPassword()" class="flex-1 py-4 bg-indigo-600 text-white font-bold rounded-xl shadow-lg">ยืนยัน</button>
             </div>
         </div>
     </div>
 
     <script>
-        const LIFF_ID = "2008940385-theIq9K7";
-        const API_URL = "https://script.google.com/macros/s/AKfycbynMJZfK0llXJeSd8_thnWndhwMIVGB16MqFHW3qvsP2pyYdNTK-Tu04KLsM8S2DYat/exec";
+        const YOUR_LIFF_ID = "2008940385-theIq9K7";
+        const YOUR_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbynMJZfK0llXJeSd8_thnWndhwMIVGB16MqFHW3qvsP2pyYdNTK-Tu04KLsM8S2DYat/exec";
 
-        let currentConfig = {};
+        // แม่แบบกิจกรรมเริ่มต้น
+        const defaultOptions = {
+            'act1': { label: 'ธรรมยาตรา 🚶', color: '#6366f1', list: ['วัดพระธรรมกาย', 'อนุสรณ์สถาน'] },
+            'act2': { label: 'จุดประทีป ✨', color: '#f59e0b', list: ['ลานธรรม', 'มหาเจดีย์'] }
+        };
+
+        let currentConfig = JSON.parse(localStorage.getItem('merit_config')) || defaultOptions;
         let liffProfile = {};
 
-        async function init() {
-            toggleLoading(true);
+        async function initApp() {
             try {
-                // โหลดข้อมูลกิจกรรม
-                const res = await fetch(API_URL);
-                currentConfig = await res.json();
-                
-                // เริ่มต้น LIFF
-                await liff.init({ liffId: LIFF_ID });
+                await liff.init({ liffId: YOUR_LIFF_ID });
                 if (liff.isLoggedIn()) {
                     liffProfile = await liff.getProfile();
                     document.getElementById('userNameDisplay').textContent = liffProfile.displayName;
                 } else {
                     liff.login();
                 }
-            } catch (e) {
-                console.error(e);
-                // ถ้าโหลดไม่สำเร็จ ให้ใช้ค่าเริ่มต้นป้องกันหน้าขาว
-                currentConfig = {
-                    'act1': { label: 'ธรรมยาตรา 🚶', color: '#6366f1', list: ['วัดพระธรรมกาย', 'อนุสรณ์สถาน'] }
-                };
-            }
+            } catch (err) { console.error('LIFF Error', err); }
             updateDropdowns();
-            toggleLoading(false);
         }
 
         function updateDropdowns() {
             const select = document.getElementById('activity');
-            const filter = document.getElementById('filterActivity');
-            const options = Object.keys(currentConfig).map(k => `<option value="${k}">${currentConfig[k].label}</option>`).join('');
+            const filterSelect = document.getElementById('filterActivity');
+            const keys = Object.keys(currentConfig);
             
-            select.innerHTML = '<option value="" disabled selected>-- เลือกกิจกรรมที่ต้องการ --</option>' + options;
-            filter.innerHTML = '<option value="">กรองตามกิจกรรม (ทั้งหมด)</option>' + options;
+            select.innerHTML = '<option value="" disabled selected>-- เลือกกิจกรรม --</option>' + 
+                keys.map(k => `<option value="${k}">${currentConfig[k].label}</option>`).join('');
+            
+            filterSelect.innerHTML = '<option value="">ทั้งหมด</option>' + 
+                keys.map(k => `<option value="${currentConfig[k].label}">${currentConfig[k].label}</option>`).join('');
         }
 
-        // จัดการเหตุการณ์เลือกกิจกรรม
         document.getElementById('activity').onchange = function() {
             const sub = document.getElementById('subOption');
             const data = currentConfig[this.value];
@@ -213,10 +195,9 @@
             }
         };
 
-        // บันทึกการลงทะเบียน
         document.getElementById('meritForm').onsubmit = async function(e) {
             e.preventDefault();
-            toggleLoading(true);
+            document.getElementById('loadingOverlay').style.display = 'flex';
             
             const actKey = document.getElementById('activity').value;
             const config = currentConfig[actKey];
@@ -225,33 +206,30 @@
                 phone: document.getElementById('phone').value,
                 activity: config.label,
                 subOption: document.getElementById('subOption').value || '-',
-                displayName: liffProfile.displayName
+                displayName: liffProfile.displayName || 'Guest'
             };
 
             try {
-                await fetch(API_URL, {
+                await fetch(YOUR_WEBAPP_URL, {
                     method: 'POST',
+                    mode: 'no-cors',
                     body: JSON.stringify(data)
                 });
 
-                // บันทึกประวัติในมือถือ (LocalStorage) เพื่อให้ค้นหาได้ภายหลัง
-                const history = JSON.parse(localStorage.getItem('vmove_history') || '[]');
-                history.unshift(data);
-                localStorage.setItem('vmove_history', JSON.stringify(history));
-
-                // แสดงหน้าสำเร็จ
                 document.getElementById('sumName').textContent = data.fullname;
                 document.getElementById('sumAct').textContent = data.activity;
                 document.getElementById('sumAct').style.color = config.color;
                 document.getElementById('sumSub').textContent = data.subOption;
                 document.getElementById('summaryColorBar').style.backgroundColor = config.color;
 
+                const history = JSON.parse(localStorage.getItem('merit_history') || '[]');
+                history.unshift(data);
+                localStorage.setItem('merit_history', JSON.stringify(history));
+
                 this.classList.add('hidden');
                 document.getElementById('successMessage').classList.remove('hidden');
-            } catch (err) {
-                alert('บันทึกไม่สำเร็จ กรุณาลองใหม่');
-            }
-            toggleLoading(false);
+            } catch (err) { alert('ขออภัย บันทึกไม่สำเร็จ'); }
+            document.getElementById('loadingOverlay').style.display = 'none';
         };
 
         function resetRegistrationForm() {
@@ -261,142 +239,82 @@
             document.getElementById('subOptionContainer').classList.add('hidden');
         }
 
-        // --- Admin Logic ---
+        // Search & Admin Logic
+        function toggleSearchModal(s) { document.getElementById('searchModal').classList.toggle('hidden', !s); }
+        function handleSearch(q) {
+            const res = document.getElementById('searchResults');
+            const history = JSON.parse(localStorage.getItem('merit_history') || '[]');
+            const filtered = history.filter(h => h.phone.includes(q));
+            res.innerHTML = q.length < 5 ? '<p class="text-center text-gray-400 py-10">กรอกอย่างน้อย 5 หลัก</p>' : 
+                filtered.map(h => `<div class="p-4 bg-gray-50 rounded-2xl border-l-4 border-indigo-500 shadow-sm">
+                    <div class="font-bold text-gray-800">${h.fullname}</div>
+                    <div class="text-xs text-gray-400">${h.activity} - ${h.subOption}</div>
+                </div>`).join('') || '<p class="text-center text-gray-400 py-10">ไม่พบข้อมูล</p>';
+        }
+
+        function toggleAdminLogin(s) { document.getElementById('adminLoginModal').classList.toggle('hidden', !s); }
         function checkAdminPassword() {
             if (document.getElementById('adminPassword').value === '1234') {
                 toggleAdminLogin(false);
                 document.getElementById('userView').classList.add('hidden');
                 document.getElementById('adminView').classList.remove('hidden');
                 switchAdminTab('list');
-            } else { alert('รหัสผ่านไม่ถูกต้อง ❌'); }
+            } else { alert('รหัสผ่านไม่ถูกต้อง'); }
         }
 
-        function switchAdminTab(tab) {
-            document.getElementById('adminTab-list').classList.toggle('hidden', tab !== 'list');
-            document.getElementById('adminTab-manage').classList.toggle('hidden', tab !== 'manage');
-            document.getElementById('tabBtn-list').className = tab === 'list' ? 'flex-1 py-4 font-bold active-tab' : 'flex-1 py-4 font-bold text-gray-400';
-            document.getElementById('tabBtn-manage').className = tab === 'manage' ? 'flex-1 py-4 font-bold active-tab' : 'flex-1 py-4 font-bold text-gray-400';
-            
-            if(tab === 'list') renderHistoryList();
-            if(tab === 'manage') renderAdminPanel();
+        function switchAdminTab(t) {
+            document.getElementById('adminTab-list').classList.toggle('hidden', t !== 'list');
+            document.getElementById('adminTab-manage').classList.toggle('hidden', t !== 'manage');
+            document.getElementById('tabBtn-list').className = t === 'list' ? 'flex-1 py-4 font-bold active-tab' : 'flex-1 py-4 font-bold text-gray-400';
+            document.getElementById('tabBtn-manage').className = t === 'manage' ? 'flex-1 py-4 font-bold active-tab' : 'flex-1 py-4 font-bold text-gray-400';
+            if(t === 'list') renderHistoryList();
+            if(t === 'manage') renderAdminPanel();
         }
 
         function renderAdminPanel() {
             const listDiv = document.getElementById('adminActList');
-            listDiv.innerHTML = Object.keys(currentConfig).map(key => {
-                const act = currentConfig[key];
-                return `
-                    <div class="bg-white border rounded-2xl shadow-sm flex flex-col">
-                        <div class="p-4 text-white flex justify-between items-center rounded-t-2xl" style="background-color: ${act.color}">
-                            <span class="font-bold">${act.label}</span>
-                            <button onclick="deleteActivity('${key}')" class="bg-white/20 p-1 rounded-lg">✕</button>
-                        </div>
-                        <div class="p-4 flex-1 space-y-2">
-                            ${act.list.map((item, idx) => `
-                                <div class="flex justify-between items-center text-xs bg-gray-50 p-2 rounded-lg border">
-                                    <span>${item}</span>
-                                    <button onclick="removeItem('${key}', ${idx})" class="text-red-400">ลบ</button>
-                                </div>
-                            `).join('')}
-                        </div>
-                        <div class="p-4 border-t flex gap-2">
-                            <input type="text" id="input-${key}" class="flex-1 text-xs border rounded-lg px-2 py-2" placeholder="เพิ่มรายการย่อย...">
-                            <button onclick="addItem('${key}')" class="bg-indigo-600 text-white px-3 py-1 rounded-lg text-xs">เพิ่ม</button>
-                        </div>
-                    </div>`;
-            }).join('');
+            listDiv.innerHTML = Object.keys(currentConfig).map(k => `
+                <div class="bg-white border rounded-2xl overflow-hidden shadow-sm">
+                    <div class="p-4 text-white flex justify-between items-center" style="background-color: ${currentConfig[k].color}">
+                        <span class="font-bold">${currentConfig[k].label}</span>
+                        <button onclick="deleteActivity('${k}')" class="p-1 hover:bg-white/20 rounded-lg">✕</button>
+                    </div>
+                    <div class="p-4 space-y-2">
+                        ${currentConfig[k].list.map((item, i) => `<div class="flex justify-between text-xs bg-gray-50 p-2 rounded"><span>${item}</span><button onclick="removeItem('${k}', ${i})" class="text-red-400">ลบ</button></div>`).join('')}
+                    </div>
+                    <div class="p-4 border-t flex gap-2">
+                        <input type="text" id="in-${k}" class="flex-1 text-xs border rounded px-2 py-1" placeholder="เพิ่มรายการ...">
+                        <button onclick="addItem('${k}')" class="bg-indigo-600 text-white px-3 py-1 rounded text-xs">เพิ่ม</button>
+                    </div>
+                </div>`).join('');
         }
 
         function addActivity() {
-            const name = document.getElementById('newActInput').value.trim();
-            const color = document.getElementById('newActColor').value;
-            if (!name) return;
+            const n = document.getElementById('newActInput').value.trim();
+            const c = document.getElementById('newActColor').value;
+            if(!n) return;
             const id = 'act_' + Date.now();
-            currentConfig[id] = { label: name, color: color, list: [] };
-            document.getElementById('newActInput').value = '';
-            renderAdminPanel();
+            currentConfig[id] = { label: n, color: c, list: [] };
+            saveConfig();
         }
-
-        function addItem(key) {
-            const val = document.getElementById('input-' + key).value.trim();
-            if (val) {
-                currentConfig[key].list.push(val);
-                renderAdminPanel();
-            }
+        function addItem(k) { 
+            const i = document.getElementById('in-'+k); 
+            if(i.value) { currentConfig[k].list.push(i.value); saveConfig(); }
         }
-
-        function removeItem(key, idx) {
-            currentConfig[key].list.splice(idx, 1);
-            renderAdminPanel();
-        }
-
-        function deleteActivity(key) {
-            if(confirm('ลบกิจกรรมนี้?')) {
-                delete currentConfig[key];
-                renderAdminPanel();
-            }
-        }
-
-        async function saveConfigToCloud() {
-            toggleLoading(true);
-            try {
-                const res = await fetch(API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({ action: 'SAVE_CONFIG', config: currentConfig })
-                });
-                if(await res.text() === "Success") alert("บันทึกข้อมูลกิจกรรมลง Google Sheet แล้ว ✅");
-            } catch(e) { alert("เกิดข้อผิดพลาด"); }
-            toggleLoading(false);
-            updateDropdowns();
-        }
-
-        // --- Utility ---
-        function handleSearch(q) {
-            const res = document.getElementById('searchResults');
-            const history = JSON.parse(localStorage.getItem('vmove_history') || '[]');
-            const filtered = history.filter(h => h.phone.includes(q));
-            
-            if (q.length < 4) {
-                res.innerHTML = '<p class="text-center text-gray-400 py-10">พิมพ์เบอร์โทร 4 ตัวขึ้นไปเพื่อค้นหา...</p>';
-                return;
-            }
-
-            res.innerHTML = filtered.length ? filtered.map(h => `
-                <div class="p-5 bg-white rounded-2xl border-l-8 border-indigo-500 shadow-sm animate-in">
-                    <div class="font-bold text-gray-800">${h.fullname}</div>
-                    <div class="text-xs text-indigo-600 font-bold mt-1">${h.activity}</div>
-                    <div class="text-[10px] text-gray-400 mt-1">${h.subOption}</div>
-                </div>
-            `).join('') : '<p class="text-center text-gray-400 py-10">ไม่พบข้อมูลการจอง 🧐</p>';
-        }
+        function removeItem(k, i) { currentConfig[k].list.splice(i, 1); saveConfig(); }
+        function deleteActivity(k) { if(confirm('ลบกิจกรรมนี้?')) { delete currentConfig[k]; saveConfig(); } }
+        function saveConfig() { localStorage.setItem('merit_config', JSON.stringify(currentConfig)); renderAdminPanel(); updateDropdowns(); }
 
         function renderHistoryList() {
-            const tbody = document.getElementById('historyTableBody');
-            const history = JSON.parse(localStorage.getItem('vmove_history') || '[]');
-            const search = document.getElementById('filterSearch').value.toLowerCase();
-            const actFilter = document.getElementById('filterActivity').value;
-
-            const filtered = history.filter(h => {
-                const matchSearch = h.fullname.toLowerCase().includes(search) || h.phone.includes(search);
-                const matchAct = !actFilter || h.activity === currentConfig[actFilter]?.label;
-                return matchSearch && matchAct;
-            });
-
-            tbody.innerHTML = filtered.map((h, i) => `
-                <tr class="hover:bg-gray-50 transition-colors">
-                    <td class="p-4 text-gray-400">${i+1}</td>
-                    <td class="p-4 font-bold text-gray-700">${h.fullname}</td>
-                    <td class="p-4 text-gray-500">${h.phone}</td>
-                    <td class="p-4"><span class="bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full text-[10px] font-bold">${h.activity}</span></td>
-                </tr>
-            `).join('');
+            const h = JSON.parse(localStorage.getItem('merit_history') || '[]');
+            const s = document.getElementById('filterSearch').value.toLowerCase();
+            const a = document.getElementById('filterActivity').value;
+            document.getElementById('historyTableBody').innerHTML = h.filter(x => 
+                (x.fullname.toLowerCase().includes(s) || x.phone.includes(s)) && (!a || x.activity === a)
+            ).map((x, i) => `<tr><td class="p-4 text-gray-400">${i+1}</td><td class="p-4 font-bold">${x.fullname}</td><td class="p-4">${x.phone}</td><td class="p-4 text-indigo-600 font-bold">${x.activity}</td></tr>`).join('') || '<tr><td colspan="4" class="p-10 text-center text-gray-400">ไม่พบข้อมูล</td></tr>';
         }
 
-        function toggleLoading(s) { document.getElementById('loadingOverlay').style.display = s ? 'flex' : 'none'; }
-        function toggleAdminLogin(s) { document.getElementById('adminLoginModal').classList.toggle('hidden', !s); }
-        function toggleSearchModal(s) { document.getElementById('searchModal').classList.toggle('hidden', !s); }
-
-        window.onload = init;
+        window.onload = initApp;
     </script>
 </body>
 </html>
