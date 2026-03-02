@@ -273,19 +273,23 @@ async function checkAdmin() {
         }
 
         function renderAdminHistoryTable(data) {
-            document.getElementById('adminHistoryBody').innerHTML = data.map(h => {
-                const configKey = Object.keys(currentConfig).find(k => currentConfig[k].label === h.activity);
-                const color = configKey ? currentConfig[configKey].color : '#e5e7eb';
-                return `
-                    <tr class="hover:bg-gray-50 transition-colors border-b border-gray-100">
-                        <td class="p-4 font-bold text-gray-800">${h.fullname}</td>
-                        <td class="p-4 text-gray-600 font-medium">${h.phone}</td>
-                        <td class="p-4"><span class="px-3 py-1 rounded-full text-[10px] font-black text-white shadow-sm" style="background-color: ${color}">${h.activity}</span></td>
-                        <td class="p-4 font-medium text-indigo-500">${h.subOption}</td>
-                    </tr>
-                `;
-            }).join('') || '<tr><td colspan="4" class="p-20 text-center text-gray-300 italic">ไม่พบข้อมูล...</td></tr>';
-        }
+    document.getElementById('adminHistoryBody').innerHTML = data.map(h => {
+        const configKey = Object.keys(currentConfig).find(k => currentConfig[k].label === h.activity);
+        const color = configKey ? currentConfig[configKey].color : '#e5e7eb';
+        
+        // ล้างเครื่องหมาย ' ออกถ้ามี (ป้องกันการแสดงผลผิดพลาด)
+        const cleanPhone = h.phone.replace(/'/g, ""); 
+
+        return `
+            <tr class="hover:bg-gray-50 transition-colors border-b border-gray-100">
+                <td class="p-4 font-bold text-gray-800">${h.fullname}</td>
+                <td class="p-4 text-gray-600 font-medium">${cleanPhone}</td>
+                <td class="p-4"><span class="px-3 py-1 rounded-full text-[10px] font-black text-white shadow-sm" style="background-color: ${color}">${h.activity}</span></td>
+                <td class="p-4 font-medium text-indigo-500">${h.subOption}</td>
+            </tr>
+        `;
+    }).join('');
+}
 
         // --- Data Management (Admin) ---
         function changeActColor(key, newColor) { currentConfig[key].color = newColor; saveConfig(); }
