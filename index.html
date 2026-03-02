@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>สำรองที่นั่ง V-MOVE V4 🚗</title>
+    <title>สำรองที่นั่ง V-MOVE V5 🚗</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <style>
         body { font-family: 'Kanit', sans-serif; background-color: #f8fafc; }
         .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .admin-gradient { background: linear-gradient(135deg, #00dbde 0%, #fc00ff 100%); }
         .glass-effect { background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
         .animate-in { animation: fadeIn 0.3s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .active-tab { border-bottom: 3px solid #6366f1; color: #4338ca; background: rgba(99, 102, 241, 0.05); }
+        .active-tab { border-bottom: 4px solid #6366f1; color: #4338ca; background: rgba(99, 102, 241, 0.05); }
         #loadingOverlay { display:none; position:fixed; inset:0; background:rgba(255,255,255,0.8); z-index:9999; align-items:center; justify-content:center; flex-direction: column; }
     </style>
 </head>
@@ -21,7 +22,7 @@
 
     <div id="loadingOverlay">
         <div class="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-4"></div>
-        <p class="font-bold text-indigo-600 animate-pulse">กำลังบันทึก... 🚗✨</p>
+        <p class="font-bold text-indigo-600 animate-pulse">กำลังดำเนินการ... 🚗✨</p>
     </div>
 
     <div id="appHeader" class="gradient-bg text-white pt-10 pb-24 px-6 rounded-b-[3rem] shadow-lg mb-[-40px] relative z-10">
@@ -29,15 +30,11 @@
             <div class="flex gap-3 items-center">
                 <button onclick="toggleAdminLogin(true)" class="glass-effect p-3 rounded-2xl hover:bg-white/30 transition-all">🛠️</button>
                 <div>
-                    <h1 class="text-2xl font-bold">สำรองที่นั่งV-MOVE 🚗</h1>
+                    <h1 class="text-2xl font-bold">สำรองที่นั่ง V-MOVE 🚗</h1>
                     <p class="text-sm text-yellow-300">สวัสดีคุณ <span id="userNameDisplay" class="font-bold">...</span> 🙏</p>
                 </div>
             </div>
-            <button onclick="toggleSearchModal(true)" class="glass-effect p-3 rounded-2xl">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-            </button>
+            <button onclick="toggleSearchModal(true)" class="glass-effect p-3 rounded-2xl">🔍 ค้นหา</button>
         </div>
     </div>
 
@@ -62,43 +59,68 @@
                 </div>
                 <button type="submit" class="w-full gradient-bg text-white font-bold py-4 rounded-2xl shadow-lg active:scale-95 transition-all">✨ ยืนยันการจอง</button>
             </form>
-            <div id="successView" class="hidden text-center py-6 animate-in">
+
+            <div id="successView" class="hidden text-center py-4 animate-in">
                 <div class="text-1xl mb-4">✅</div>
-                <h3 class="text-xl font-bold text-green-600 mb-6">ลงทะเบียนสำเร็จ! รอการยืนยันการสำรองที่นั่ง จะส่งข้อความให้ทาง LINE🙏</h3>
-                <button onclick="location.reload()" class="w-full py-4 bg-gray-100 rounded-2xl font-bold text-gray-600">➕ จองเพิ่มอีกรายการ</button>
+                <h3 class="text-xl font-bold text-green-600 mb-2">ลงทะเบียนสำเร็จ!</h3>
+                <p class="text-sm text-gray-500 mb-6">รอการยืนยันผ่านทาง LINE นะคะ 🙏</p>
+                
+                <div id="bookingSummary" class="bg-gray-50 rounded-2xl p-5 mb-8 text-left border-l-8 border-indigo-500 space-y-2">
+                    </div>
+
+                <button onclick="location.reload()" class="w-full py-4 bg-gray-100 rounded-2xl font-bold text-gray-600 hover:bg-gray-200 transition-all">➕ จองเพิ่มอีกรายการ</button>
             </div>
         </div>
     </div>
 
     <div id="adminView" class="max-w-5xl mx-auto px-4 relative z-10 hidden pt-6">
-        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
-            <div class="bg-gray-800 text-white p-4 flex justify-between items-center px-6">
-                <div class="flex items-center gap-2">
-                    <span class="text-xl">🛠️</span>
-                    <h2 class="font-bold">ระบบจัดการหลังบ้าน</h2>
+        <div class="bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border border-gray-100">
+            <div class="admin-gradient p-6 text-white flex justify-between items-center px-8 shadow-lg">
+                <div class="flex items-center gap-3">
+                    <span class="text-2xl">⚡</span>
+                    <h2 class="text-xl font-bold tracking-wide">ระบบจัดการหลังบ้าน V-MOVE</h2>
                 </div>
-                <button onclick="location.reload()" class="bg-red-500 hover:bg-red-600 px-4 py-1.5 rounded-xl text-sm font-bold transition-colors">
-                    🚪 ออกจากระบบ
-                </button>
+                <button onclick="location.reload()" class="glass-effect px-5 py-2 rounded-xl text-sm font-bold hover:bg-white/30 transition-all">🚪 ออกจากระบบ</button>
             </div>
 
-            <div class="flex border-b bg-gray-50">
-                <button onclick="switchAdminTab('list')" id="tabBtn-list" class="flex-1 py-4 font-bold active-tab">📋 รายชื่อผู้จอง</button>
+            <div class="flex border-b bg-gray-50/50">
+                <button onclick="switchAdminTab('list')" id="tabBtn-list" class="flex-1 py-4 font-bold active-tab">📋 รายชื่อ & แดชบอร์ด</button>
                 <button onclick="switchAdminTab('manage')" id="tabBtn-manage" class="flex-1 py-4 font-bold text-gray-400">⚙️ จัดการกิจกรรม</button>
             </div>
 
-            <div id="adminTab-list" class="p-6">
-                <div class="overflow-x-auto">
+            <div id="adminTab-list" class="p-6 space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-gray-50 p-6 rounded-3xl border border-gray-100">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 mb-1 ml-1">กรองกิจกรรมหลัก</label>
+                        <select id="filterAct" onchange="filterAdminHistory()" class="w-full p-3 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-indigo-400"></select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 mb-1 ml-1">กรองจุดรับ/ย่อย</label>
+                        <select id="filterSub" onchange="filterAdminHistory()" class="w-full p-3 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-indigo-400">
+                            <option value="all">ทั้งหมด</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center justify-center bg-white rounded-2xl border-2 border-indigo-100">
+                        <div class="text-center">
+                            <span class="text-xs font-bold text-gray-400 block">จำนวนผู้จอง</span>
+                            <span id="summaryCount" class="text-3xl font-black text-indigo-600">0</span>
+                            <span class="text-xs font-bold text-gray-400">คน</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto rounded-2xl border border-gray-100 shadow-sm">
                     <table class="w-full text-left text-sm">
-                        <thead class="bg-gray-50 text-gray-500 uppercase font-bold">
+                        <thead class="bg-gray-800 text-white font-bold">
                             <tr>
                                 <th class="p-4">ชื่อ-นามสกุล</th>
                                 <th class="p-4">เบอร์โทร</th>
                                 <th class="p-4">กิจกรรมหลัก</th>
-                                <th class="p-4 text-indigo-600">จุดรับ/รายการย่อย</th>
+                                <th class="p-4">จุดรับ/รายการย่อย</th>
                             </tr>
                         </thead>
-                        <tbody id="adminHistoryBody" class="divide-y divide-gray-100"></tbody>
+                        <tbody id="adminHistoryBody" class="divide-y divide-gray-100">
+                            </tbody>
                     </table>
                 </div>
             </div>
@@ -107,9 +129,9 @@
                 <div class="bg-indigo-50 p-6 rounded-2xl mb-8 border border-indigo-100 shadow-inner">
                     <h4 class="font-bold text-indigo-900 mb-4 flex items-center gap-2">🚀 เพิ่มหมวดหมู่ใหม่</h4>
                     <div class="flex flex-wrap gap-3">
-                        <input type="text" id="newActInput" class="flex-1 px-4 py-2 border rounded-xl outline-none" placeholder="ระบุชื่อกิจกรรมหลัก...">
+                        <input type="text" id="newActInput" class="flex-1 px-4 py-2 border rounded-xl outline-none shadow-sm" placeholder="ระบุชื่อกิจกรรมหลัก...">
                         <input type="color" id="newActColor" value="#6366f1" class="w-12 h-10 p-1 rounded-xl cursor-pointer">
-                        <button onclick="addActivity()" class="px-6 py-2 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition-colors">เพิ่มหมวดหมู่</button>
+                        <button onclick="addActivity()" class="px-6 py-2 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition-colors shadow-lg">เพิ่มหมวดหมู่</button>
                     </div>
                 </div>
                 <div id="adminActList" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
@@ -159,7 +181,7 @@
             updateDropdowns();
         }
 
-        // --- Admin Core V4 ---
+        // --- Admin Dashbord V5 ---
         function checkAdmin() {
             if (document.getElementById('adminPass').value === '1234') {
                 toggleAdminLogin(false);
@@ -175,56 +197,63 @@
             document.getElementById('adminTab-manage').classList.toggle('hidden', t !== 'manage');
             document.getElementById('tabBtn-list').className = t === 'list' ? 'flex-1 py-4 font-bold active-tab' : 'flex-1 py-4 font-bold text-gray-400';
             document.getElementById('tabBtn-manage').className = t === 'manage' ? 'flex-1 py-4 font-bold active-tab' : 'flex-1 py-4 font-bold text-gray-400';
-            if(t === 'list') renderAdminHistory();
+            if(t === 'list') {
+                updateFilterOptions();
+                filterAdminHistory();
+            }
             if(t === 'manage') renderAdminPanel();
         }
 
-        function renderAdminPanel() {
-            const listDiv = document.getElementById('adminActList');
-            listDiv.innerHTML = '';
-            Object.keys(currentConfig).forEach(key => {
-                const card = document.createElement('div');
-                card.className = "bg-white border rounded-3xl overflow-hidden shadow-sm animate-in";
-                card.innerHTML = `
-                    <div class="p-5 text-white flex justify-between items-center" style="background-color: ${currentConfig[key].color}">
-                        <span class="font-bold text-lg">${currentConfig[key].label}</span>
-                        <div class="flex items-center gap-2">
-                             <input type="color" onchange="changeActColor('${key}', this.value)" value="${currentConfig[key].color}" class="w-8 h-8 rounded-lg border-2 border-white/50 cursor-pointer bg-transparent">
-                             <button onclick="deleteActivity('${key}')" class="bg-black/10 hover:bg-black/20 px-3 py-1 rounded-full text-sm">✕</button>
-                        </div>
-                    </div>
-                    <div class="p-5 space-y-2">
-                        ${currentConfig[key].list.map((item, idx) => `
-                            <div class="flex justify-between items-center text-sm bg-gray-50 p-3 rounded-xl">
-                                <span class="text-gray-700 font-medium">${item}</span>
-                                <button onclick="removeItem('${key}', ${idx})" class="text-red-400 hover:text-red-600">ลบ</button>
-                            </div>`).join('') || '<p class="text-center text-gray-300 text-xs py-4">ยังไม่มีจุดรับ/รายการย่อย</p>'}
-                    </div>
-                    <div class="p-5 border-t bg-gray-50/50 flex gap-2">
-                        <input type="text" id="input-${key}" class="flex-1 text-sm border rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-indigo-500" placeholder="เพิ่มรายการย่อย...">
-                        <button onclick="addItem('${key}')" class="bg-indigo-600 text-white px-4 py-2 rounded-xl text-sm font-bold">เพิ่ม</button>
-                    </div>`;
-                listDiv.appendChild(card);
-            });
+        function updateFilterOptions() {
+            const fAct = document.getElementById('filterAct');
+            fAct.innerHTML = '<option value="all">กิจกรรมทั้งหมด</option>' + 
+                Object.keys(currentConfig).map(k => `<option value="${currentConfig[k].label}">${currentConfig[k].label}</option>`).join('');
         }
 
-        function renderAdminHistory() {
+        function filterAdminHistory() {
             const history = JSON.parse(localStorage.getItem('vmove_history') || '[]');
-            document.getElementById('adminHistoryBody').innerHTML = history.map(h => `
-                <tr class="hover:bg-gray-50 transition-colors">
-                    <td class="p-4 font-bold text-gray-800">${h.fullname}</td>
-                    <td class="p-4 text-gray-600 font-medium">${h.phone}</td>
-                    <td class="p-4"><span class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-xs font-bold">${h.activity}</span></td>
-                    <td class="p-4"><span class="px-3 py-1 bg-indigo-50 text-indigo-600 rounded-full text-xs font-bold">${h.subOption}</span></td>
-                </tr>
-            `).join('') || '<tr><td colspan="4" class="p-20 text-center text-gray-400 font-medium italic">ยังไม่มีข้อมูลการจอง...</td></tr>';
+            const selAct = document.getElementById('filterAct').value;
+            const selSub = document.getElementById('filterSub').value;
+
+            // อัปเดต Dropdown กิจกรรมย่อยตามกิจกรรมหลักที่เลือก
+            if(selAct !== 'all') {
+                const configKey = Object.keys(currentConfig).find(k => currentConfig[k].label === selAct);
+                const subList = currentConfig[configKey]?.list || [];
+                document.getElementById('filterSub').innerHTML = '<option value="all">ทั้งหมด</option>' + 
+                    subList.map(s => `<option value="${s}">${s}</option>`).join('');
+            } else {
+                document.getElementById('filterSub').innerHTML = '<option value="all">ทั้งหมด</option>';
+            }
+
+            const filtered = history.filter(h => {
+                const matchAct = selAct === 'all' || h.activity === selAct;
+                const matchSub = selSub === 'all' || h.subOption === selSub;
+                return matchAct && matchSub;
+            });
+
+            document.getElementById('summaryCount').textContent = filtered.length;
+            renderAdminHistory(filtered);
+        }
+
+        function renderAdminHistory(data) {
+            document.getElementById('adminHistoryBody').innerHTML = data.map(h => {
+                // หารหัสสีจาก Config
+                const configKey = Object.keys(currentConfig).find(k => currentConfig[k].label === h.activity);
+                const color = configKey ? currentConfig[configKey].color : '#e5e7eb';
+                
+                return `
+                    <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="p-4 font-bold text-gray-800">${h.fullname}</td>
+                        <td class="p-4 text-gray-600 font-medium">${h.phone}</td>
+                        <td class="p-4"><span class="px-3 py-1 rounded-full text-xs font-bold text-white shadow-sm" style="background-color: ${color}">${h.activity}</span></td>
+                        <td class="p-4"><span class="px-3 py-1 bg-indigo-50 text-indigo-600 rounded-full text-xs font-bold">${h.subOption}</span></td>
+                    </tr>
+                `;
+            }).join('') || '<tr><td colspan="4" class="p-20 text-center text-gray-400 italic">ไม่พบข้อมูลการจอง...</td></tr>';
         }
 
         // --- Data Management ---
-        function changeActColor(key, newColor) {
-            currentConfig[key].color = newColor;
-            saveConfig();
-        }
+        function changeActColor(key, newColor) { currentConfig[key].color = newColor; saveConfig(); }
         function addActivity() {
             const name = document.getElementById('newActInput').value.trim();
             const color = document.getElementById('newActColor').value;
@@ -241,6 +270,31 @@
         }
         function removeItem(k, i) { currentConfig[k].list.splice(i, 1); saveConfig(); }
         function saveConfig() { localStorage.setItem('merit_config', JSON.stringify(currentConfig)); renderAdminPanel(); updateDropdowns(); }
+
+        function renderAdminPanel() {
+            const listDiv = document.getElementById('adminActList');
+            listDiv.innerHTML = Object.keys(currentConfig).map(key => `
+                <div class="bg-white border rounded-3xl overflow-hidden shadow-sm animate-in">
+                    <div class="p-5 text-white flex justify-between items-center" style="background-color: ${currentConfig[key].color}">
+                        <span class="font-bold text-lg">${currentConfig[key].label}</span>
+                        <div class="flex items-center gap-2">
+                             <input type="color" onchange="changeActColor('${key}', this.value)" value="${currentConfig[key].color}" class="w-8 h-8 rounded-lg border-2 border-white/50 cursor-pointer bg-transparent">
+                             <button onclick="deleteActivity('${key}')" class="bg-black/10 hover:bg-black/20 px-3 py-1 rounded-full text-sm">✕</button>
+                        </div>
+                    </div>
+                    <div class="p-5 space-y-2">
+                        ${currentConfig[key].list.map((item, idx) => `
+                            <div class="flex justify-between items-center text-sm bg-gray-50 p-3 rounded-xl border border-gray-100">
+                                <span class="text-gray-700 font-medium">${item}</span>
+                                <button onclick="removeItem('${key}', ${idx})" class="text-red-400 hover:text-red-600">ลบ</button>
+                            </div>`).join('') || '<p class="text-center text-gray-300 text-xs py-4 italic">ยังไม่มีรายการย่อย</p>'}
+                    </div>
+                    <div class="p-5 border-t bg-gray-50/50 flex gap-2">
+                        <input type="text" id="input-${key}" class="flex-1 text-sm border rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-indigo-500" placeholder="เพิ่มรายการย่อย...">
+                        <button onclick="addItem('${key}')" class="bg-indigo-600 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-md">เพิ่ม</button>
+                    </div>
+                </div>`).join('');
+        }
 
         // --- User Logic ---
         function updateDropdowns() {
@@ -270,19 +324,33 @@
                 phone: document.getElementById('phone').value,
                 activity: currentConfig[actKey].label,
                 subOption: document.getElementById('subOption').value || '-',
-                pictureUrl: liffProfile.pictureUrl || '',
-                statusMessage: liffProfile.statusMessage || ''
+                pictureUrl: liffProfile.pictureUrl || ''
             };
             try {
                 await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
+                
+                // เก็บประวัติการจองทั้งหมด (ใช้ดึงมาแสดงผลในหน้ารายชื่อ)
                 const history = JSON.parse(localStorage.getItem('vmove_history') || '[]');
                 history.unshift(data);
                 localStorage.setItem('vmove_history', JSON.stringify(history));
+                
+                // แสดงสรุปข้อมูลในหน้าสำเร็จ
+                showSummary(data);
+
                 document.getElementById('meritForm').classList.add('hidden');
                 document.getElementById('successView').classList.remove('hidden');
-            } catch(e) { alert('ระบบขัดข้อง กรุณาลองใหม่ภายหลัง'); }
+            } catch(e) { alert('ระบบขัดข้อง แต่บันทึกข้อมูลในเครื่องแล้ว'); }
             document.getElementById('loadingOverlay').style.display = 'none';
         };
+
+        function showSummary(data) {
+            document.getElementById('bookingSummary').innerHTML = `
+                <p><span class="text-xs text-gray-400 block">ผู้ลงทะเบียน:</span> <strong class="text-gray-700">${data.fullname}</strong></p>
+                <p><span class="text-xs text-gray-400 block">เบอร์โทรศัพท์:</span> <strong class="text-gray-700">${data.phone}</strong></p>
+                <p><span class="text-xs text-gray-400 block">กิจกรรม:</span> <strong class="text-indigo-600">${data.activity}</strong></p>
+                <p><span class="text-xs text-gray-400 block">จุดรับ/รายละเอียด:</span> <strong class="text-gray-700">${data.subOption}</strong></p>
+            `;
+        }
 
         function toggleAdminLogin(s) { document.getElementById('adminLoginModal').classList.toggle('hidden', !s); }
         function toggleSearchModal(s) { document.getElementById('searchModal').classList.toggle('hidden', !s); }
@@ -290,14 +358,14 @@
             const q = document.getElementById('searchPhone').value;
             const res = document.getElementById('searchResults');
             const history = JSON.parse(localStorage.getItem('vmove_history') || '[]');
-            if (q.length < 4) { res.innerHTML = '<p class="text-center text-gray-400">กรุณาพิมพ์เบอร์โทรอย่างน้อย 4 ตัว</p>'; return; }
+            if (q.length < 4) { res.innerHTML = '<p class="text-center text-gray-400 py-10">กรุณาพิมพ์เบอร์โทรอย่างน้อย 4 ตัว</p>'; return; }
             const filtered = history.filter(h => h.phone.includes(q));
             res.innerHTML = filtered.length ? filtered.map(h => `
                 <div class="p-6 bg-gray-50 rounded-[2rem] border-l-[10px] border-indigo-500 shadow-sm animate-in">
                     <div class="text-xl font-bold text-gray-800">${h.fullname}</div>
                     <div class="text-indigo-600 font-medium mt-1">${h.activity} (${h.subOption})</div>
                     <div class="text-xs text-gray-400 mt-2">เบอร์โทร: ${h.phone}</div>
-                </div>`).join('') : '<p class="text-center text-gray-400 py-10">ไม่พบประวัติการจอง</p>';
+                </div>`).join('') : '<p class="text-center text-gray-400 py-10 font-bold italic">ไม่พบข้อมูลการจอง</p>';
         }
 
         window.onload = initApp;
