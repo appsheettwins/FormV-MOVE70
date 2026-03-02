@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบลงทะเบียนกิจกรรมบุญ 🌟</title>
+    <title>ระบบลงทะเบียน V-MOVE 🚗</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
@@ -32,7 +32,7 @@
                 </button>
                 <div>
                     <h1 id="txt-main-title" class="text-2xl font-bold">...</h1>
-                    <p class="opacity-90 font-light text-xs text-yellow-200">สวัสดีคุณ <span id="userNameDisplay">ผู้มีบุญ</span> ✨</p>
+                    <p class="opacity-90 font-light text-xs text-yellow-200">ยินดีต้อนรับคุณ <span id="userNameDisplay">ผู้ใช้งาน</span> ✨</p>
                 </div>
             </div>
             <button onclick="toggleSearchModal(true)" class="glass-effect p-3 rounded-2xl hover:bg-white/30">
@@ -48,7 +48,7 @@
                 <div class="space-y-2"><label id="lbl-phone" class="block"></label><input type="tel" id="phone" required maxlength="10" class="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none"></div>
                 <div class="space-y-2"><label id="lbl-activity" class="block"></label><select id="activity" required class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white outline-none" onchange="handleActivityChange(this.value)"></select></div>
                 <div id="subContainer" class="hidden space-y-2"><label id="lbl-detail" class="block"></label><select id="subOption" class="w-full px-4 py-3 rounded-xl border border-indigo-200 bg-indigo-50 outline-none"></select></div>
-                <button type="submit" id="st-submitBtn" class="w-full gradient-bg text-white font-semibold py-4 rounded-2xl shadow-lg active:scale-95 transition-all">ยืนยันข้อมูล</button>
+                <button type="submit" id="st-submitBtn" class="w-full gradient-bg text-white font-semibold py-4 rounded-2xl shadow-lg active:scale-95 transition-all">ยืนยัน</button>
             </form>
 
             <div id="successView" class="hidden text-center py-4">
@@ -61,7 +61,7 @@
                     <p id="sumDetail" class="text-gray-600 mb-3"></p>
                     <p id="txt-summary-footer" class="text-xs border-t pt-2"></p>
                 </div>
-                <button onclick="location.reload()" class="w-full py-4 bg-gray-100 rounded-2xl font-bold text-gray-600">➕ ลงทะเบียนเพิ่มเติม</button>
+                <button onclick="location.reload()" class="w-full py-4 bg-gray-100 rounded-2xl font-bold text-gray-600">➕ ทำรายการใหม่</button>
             </div>
         </div>
     </div>
@@ -83,10 +83,8 @@
 
                 <div class="p-6 overflow-y-auto max-h-[70vh]">
                     <div id="tab-list">
-                        <input type="text" id="admSearch" oninput="renderHistory()" placeholder="🔍 ค้นหาชื่อหรือเบอร์..." class="w-full border p-3 rounded-xl mb-4 outline-none focus:ring-2 focus:ring-indigo-500">
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-sm text-left"><tbody id="admTableBody" class="divide-y"></tbody></table>
-                        </div>
+                        <input type="text" id="admSearch" oninput="renderHistory()" placeholder="🔍 ค้นหา..." class="w-full border p-3 rounded-xl mb-4 outline-none focus:ring-2 focus:ring-indigo-500">
+                        <table class="w-full text-sm text-left"><tbody id="admTableBody" class="divide-y"></tbody></table>
                     </div>
 
                     <div id="tab-manage" class="hidden space-y-4">
@@ -95,27 +93,19 @@
                                 <input type="text" id="newActName" placeholder="ชื่อกิจกรรมใหม่" class="flex-1 p-3 rounded-xl border">
                                 <input type="color" id="newActColor" value="#6366f1" class="w-14 h-12 rounded-xl cursor-pointer">
                             </div>
-                            <button onclick="addActivity()" class="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold">➕ เพิ่มกิจกรรมหลัก</button>
+                            <button onclick="addActivity()" class="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold">เพิ่มกิจกรรมหลัก</button>
                         </div>
                         <div id="actGrid" class="space-y-4"></div>
-                        <button onclick="saveActToCloud()" class="w-full bg-green-600 text-white py-4 rounded-2xl font-bold shadow-lg mt-6 active:scale-95 transition-all">💾 บันทึกกิจกรรมลง Sheet Activities</button>
+                        <button onclick="saveActToCloud()" class="w-full bg-green-600 text-white py-4 rounded-2xl font-bold shadow-lg mt-4">💾 บันทึกกิจกรรมลง Sheet Activities</button>
                     </div>
 
-                    <div id="tab-form-design" class="hidden space-y-4">
-                        <div id="editor-form" class="space-y-3"></div>
-                        <button onclick="saveAllToCloud()" class="w-full bg-indigo-600 text-white py-4 rounded-xl font-bold shadow-lg">💾 บันทึกการตั้งค่าหน้าฟอร์ม</button>
-                    </div>
-
-                    <div id="tab-success-design" class="hidden space-y-4">
-                        <div id="editor-success" class="space-y-3"></div>
-                        <button onclick="saveAllToCloud()" class="w-full bg-indigo-600 text-white py-4 rounded-xl font-bold shadow-lg">💾 บันทึกการตั้งค่าหน้าสรุป</button>
-                    </div>
+                    <div id="tab-form-design" class="hidden space-y-4"><div id="editor-form" class="space-y-3"></div><button onclick="saveAllToCloud()" class="w-full bg-indigo-600 text-white py-4 rounded-xl font-bold">💾 บันทึกข้อมูลลง Sheet Config (แยกคอลัมน์)</button></div>
+                    <div id="tab-success-design" class="hidden space-y-4"><div id="editor-success" class="space-y-3"></div><button onclick="saveAllToCloud()" class="w-full bg-indigo-600 text-white py-4 rounded-xl font-bold">💾 บันทึกข้อมูลลง Sheet Config (แยกคอลัมน์)</button></div>
                 </div>
             </div>
 
             <div class="w-full md:w-2/5 bg-gray-50 p-6 flex flex-col items-center">
                 <div class="sticky top-6 w-full max-w-[280px]">
-                    <p class="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest text-center">📱 Live Preview</p>
                     <div id="preview-container" class="bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border-[6px] border-gray-800 min-h-[480px] relative">
                         <div class="h-6 w-full bg-gray-800"></div>
                         <div id="pv-header" class="gradient-bg p-4 pt-6 text-white text-xs"><div id="pv-txt-main-title" class="font-bold">...</div></div>
@@ -143,40 +133,34 @@
 
     <div id="loginModal">
         <div class="bg-white rounded-[2.5rem] p-10 w-full max-w-sm shadow-2xl text-center mx-4">
-            <div class="w-20 h-20 gradient-bg rounded-3xl mx-auto mb-6 flex items-center justify-center shadow-lg text-white">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
-            </div>
             <h3 class="text-2xl font-bold mb-8">Admin Access</h3>
-            <input type="password" id="admPass" class="w-full px-6 py-4 bg-gray-50 border rounded-2xl mb-6 text-center text-xl outline-none focus:border-indigo-500 transition-all" placeholder="••••">
-            <div class="flex gap-3">
-                <button onclick="toggleAdminLogin(false)" class="flex-1 font-bold text-gray-400">ยกเลิก</button>
-                <button onclick="checkAdmin()" class="flex-1 py-4 gradient-bg text-white font-bold rounded-2xl shadow-xl active:scale-95 transition-all">เข้าสู่ระบบ</button>
-            </div>
+            <input type="password" id="admPass" class="w-full px-6 py-4 bg-gray-50 border rounded-2xl mb-6 text-center text-xl outline-none" placeholder="••••">
+            <div class="flex gap-3"><button onclick="toggleAdminLogin(false)" class="flex-1 font-bold text-gray-400">ยกเลิก</button><button onclick="checkAdmin()" class="flex-1 py-4 gradient-bg text-white font-bold rounded-2xl shadow-xl">เข้าสู่ระบบ</button></div>
         </div>
     </div>
 
     <div id="searchModal" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-[1000] p-4">
         <div class="bg-white w-full max-w-md rounded-[2.5rem] p-8 shadow-2xl">
             <div class="flex justify-between items-center mb-6"><h3 class="text-xl font-bold">🔍 ค้นหาข้อมูล</h3><button onclick="toggleSearchModal(false)" class="text-gray-400">✕</button></div>
-            <input type="tel" oninput="handleSearch(this.value)" placeholder="กรอกเบอร์โทร..." class="w-full p-4 bg-gray-50 border rounded-2xl mb-6 outline-none focus:ring-2 focus:ring-indigo-500">
+            <input type="tel" oninput="handleSearch(this.value)" placeholder="กรอกเบอร์โทร..." class="w-full p-4 bg-gray-50 border rounded-2xl mb-6 outline-none">
             <div id="searchResults" class="space-y-3 max-h-[40vh] overflow-y-auto scrollbar-hide"></div>
         </div>
     </div>
 
     <script>
         const LIFF_ID = "2008940385-theIq9K7"; 
-        const API_URL = "https://script.google.com/macros/s/AKfycbynMJZfK0llXJeSd8_thnWndhwMIVGB16MqFHW3qvsP2pyYdNTK-Tu04KLsM8S2DYat/exec"; 
+        const API_URL = "https://script.google.com/macros/s/AKfycbyN_vG03u248P04FvX_O0u4_K00S0T5I4_r-99_qP5_I_P_O_I_T/exec"; // ** เปลี่ยนเป็น URL ของคุณ **
 
         let masterSettings = {
-            'txt-main-title': { text: 'ลงทะเบียนร่วมบุญ 🙏', color: '#ffffff', size: '24px', weight: '700' },
+            'txt-main-title': { text: '🚗 สำรองที่นั่ง V-MOVE🙏', color: '#ffffff', size: '24px', weight: '700' },
             'lbl-fullname': { text: '👤 ชื่อ-นามสกุล', color: '#374151', size: '14px', weight: '500' },
             'lbl-phone': { text: '📞 เบอร์โทรศัพท์', color: '#374151', size: '14px', weight: '500' },
             'lbl-activity': { text: '🗓️ เลือกกิจกรรม', color: '#374151', size: '14px', weight: '500' },
             'lbl-detail': { text: '📝 ระบุรายละเอียด', color: '#374151', size: '14px', weight: '500' },
             'st-submitBtn': { text: '✨ ยืนยันข้อมูล', color: '#ffffff', size: '18px', weight: '600' },
-            'st-successHeader': { text: 'บันทึกข้อมูลสำเร็จ ✅', color: '#1f2937', size: '24px', weight: '700' },
+            'st-successHeader': { text: 'บันทึกข้อมูลสำเร็จ ! รอการยืนยันการสำรองที่นั่ง จะส่งข้อความให้ทาง LINE', color: '#46c700', size: '20px', weight: '700' },
             'txt-summary-title': { text: '📜 รายละเอียดการลงทะเบียน', color: '#9ca3af', size: '12px', weight: '700' },
-            'txt-summary-footer': { text: '* กรุณาแคปหน้าจอนี้ไว้เป็นหลักฐาน', color: '#9ca3af', size: '11px', weight: '400' },
+            'txt-summary-footer': { text: '* แคปหน้าจอนี้ไว้เป็นหลักฐาน', color: '#9ca3af', size: '11px', weight: '400' },
             'st-summaryCard': { text: 'สีพื้นหลังกล่องสรุป', color: '#f9fafb', size: '0', weight: '0' }
         };
 
@@ -200,14 +184,14 @@
             try {
                 const response = await fetch(API_URL);
                 const cloud = await response.json();
-                if(cloud.settings) masterSettings = cloud.settings;
+                if(cloud.settings && Object.keys(cloud.settings).length > 0) masterSettings = cloud.settings;
                 if(cloud.activities) currentConfig = cloud.activities;
                 registrationHistory = JSON.parse(localStorage.getItem('merit_history') || '[]');
                 applyAllSettings();
                 renderOptions();
                 renderEditor();
                 renderHistory();
-            } catch (e) { console.warn("Cloud Sync Error", e); }
+            } catch (e) { console.warn("Sync failed"); }
             toggleLoading(false);
         }
 
@@ -232,15 +216,14 @@
         function renderEditor() {
             const formKeys = ['txt-main-title', 'lbl-fullname', 'lbl-phone', 'lbl-activity', 'lbl-detail', 'st-submitBtn'];
             const successKeys = ['st-successHeader', 'txt-summary-title', 'txt-summary-footer', 'st-summaryCard'];
-            
             const createUI = (key) => {
                 const s = masterSettings[key];
                 return `<div class="bg-white border p-4 rounded-2xl shadow-sm space-y-3">
                     <span class="text-[9px] font-bold text-gray-300 uppercase">${key}</span>
-                    ${key !== 'st-summaryCard' ? `<input type="text" value="${s.text}" oninput="updateMaster('${key}', 'text', this.value)" class="w-full font-bold border-b p-1 outline-none">` : `<div class="text-sm font-bold">${s.text}</div>`}
+                    ${key !== 'st-summaryCard' ? `<input type="text" value="${s.text}" oninput="updateMaster('${key}', 'text', this.value)" class="w-full font-bold border-b outline-none">` : `<div class="text-sm font-bold">${s.text}</div>`}
                     <div class="flex gap-4 items-center text-xs">
                         🎨 <input type="color" value="${s.color}" oninput="updateMaster('${key}', 'color', this.value)" class="w-6 h-6 cursor-pointer">
-                        ${key !== 'st-summaryCard' ? `📏 <input type="number" value="${parseInt(s.size)}" oninput="updateMaster('${key}', 'size', this.value + 'px')" class="w-10 border rounded text-center"> px
+                        ${key !== 'st-summaryCard' ? `📏 <input type="number" value="${parseInt(s.size)}" oninput="updateMaster('${key}', 'size', this.value + 'px')" class="w-10 border text-center"> px
                         🔠 <select onchange="updateMaster('${key}', 'weight', this.value)" class="border rounded"><option value="400" ${s.weight=='400'?'selected':''}>ปกติ</option><option value="700" ${s.weight=='700'?'selected':''}>หนา</option></select>` : ''}
                     </div>
                 </div>`;
@@ -253,12 +236,13 @@
 
         async function saveAllToCloud() {
             toggleLoading(true);
+            // ส่งข้อมูลไปบันทึกแบบแยกคอลัมน์ใน Sheet Config
             await fetch(API_URL, { method: 'POST', body: JSON.stringify({ type: 'SAVE_ALL', settings: masterSettings }) });
-            alert("✨ บันทึกดีไซน์เรียบร้อย!");
+            alert("✅ บันทึกการตั้งค่าแบบแยกคอลัมน์เรียบร้อย!");
             toggleLoading(false);
         }
 
-        // --- Activity Manage System (Original Version) ---
+        // --- Activity Management ---
         function addActivity() {
             const name = document.getElementById('newActName').value;
             if(!name) return;
@@ -271,16 +255,9 @@
         function renderAdminActs() {
             document.getElementById('actGrid').innerHTML = Object.keys(currentConfig).map(k => `
                 <div class="bg-white border rounded-2xl p-4 shadow-sm space-y-3 border-l-8" style="border-left-color: ${currentConfig[k].color}">
-                    <div class="flex justify-between items-center">
-                        <span class="font-bold text-indigo-900 text-lg">${currentConfig[k].label}</span>
-                        <button onclick="delete currentConfig['${k}']; renderAdminActs();" class="text-red-400">✕ ลบ</button>
-                    </div>
+                    <div class="flex justify-between items-center"><span class="font-bold text-indigo-900">${currentConfig[k].label}</span><button onclick="delete currentConfig['${k}']; renderAdminActs();" class="text-red-400">✕</button></div>
                     <div class="flex flex-wrap gap-2">
-                        ${currentConfig[k].list.map((sub, idx) => `
-                            <span class="bg-gray-100 px-3 py-1 rounded-full text-xs flex items-center gap-2">
-                                ${sub} <button onclick="currentConfig['${k}'].list.splice(${idx},1); renderAdminActs();" class="text-red-300">✕</button>
-                            </span>
-                        `).join('')}
+                        ${currentConfig[k].list.map((sub, idx) => `<span class="bg-gray-100 px-3 py-1 rounded-full text-xs flex items-center gap-2">${sub} <button onclick="currentConfig['${k}'].list.splice(${idx},1); renderAdminActs();" class="text-red-300">✕</button></span>`).join('')}
                         <button onclick="addSubItem('${k}')" class="bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full text-xs font-bold">+ เพิ่มรายการย่อย</button>
                     </div>
                 </div>
@@ -295,14 +272,14 @@
         async function saveActToCloud() {
             toggleLoading(true);
             await fetch(API_URL, { method: 'POST', body: JSON.stringify({ type: 'SAVE_ACT', activities: currentConfig }) });
-            alert("✅ บันทึกกิจกรรมลง Sheet Activities เรียบร้อย!");
+            alert("✅ บันทึกกิจกรรมลง Cloud เรียบร้อย!");
             toggleLoading(false);
             renderOptions();
         }
 
         function renderOptions() {
             const sel = document.getElementById('activity');
-            sel.innerHTML = '<option value="" disabled selected>เลือกกิจกรรมบุญ...</option>' + 
+            sel.innerHTML = '<option value="" disabled selected>เลือกกิจกรรม...</option>' + 
                 Object.keys(currentConfig).map(k => `<option value="${k}">${currentConfig[k].label}</option>`).join('');
         }
 
@@ -315,46 +292,32 @@
             } else { document.getElementById('subContainer').classList.add('hidden'); }
         }
 
-        // --- History & Search ---
+        // --- Common Logic ---
         function renderHistory() {
             const q = document.getElementById('admSearch').value.toLowerCase();
             const filtered = registrationHistory.filter(x => x.fullname.toLowerCase().includes(q) || x.phone.includes(q));
-            
             document.getElementById('admTableBody').innerHTML = filtered.map(x => {
-                // หาค่าสีตามกิจกรรม
                 const actKey = Object.keys(currentConfig).find(k => currentConfig[k].label === x.activity);
-                const actColor = actKey ? currentConfig[actKey].color : '#e2e8f0';
-                
-                return `<tr>
-                    <td class="p-4"><div class="w-1 h-10 rounded-full" style="background:${actColor}"></div></td>
-                    <td class="p-3"><div class="font-bold text-gray-800">${x.fullname}</div><div class="text-[10px] text-gray-400">${x.phone}</div></td>
-                    <td class="p-3"><span class="px-3 py-1 rounded-full text-[10px] font-bold" style="background:${actColor}22; color:${actColor}">${x.activity}</span></td>
-                </tr>`;
+                const actColor = actKey ? currentConfig[actKey].color : '#ddd';
+                return `<tr><td class="p-3"><div class="w-1 h-8 rounded-full" style="background:${actColor}"></div></td><td class="p-3 font-bold">${x.fullname}</td><td class="p-3 text-gray-500">${x.phone}</td><td class="p-3 text-indigo-600 font-bold">${x.activity}</td></tr>`;
             }).join('');
         }
 
-        // --- Core Functions ---
         document.getElementById('meritForm').onsubmit = async function(e) {
             e.preventDefault();
             toggleLoading(true);
             const actKey = document.getElementById('activity').value;
             const act = currentConfig[actKey];
-            const data = { 
-                fullname: document.getElementById('fullname').value, 
-                phone: document.getElementById('phone').value, 
-                activity: act.label, 
-                subOption: document.getElementById('subOption').value || '-' 
-            };
+            const data = { fullname: document.getElementById('fullname').value, phone: document.getElementById('phone').value, activity: act.label, subOption: document.getElementById('subOption').value || '-' };
             try {
                 await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
-                registrationHistory.unshift(data); 
-                localStorage.setItem('merit_history', JSON.stringify(registrationHistory));
+                registrationHistory.unshift(data); localStorage.setItem('merit_history', JSON.stringify(registrationHistory));
                 document.getElementById('sumName').textContent = data.fullname;
                 document.getElementById('sumDetail').textContent = `${data.activity} ${data.subOption !== '-' ? '('+data.subOption+')' : ''}`;
                 document.getElementById('sumBar').style.backgroundColor = act.color;
                 document.getElementById('meritForm').classList.add('hidden');
                 document.getElementById('successView').classList.remove('hidden');
-            } catch(e){ alert("บันทึกไม่สำเร็จ"); }
+            } catch(e){ alert("Error"); }
             toggleLoading(false);
         };
 
