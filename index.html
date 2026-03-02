@@ -13,6 +13,7 @@
         .glass-effect { background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
         .animate-in { animation: fadeIn 0.3s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .active-tab { border-bottom: 4px solid #6366f1; color: #4338ca; background: rgba(99, 102, 241, 0.05); }
         #loadingOverlay { display:none; position:fixed; inset:0; background:rgba(255,255,255,0.8); z-index:9999; align-items:center; justify-content:center; flex-direction: column; }
     </style>
 </head>
@@ -23,12 +24,12 @@
         <p class="font-bold text-indigo-600 animate-pulse">กำลังดำเนินการ... 🚗✨</p>
     </div>
 
-    <div class="gradient-bg text-white pt-10 pb-24 px-6 rounded-b-[3rem] shadow-lg mb-[-40px] relative z-10">
+    <div id="appHeader" class="gradient-bg text-white pt-10 pb-24 px-6 rounded-b-[3rem] shadow-lg mb-[-40px] relative z-10">
         <div class="max-w-md mx-auto flex justify-between items-start">
             <div class="flex gap-3 items-center">
-                <button onclick="toggleAdminLogin(true)" class="glass-effect p-3 rounded-2xl">🛠️</button>
+                <button onclick="toggleAdminLogin(true)" class="glass-effect p-3 rounded-2xl hover:bg-white/30">🛠️</button>
                 <div>
-                    <h1 class="text-2xl font-bold">V-MOVE Booking 🚗</h1>
+                    <h1 class="text-2xl font-bold text-white">V-MOVE Booking 🚗</h1>
                     <p class="text-sm text-yellow-300">สวัสดีคุณ <span id="userNameDisplay" class="font-bold underline">...</span> 🙏</p>
                 </div>
             </div>
@@ -41,32 +42,64 @@
             <form id="meritForm" class="space-y-6">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 ml-1 mb-1">👤 ชื่อ-นามสกุล</label>
-                    <input type="text" id="fullname" required class="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-indigo-500" placeholder="ระบุชื่อผู้จอง">
+                    <input type="text" id="fullname" required class="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-indigo-500">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 ml-1 mb-1">📞 เบอร์โทรศัพท์</label>
-                    <input type="tel" id="phone" required maxlength="10" class="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none" placeholder="08XXXXXXXX">
+                    <input type="tel" id="phone" required maxlength="10" class="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 ml-1 mb-1">🗓️ เลือกกิจกรรม</label>
                     <select id="activity" required class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white" onchange="updateSubOptions()"></select>
                 </div>
                 <div id="subContainer" class="hidden">
-                    <label class="block text-sm font-medium text-gray-700 ml-1 mb-1">📍 ระบุจุดรับ/รายละเอียด</label>
-                    <select id="subOption" class="w-full px-4 py-3 rounded-xl border border-indigo-200 bg-indigo-50 outline-none"></select>
+                    <label class="block text-sm font-medium text-gray-700 ml-1 mb-1">📍 ระบุรายละเอียด</label>
+                    <select id="subOption" class="w-full px-4 py-3 rounded-xl border border-indigo-200 bg-indigo-50"></select>
                 </div>
-                <button type="submit" class="w-full gradient-bg text-white font-bold py-4 rounded-2xl shadow-lg active:scale-95 transition-all">✨ ยืนยันการจองที่นั่ง</button>
+                <button type="submit" class="w-full gradient-bg text-white font-bold py-4 rounded-2xl shadow-lg active:scale-95 transition-all">✨ ยืนยันข้อมูล</button>
             </form>
-
+            
             <div id="successView" class="hidden text-center py-6 animate-in">
                 <div class="text-6xl mb-4">✅</div>
                 <h3 class="text-xl font-bold text-green-600 mb-6">บันทึกสำเร็จ! 🙏</h3>
-                <div class="bg-gray-50 rounded-2xl p-6 text-left border border-gray-100 mb-6">
-                    <p class="text-[10px] text-gray-400 font-bold uppercase mb-2">สรุปรายการ</p>
-                    <p id="sumName" class="font-bold text-lg text-gray-800"></p>
-                    <p id="sumDetail" class="text-indigo-600 font-medium"></p>
+                <button onclick="location.reload()" class="w-full py-4 bg-gray-100 rounded-2xl font-bold">➕ จองเพิ่ม</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="adminView" class="max-w-4xl mx-auto px-4 relative z-10 hidden">
+        <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100 mt-10">
+            <div class="flex border-b bg-gray-50">
+                <button onclick="switchAdminTab('list')" id="tabBtn-list" class="flex-1 py-4 font-bold active-tab">📋 รายชื่อผู้จอง</button>
+                <button onclick="switchAdminTab('manage')" id="tabBtn-manage" class="flex-1 py-4 font-bold text-gray-400">🏷️ จัดการกิจกรรม</button>
+            </div>
+
+            <div id="adminTab-list" class="p-6">
+                <div id="adminHistoryList" class="space-y-3"></div>
+            </div>
+
+            <div id="adminTab-manage" class="p-6 hidden">
+                <div id="adminActList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                <div class="mt-6 p-4 bg-indigo-50 rounded-2xl">
+                    <h4 class="font-bold mb-2">🚀 เพิ่มกิจกรรมใหม่</h4>
+                    <input type="text" id="newActInput" class="w-full p-2 border rounded-lg mb-2" placeholder="ชื่อกิจกรรม">
+                    <button onclick="addActivity()" class="w-full bg-indigo-600 text-white py-2 rounded-lg">เพิ่ม</button>
                 </div>
-                <button onclick="location.reload()" class="w-full py-4 bg-gray-100 rounded-2xl font-bold text-gray-600">➕ ทำรายการเพิ่ม</button>
+            </div>
+            
+            <div class="p-6 bg-gray-50 border-t text-center">
+                <button onclick="location.reload()" class="text-red-500 font-bold">🚪 ออกจากโหมดผู้ดูแล</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="adminLoginModal" class="fixed inset-0 bg-black/50 z-[100] hidden flex items-center justify-center p-6">
+        <div class="bg-white rounded-3xl p-8 w-full max-w-sm text-center animate-in">
+            <h3 class="text-xl font-bold mb-6">ผู้ดูแลระบบ 🔐</h3>
+            <input type="password" id="adminPass" placeholder="รหัสผ่าน" class="w-full px-4 py-4 border rounded-xl mb-6 text-center text-2xl outline-none focus:ring-2 focus:ring-indigo-500">
+            <div class="flex gap-3">
+                <button onclick="toggleAdminLogin(false)" class="flex-1 py-3 text-gray-400">ยกเลิก</button>
+                <button onclick="checkAdmin()" class="flex-1 py-3 gradient-bg text-white rounded-xl font-bold">ตกลง</button>
             </div>
         </div>
     </div>
@@ -74,33 +107,20 @@
     <div id="searchModal" class="fixed inset-0 bg-black/50 z-[100] hidden flex items-end">
         <div class="bg-white rounded-t-[2.5rem] w-full p-8 max-h-[85vh] overflow-y-auto animate-in">
             <div class="flex justify-between items-center mb-6">
-                <h3 class="text-xl font-bold text-gray-800">🔍 ค้นหาประวัติการจอง</h3>
-                <button onclick="toggleSearchModal(false)" class="p-2 bg-gray-100 rounded-full">✕</button>
+                <h3 class="text-xl font-bold text-gray-800">🔍 ค้นหาการจอง</h3>
+                <button onclick="toggleSearchModal(false)" class="text-2xl">✕</button>
             </div>
-            <input type="tel" id="searchPhone" oninput="runSearch()" placeholder="กรอกเบอร์โทรศัพท์เพื่อค้นหา..." class="w-full px-6 py-4 bg-gray-50 rounded-2xl border-none outline-none ring-2 ring-gray-100 focus:ring-indigo-500 mb-6 text-lg">
+            <input type="tel" id="searchPhone" oninput="runSearch()" placeholder="กรอกเบอร์โทร..." class="w-full px-6 py-4 bg-gray-50 rounded-2xl outline-none ring-2 ring-gray-100 focus:ring-indigo-500 mb-6">
             <div id="searchResults" class="space-y-4 pb-10"></div>
-        </div>
-    </div>
-
-    <div id="adminLoginModal" class="fixed inset-0 bg-black/50 z-[100] hidden flex items-center justify-center p-6">
-        <div class="bg-white rounded-3xl p-8 w-full max-w-sm text-center shadow-2xl animate-in">
-            <h3 class="text-xl font-bold mb-6">สำหรับผู้ดูแล 🔐</h3>
-            <input type="password" id="adminPass" placeholder="รหัสผ่าน" class="w-full px-4 py-4 border rounded-xl mb-6 text-center text-2xl outline-none focus:ring-2 focus:ring-indigo-500">
-            <div class="flex gap-3">
-                <button onclick="toggleAdminLogin(false)" class="flex-1 py-3 text-gray-400">ยกเลิก</button>
-                <button onclick="checkAdmin()" class="flex-1 py-3 gradient-bg text-white rounded-xl font-bold">เข้าระบบ</button>
-            </div>
         </div>
     </div>
 
     <script>
         const LIFF_ID = "2008940385-theIq9K7"; 
-        const API_URL = "https://script.google.com/macros/s/AKfycbynMJZfK0llXJeSd8_thnWndhwMIVGB16MqFHW3qvsP2pyYdNTK-Tu04KLsM8S2DYat/exec"; 
+        const API_URL = "https://script.google.com/macros/s/AKfycbynMJZfK0llXJeSd8_thnWndhwMIVGB16MqFHW3qvsP2pyYdNTK-Tu04KLsM8S2DYat/exec";
 
-        // กิจกรรมแม่แบบ
         let currentConfig = JSON.parse(localStorage.getItem('merit_config')) || {
-            'act1': { label: 'ธรรมยาตรา 🚶', color: '#6366f1', list: ['วัดพระธรรมกาย', 'อนุสรณ์สถาน'] },
-            'act2': { label: 'จุดประทีป ✨', color: '#f59e0b', list: ['ลานธรรม', 'มหาเจดีย์'] }
+            'act1': { label: 'ธรรมยาตรา 🚶', color: '#6366f1', list: ['วัดพระธรรมกาย', 'อนุสรณ์สถาน'] }
         };
         let liffProfile = {};
 
@@ -111,17 +131,88 @@
                     liffProfile = await liff.getProfile();
                     document.getElementById('userNameDisplay').textContent = liffProfile.displayName;
                 } else { liff.login(); }
-            } catch (e) { console.error('LIFF Init Error', e); }
+            } catch (e) { console.error(e); }
             renderOptions();
         }
 
-        function renderOptions() {
-            const sel = document.getElementById('activity');
-            const keys = Object.keys(currentConfig);
-            sel.innerHTML = '<option value="" disabled selected>-- เลือกกิจกรรม --</option>' + 
-                keys.map(k => `<option value="${k}">${currentConfig[k].label}</option>`).join('');
+        // --- ฟังก์ชันแก้ไขหลัก: ล็อกอินแล้วเปลี่ยนหน้า ---
+        function checkAdmin() {
+            const pass = document.getElementById('adminPass').value;
+            if (pass === '1234') { // รหัสผ่านทดสอบ
+                alert('เข้าสู่โหมดแก้ไขสำเร็จ ✅');
+                toggleAdminLogin(false);
+                
+                // สลับหน้าจอจาก User ไป Admin
+                document.getElementById('userView').classList.add('hidden');
+                document.getElementById('appHeader').classList.add('hidden'); // ซ่อน Header เดิมถ้าต้องการ
+                document.getElementById('adminView').classList.remove('hidden');
+                
+                switchAdminTab('list'); // เริ่มที่เมนูรายชื่อ
+            } else {
+                alert('รหัสผ่านไม่ถูกต้อง ❌');
+            }
         }
 
+        function switchAdminTab(tab) {
+            document.getElementById('adminTab-list').classList.toggle('hidden', tab !== 'list');
+            document.getElementById('adminTab-manage').classList.toggle('hidden', tab !== 'manage');
+            
+            document.getElementById('tabBtn-list').className = tab === 'list' ? 'flex-1 py-4 font-bold active-tab' : 'flex-1 py-4 font-bold text-gray-400';
+            document.getElementById('tabBtn-manage').className = tab === 'manage' ? 'flex-1 py-4 font-bold active-tab' : 'flex-1 py-4 font-bold text-gray-400';
+            
+            if(tab === 'list') renderAdminHistory();
+            if(tab === 'manage') renderAdminManage();
+        }
+
+        function renderAdminHistory() {
+            const history = JSON.parse(localStorage.getItem('vmove_history') || '[]');
+            const listDiv = document.getElementById('adminHistoryList');
+            listDiv.innerHTML = history.length ? history.map(h => `
+                <div class="p-4 bg-white border rounded-2xl shadow-sm">
+                    <div class="font-bold">${h.fullname}</div>
+                    <div class="text-xs text-gray-500">${h.phone} | ${h.activity}</div>
+                </div>
+            `).join('') : '<p class="text-center py-10 text-gray-400">ยังไม่มีข้อมูลการจอง</p>';
+        }
+
+        function renderAdminManage() {
+            const listDiv = document.getElementById('adminActList');
+            listDiv.innerHTML = Object.keys(currentConfig).map(key => `
+                <div class="p-4 bg-gray-50 rounded-2xl border flex justify-between items-center">
+                    <span>${currentConfig[key].label}</span>
+                    <button onclick="deleteActivity('${key}')" class="text-red-500">ลบ</button>
+                </div>
+            `).join('');
+        }
+
+        function deleteActivity(key) {
+            if(confirm('ลบกิจกรรมนี้?')) {
+                delete currentConfig[key];
+                localStorage.setItem('merit_config', JSON.stringify(currentConfig));
+                renderAdminManage();
+                renderOptions();
+            }
+        }
+
+        function addActivity() {
+            const name = document.getElementById('newActInput').value;
+            if(!name) return;
+            const id = 'act_' + Date.now();
+            currentConfig[id] = { label: name, color: '#6366f1', list: [] };
+            localStorage.setItem('merit_config', JSON.stringify(currentConfig));
+            document.getElementById('newActInput').value = '';
+            renderAdminManage();
+            renderOptions();
+        }
+
+        // --- ฟังก์ชันอื่นๆ ---
+        function toggleAdminLogin(s) { document.getElementById('adminLoginModal').classList.toggle('hidden', !s); }
+        function toggleSearchModal(s) { document.getElementById('searchModal').classList.toggle('hidden', !s); }
+        function renderOptions() {
+            const sel = document.getElementById('activity');
+            sel.innerHTML = '<option value="" disabled selected>เลือกกิจกรรม...</option>' + 
+                Object.keys(currentConfig).map(k => `<option value="${k}">${currentConfig[k].label}</option>`).join('');
+        }
         function updateSubOptions() {
             const val = document.getElementById('activity').value;
             const sub = document.getElementById('subOption');
@@ -131,71 +222,39 @@
                 document.getElementById('subContainer').classList.remove('hidden');
             } else { document.getElementById('subContainer').classList.add('hidden'); }
         }
+        function runSearch() {
+            const q = document.getElementById('searchPhone').value;
+            const res = document.getElementById('searchResults');
+            const history = JSON.parse(localStorage.getItem('vmove_history') || '[]');
+            if (q.length < 4) return;
+            const filtered = history.filter(h => h.phone.includes(q));
+            res.innerHTML = filtered.map(h => `<div class="p-4 bg-gray-50 rounded-2xl shadow-sm"><b>${h.fullname}</b><br><small>${h.activity}</small></div>`).join('') || 'ไม่พบข้อมูล';
+        }
 
+        // เชื่อมต่อการบันทึก
         document.getElementById('meritForm').onsubmit = async function(e) {
             e.preventDefault();
             document.getElementById('loadingOverlay').style.display = 'flex';
-            
             const actKey = document.getElementById('activity').value;
             const data = {
                 action: 'register',
                 userId: liffProfile.userId || 'Guest',
-                displayName: liffProfile.displayName || 'Unknown',
-                pictureUrl: liffProfile.pictureUrl || '',
-                statusMessage: liffProfile.statusMessage || '',
+                displayName: liffProfile.displayName || 'Guest',
                 fullname: document.getElementById('fullname').value,
                 phone: document.getElementById('phone').value,
                 activity: currentConfig[actKey].label,
                 subOption: document.getElementById('subOption').value || '-'
             };
-
             try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify(data)
-                });
-
-                // เก็บประวัติลงเครื่องเพื่อการค้นหา
+                await fetch(API_URL, { method: 'POST', body: JSON.stringify(data) });
                 const history = JSON.parse(localStorage.getItem('vmove_history') || '[]');
                 history.unshift(data);
                 localStorage.setItem('vmove_history', JSON.stringify(history));
-
-                document.getElementById('sumName').textContent = data.fullname;
-                document.getElementById('sumDetail').textContent = data.activity + " (" + data.subOption + ")";
                 document.getElementById('meritForm').classList.add('hidden');
                 document.getElementById('successView').classList.remove('hidden');
-            } catch (err) { alert('ระบบขัดข้อง กรุณาลองใหม่'); }
+            } catch(e) { alert('บันทึกไม่สำเร็จ'); }
             document.getElementById('loadingOverlay').style.display = 'none';
         };
-
-        function toggleSearchModal(s) { document.getElementById('searchModal').classList.toggle('hidden', !s); }
-        
-        function runSearch() {
-            const q = document.getElementById('searchPhone').value;
-            const res = document.getElementById('searchResults');
-            const history = JSON.parse(localStorage.getItem('vmove_history') || '[]');
-            
-            if (q.length < 4) {
-                res.innerHTML = '<p class="text-center text-gray-400 py-4">พิมพ์เบอร์โทร 4 ตัวขึ้นไปเพื่อค้นหา...</p>';
-                return;
-            }
-
-            const filtered = history.filter(h => h.phone.includes(q));
-            res.innerHTML = filtered.length ? filtered.map(h => `
-                <div class="p-5 bg-gray-50 rounded-2xl border-l-8 border-indigo-500 shadow-sm animate-in">
-                    <div class="font-bold text-gray-800">${h.fullname}</div>
-                    <div class="text-sm text-indigo-600 mt-1">${h.activity} - ${h.subOption}</div>
-                </div>`).join('') : '<p class="text-center text-gray-400 py-10">ไม่พบประวัติการจอง 🧐</p>';
-        }
-
-        function toggleAdminLogin(s) { document.getElementById('adminLoginModal').classList.toggle('hidden', !s); }
-        
-        function checkAdmin() {
-            if (document.getElementById('adminPass').value === '1234') {
-                alert('เข้าสู่โหมดแก้ไขสำเร็จ');
-                toggleAdminLogin(false);
-            } else { alert('รหัสผ่านไม่ถูกต้อง ❌'); }
-        }
 
         window.onload = initApp;
     </script>
