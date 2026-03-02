@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-    <style id="live-styles">
+    <style id="dynamic-styles">
         body { font-family: 'Kanit', sans-serif; background-color: #f8fafc; }
         .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
         .glass-effect { background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
@@ -19,22 +19,22 @@
 
     <div id="loadingOverlay">
         <div class="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-4"></div>
-        <p class="font-bold text-indigo-600">กำลังประมวลผล... ✨</p>
+        <p class="font-bold text-indigo-600">กำลังประมวลผลผ่าน Cloud... ☁️</p>
     </div>
 
     <div id="appHeader" class="gradient-bg text-white pt-10 pb-24 px-6 rounded-b-[3rem] shadow-lg mb-[-40px] relative z-10">
         <div class="max-w-md mx-auto flex justify-between items-start">
             <div class="flex gap-3 items-start">
                 <button id="adminLoginBtn" onclick="toggleAdminLogin(true)" class="glass-effect p-3 rounded-2xl hover:bg-white/30 hidden">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" /></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" stroke-width="2"/></svg>
                 </button>
                 <div>
-                    <h1 id="txt-main-title" class="text-2xl font-bold">ลงทะเบียนร่วมบุญ 🙏</h1>
-                    <p class="opacity-90 font-light text-xs text-yellow-200"><span id="txt-welcome-prefix">สวัสดีคุณ</span> <span id="userNameDisplay">...</span> ✨</p>
+                    <h1 id="txt-main-title" class="text-2xl font-bold">...</h1>
+                    <p class="opacity-90 font-light text-xs text-yellow-200">สวัสดีคุณ <span id="userNameDisplay">ผู้มีบุญ</span> ✨</p>
                 </div>
             </div>
             <button onclick="toggleSearchModal(true)" class="glass-effect p-3 rounded-2xl hover:bg-white/30">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="2"/></svg>
             </button>
         </div>
     </div>
@@ -43,204 +43,154 @@
         <div id="mainContentCard" class="bg-white rounded-3xl shadow-xl p-8 border border-gray-100 min-h-[400px]">
             <form id="meritForm" class="space-y-6">
                 <div class="space-y-2">
-                    <label id="lbl-fullname" class="st-label block text-sm font-medium text-gray-700">👤 ชื่อ-นามสกุล</label>
-                    <input type="text" id="fullname" required class="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-indigo-500" placeholder="ระบุชื่อผู้ร่วมบุญ">
+                    <label id="lbl-fullname" class="block">ชื่อ-นามสกุล</label>
+                    <input type="text" id="fullname" required class="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-indigo-500">
                 </div>
                 <div class="space-y-2">
-                    <label id="lbl-phone" class="st-label block text-sm font-medium text-gray-700">📞 เบอร์โทรศัพท์</label>
-                    <input type="tel" id="phone" required maxlength="10" class="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none" placeholder="08xxxxxxxx">
+                    <label id="lbl-phone" class="block">เบอร์โทรศัพท์</label>
+                    <input type="tel" id="phone" required maxlength="10" class="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none">
                 </div>
                 <div class="space-y-2">
-                    <label id="lbl-activity" class="st-label block text-sm font-medium text-gray-700">🗓️ เลือกกิจกรรม</label>
+                    <label id="lbl-activity" class="block">เลือกกิจกรรม</label>
                     <select id="activity" required class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white outline-none"></select>
                 </div>
                 <div id="subContainer" class="hidden space-y-2">
-                    <label id="lbl-detail" class="st-label block text-sm font-medium text-gray-700">📝 ระบุรายละเอียด</label>
+                    <label id="lbl-detail" class="block">รายละเอียด</label>
                     <select id="subOption" class="w-full px-4 py-3 rounded-xl border border-indigo-200 bg-indigo-50 outline-none"></select>
                 </div>
-                <button type="submit" id="st-submitBtn" class="w-full gradient-bg text-white font-semibold py-4 rounded-2xl shadow-lg active:scale-95 text-lg transition-all">✨ ยืนยันข้อมูล</button>
+                <button type="submit" id="st-submitBtn" class="w-full gradient-bg text-white font-semibold py-4 rounded-2xl shadow-lg active:scale-95 transition-all">ยืนยันข้อมูล</button>
             </form>
 
             <div id="successView" class="hidden text-center py-4">
                 <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 text-green-500 text-4xl">✅</div>
-                <h3 id="st-successHeader" class="font-bold text-gray-800 mb-6 text-2xl">บันทึกข้อมูลสำเร็จ</h3>
-                <div id="st-summaryCard" class="bg-gray-50 rounded-2xl p-6 text-left relative overflow-hidden mb-6 border border-gray-100">
+                <h3 id="st-successHeader" class="font-bold mb-6">สำเร็จ</h3>
+                <div id="st-summaryCard" class="rounded-2xl p-6 text-left relative overflow-hidden mb-6 border">
                     <div id="sumBar" class="absolute left-0 top-0 bottom-0 w-2 bg-indigo-500"></div>
-                    <div id="st-summaryInfo" class="space-y-1">
-                        <p id="txt-summary-title" class="text-xs text-gray-400 uppercase font-bold tracking-tighter">📜 รายละเอียดการลงทะเบียน</p>
+                    <div class="space-y-1">
+                        <p id="txt-summary-title" class="text-xs uppercase font-bold tracking-tighter">รายละเอียด</p>
                         <p id="sumName" class="font-bold text-lg text-gray-800"></p>
                         <p id="sumDetail" class="text-gray-600"></p>
                     </div>
                 </div>
-                <button id="btn-reload" onclick="location.reload()" class="w-full py-4 bg-gray-100 rounded-2xl font-bold text-gray-600 hover:bg-gray-200 transition-colors">➕ ลงทะเบียนเพิ่มเติม</button>
+                <button id="btn-reload" onclick="location.reload()" class="w-full py-4 bg-gray-100 rounded-2xl font-bold text-gray-600">ลงทะเบียนเพิ่ม</button>
             </div>
         </div>
     </div>
 
-    <div id="adminView" class="max-w-5xl mx-auto px-4 py-6 hidden relative z-30">
-        <div class="gradient-bg p-8 rounded-t-[3rem] text-white shadow-lg">
-            <h2 class="text-2xl font-bold">ระบบจัดการหลังบ้าน 🛠️</h2>
-            <p class="opacity-80 text-sm">จัดการข้อมูล กิจกรรม และแก้ไขข้อความแสดงผล</p>
+    <div id="adminView" class="max-w-6xl mx-auto px-4 py-6 hidden relative z-30">
+        <div class="gradient-bg p-6 rounded-t-[3rem] text-white flex justify-between items-center shadow-lg">
+            <div>
+                <h2 class="text-2xl font-bold">ระบบจัดการแบบรวมศูนย์ 🛠️</h2>
+                <p class="opacity-80 text-sm">จัดการกิจกรรม ข้อความ และดีไซน์ผ่าน Cloud</p>
+            </div>
+            <button onclick="location.reload()" class="bg-white/20 hover:bg-white/40 px-4 py-2 rounded-xl font-bold flex items-center gap-2">ออกจากระบบ 🚪</button>
         </div>
 
-        <div class="bg-white rounded-b-3xl shadow-2xl overflow-hidden border border-gray-100">
-            <div class="flex border-b bg-gray-50 overflow-x-auto">
-                <button onclick="switchTab('list')" id="t-list" class="px-6 py-5 font-bold active-tab">📋 รายชื่อ</button>
-                <button onclick="switchTab('manage')" id="t-manage" class="px-6 py-5 font-bold text-gray-400">🏷️ กิจกรรม</button>
-                <button onclick="switchTab('text')" id="t-text" class="px-6 py-5 font-bold text-gray-400">📝 จัดการข้อความ</button>
-                <button onclick="switchTab('style')" id="t-style" class="px-6 py-5 font-bold text-gray-400">🎨 ดีไซน์</button>
-            </div>
-
-            <div id="tab-list" class="p-6">
-                <input type="text" id="admSearch" oninput="renderHistory()" placeholder="🔍 ค้นหาชื่อหรือเบอร์..." class="w-full border p-3 rounded-xl mb-4 outline-none focus:ring-2 focus:ring-indigo-500">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-left">
-                        <thead class="bg-gray-50 text-gray-500 uppercase text-xs">
-                            <tr><th class="p-4">ชื่อผู้ร่วมบุญ</th><th class="p-4">เบอร์โทร</th><th class="p-4">กิจกรรม</th><th class="p-4">รายละเอียด</th></tr>
-                        </thead>
-                        <tbody id="admTableBody" class="divide-y"></tbody>
-                    </table>
+        <div class="bg-white rounded-b-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row border">
+            <div class="w-full md:w-3/5 border-r border-gray-100">
+                <div class="flex border-b bg-gray-50 overflow-x-auto scrollbar-hide">
+                    <button onclick="switchTab('list')" id="t-list" class="px-6 py-4 font-bold active-tab">📋 รายชื่อ</button>
+                    <button onclick="switchTab('manage')" id="t-manage" class="px-6 py-4 font-bold text-gray-400">🏷️ กิจกรรม</button>
+                    <button onclick="switchTab('form-design')" id="t-form-design" class="px-6 py-4 font-bold text-gray-400">📝 จัดการหน้าฟอร์ม</button>
+                    <button onclick="switchTab('success-design')" id="t-success-design" class="px-6 py-4 font-bold text-gray-400">✅ จัดการหน้าสรุป</button>
                 </div>
-            </div>
 
-            <div id="tab-manage" class="p-6 hidden">
-                <div class="bg-indigo-50 p-6 rounded-2xl mb-8 flex flex-wrap gap-4 items-end">
-                    <div class="flex-1 min-w-[200px]"><label class="block text-xs font-bold mb-1 text-indigo-600">ชื่อกิจกรรมใหม่</label><input type="text" id="newActName" class="w-full border p-2 rounded-xl outline-none"></div>
-                    <div><label class="block text-xs font-bold mb-1 text-indigo-600">สี</label><input type="color" id="newActColor" value="#6366f1" class="h-10 w-16 p-1 bg-white border rounded-xl cursor-pointer"></div>
-                    <button onclick="addActivity()" class="bg-indigo-600 text-white px-8 py-2 rounded-xl font-bold hover:bg-indigo-700">➕ สร้าง</button>
-                </div>
-                <div id="actGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
-            </div>
-
-            <div id="tab-text" class="p-6 hidden">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <div class="bg-gray-50 p-6 rounded-3xl space-y-4">
-                        <h4 class="font-bold text-indigo-600 mb-4">🔧 แก้ไขข้อความระบบ</h4>
-                        <div class="space-y-4 max-h-[500px] overflow-y-auto pr-2">
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 mb-1">หัวข้อหน้าแรก (Header)</label>
-                                <input type="text" oninput="updateSystemText('txt-main-title', this.value)" id="in-txt-main-title" class="w-full border p-2 rounded-lg text-sm">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 mb-1">หัวข้อหน้าสรุปสำเร็จ</label>
-                                <input type="text" oninput="updateSystemText('st-successHeader', this.value)" id="in-st-successHeader" class="w-full border p-2 rounded-lg text-sm">
-                            </div>
-                            <div class="grid grid-cols-2 gap-4 border-t pt-4">
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-500 mb-1">Label: ชื่อ-สกุล</label>
-                                    <input type="text" oninput="updateSystemText('lbl-fullname', this.value)" id="in-lbl-fullname" class="w-full border p-2 rounded-lg text-sm">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-500 mb-1">Placeholder: ชื่อ-สกุล</label>
-                                    <input type="text" oninput="updateInputPlaceholder('fullname', this.value)" id="in-ph-fullname" class="w-full border p-2 rounded-lg text-sm">
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-500 mb-1">Label: เบอร์โทร</label>
-                                    <input type="text" oninput="updateSystemText('lbl-phone', this.value)" id="in-lbl-phone" class="w-full border p-2 rounded-lg text-sm">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-gray-500 mb-1">Placeholder: เบอร์โทร</label>
-                                    <input type="text" oninput="updateInputPlaceholder('phone', this.value)" id="in-ph-phone" class="w-full border p-2 rounded-lg text-sm">
-                                </div>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-500 mb-1">ปุ่มยืนยันข้อมูล</label>
-                                <input type="text" oninput="updateSystemText('st-submitBtn', this.value)" id="in-st-submitBtn" class="w-full border p-2 rounded-lg text-sm">
-                            </div>
-                        </div>
-                        <button onclick="saveAllTexts()" class="w-full bg-indigo-600 text-white font-bold py-3 rounded-xl mt-4 shadow-lg">💾 บันทึกข้อความทั้งหมด</button>
+                <div class="p-6 overflow-y-auto max-h-[70vh]">
+                    <div id="tab-list">
+                        <input type="text" id="admSearch" oninput="renderHistory()" placeholder="🔍 ค้นหา..." class="w-full border p-3 rounded-xl mb-4">
+                        <div class="overflow-x-auto"><table class="w-full text-sm text-left"><tbody id="admTableBody" class="divide-y"></tbody></table></div>
                     </div>
-                    <div class="border-4 border-dashed border-gray-200 rounded-3xl p-6 bg-white flex flex-col items-center justify-center min-h-[300px] relative">
-                        <span class="absolute top-2 right-4 text-[10px] font-bold text-gray-300">ตัวอย่างข้อความ</span>
-                        <div class="w-full space-y-4 scale-90">
-                           <h2 id="pv-txt-main-title" class="text-xl font-bold text-center border-b pb-2">ลงทะเบียนร่วมบุญ 🙏</h2>
-                           <div class="space-y-1">
-                               <label id="pv-lbl-fullname" class="text-xs font-bold text-gray-500">👤 ชื่อ-นามสกุล</label>
-                               <input type="text" id="pv-fullname" disabled placeholder="ระบุชื่อผู้ร่วมบุญ" class="w-full border p-2 rounded-lg bg-gray-50">
-                           </div>
-                           <button id="pv-st-submitBtn" class="w-full py-2 rounded-lg bg-indigo-100 text-indigo-600 font-bold">✨ ยืนยันข้อมูล</button>
+
+                    <div id="tab-manage" class="hidden space-y-4">
+                        <div class="bg-indigo-50 p-4 rounded-2xl flex gap-3">
+                            <input type="text" id="newActName" placeholder="ชื่อกิจกรรมใหม่" class="flex-1 p-2 rounded-xl border">
+                            <input type="color" id="newActColor" value="#6366f1" class="w-12 h-10 rounded-lg">
+                            <button onclick="addActivity()" class="bg-indigo-600 text-white px-4 rounded-xl font-bold">เพิ่ม</button>
                         </div>
+                        <div id="actGrid" class="grid grid-cols-1 gap-3"></div>
+                        <button onclick="saveActToCloud()" class="w-full bg-green-600 text-white py-3 rounded-xl font-bold shadow-md">💾 บันทึกกิจกรรมลง Cloud</button>
+                    </div>
+
+                    <div id="tab-form-design" class="hidden space-y-6">
+                        <div class="text-sm font-bold text-indigo-500 uppercase">ส่วนหัวและข้อความหน้าฟอร์ม</div>
+                        <div id="editor-form" class="space-y-4"></div>
+                        <button onclick="saveAllToCloud()" class="w-full bg-indigo-600 text-white py-4 rounded-xl font-bold shadow-lg">💾 บันทึกการเปลี่ยนแปลงทั้งหมด</button>
+                    </div>
+
+                    <div id="tab-success-design" class="hidden space-y-6">
+                        <div class="text-sm font-bold text-green-500 uppercase">ข้อความและดีไซน์หน้าสรุปผล</div>
+                        <div id="editor-success" class="space-y-4"></div>
+                        <button onclick="saveAllToCloud()" class="w-full bg-indigo-600 text-white py-4 rounded-xl font-bold shadow-lg">💾 บันทึกการเปลี่ยนแปลงทั้งหมด</button>
                     </div>
                 </div>
             </div>
 
-            <div id="tab-style" class="p-6 hidden">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
-                    <div class="bg-gray-50 p-6 rounded-3xl space-y-6">
-                        <div><label class="block font-bold mb-2 text-sm">1️⃣ เลือกส่วนที่จะแก้ไขดีไซน์</label><select id="style-target" onchange="loadTargetStyles()" class="w-full border p-3 rounded-xl bg-white"></select></div>
-                        <div class="space-y-5 pt-4 border-t border-gray-200">
-                            <div class="flex items-center justify-between"><span class="text-sm font-medium">📏 ขนาด: <b id="display-size" class="text-indigo-600 ml-2">16px</b></span><input type="range" id="val-size" min="12" max="60" oninput="updateLiveUI()" class="w-1/2"></div>
-                            <div class="flex items-center justify-between"><span class="text-sm font-medium">🎨 สี (Hex):</span><input type="color" id="val-color" oninput="updateLiveUI()" class="h-8 w-8 rounded cursor-pointer border"></div>
-                            <div class="flex items-center justify-between"><span class="text-sm font-medium">🔠 ความหนา:</span><select id="val-weight" onchange="updateLiveUI()" class="border p-1 rounded-lg text-sm bg-white"><option value="300">บาง</option><option value="400">ปกติ</option><option value="600">หนา</option><option value="800">หนาพิเศษ</option></select></div>
+            <div class="w-full md:w-2/5 bg-gray-50 p-6 flex flex-col items-center justify-start min-h-[500px]">
+                <div class="sticky top-6 w-full max-w-[320px]">
+                    <p class="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest text-center">📱 Live Preview (มุมมองผู้ใช้)</p>
+                    <div id="preview-container" class="bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border-[6px] border-gray-800 min-h-[500px] relative">
+                        <div class="h-6 w-full bg-gray-800"></div>
+                        <div id="pv-header" class="gradient-bg p-4 pt-8 text-white text-sm">
+                            <div id="pv-txt-main-title" class="font-bold">...</div>
                         </div>
-                        <button onclick="saveStyles()" class="w-full bg-green-600 text-white font-bold py-4 rounded-2xl shadow-lg hover:bg-green-700 transition-all">💾 บันทึกดีไซน์</button>
-                    </div>
-                    <div class="border-4 border-dashed border-gray-200 rounded-3xl p-8 bg-white flex flex-col justify-center min-h-[300px]">
-                        <div id="pv-style-box" class="space-y-4">
-                            <label class="pv-st-label block font-medium">ตัวอย่างหัวข้อ</label>
-                            <button id="pv-st-submitBtn-style" class="w-full gradient-bg text-white py-3 rounded-xl font-bold">ปุ่มยืนยัน</button>
+                        <div class="p-4 -mt-4 bg-white rounded-t-3xl min-h-[400px]">
+                             <div id="pv-form-area" class="space-y-3">
+                                <label id="pv-lbl-fullname" class="block text-xs font-bold">...</label>
+                                <input type="text" disabled class="w-full border p-2 rounded-lg bg-gray-50 text-xs">
+                                <button id="pv-st-submitBtn" class="w-full py-2 rounded-lg gradient-bg text-white text-xs font-bold">...</button>
+                             </div>
+                             <div id="pv-success-area" class="hidden text-center pt-10">
+                                <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2 text-green-500">✓</div>
+                                <h3 id="pv-st-successHeader" class="font-bold text-sm">...</h3>
+                                <div id="pv-st-summaryCard" class="rounded-xl p-4 border mt-4 text-left">
+                                    <p id="pv-txt-summary-title" class="text-[8px] font-bold uppercase text-gray-400">...</p>
+                                    <div class="h-2 w-20 bg-gray-100 mt-1 rounded"></div>
+                                </div>
+                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <div class="p-8 bg-gray-50 border-t flex justify-center"><button onclick="location.reload()" class="text-red-500 font-bold hover:bg-red-50 px-6 py-2 rounded-xl transition-all">🚪 ออกจากระบบ</button></div>
         </div>
     </div>
 
-    <div id="searchModal" class="fixed inset-0 bg-black/60 hidden flex items-end justify-center z-[1000]">
-        <div class="bg-white w-full max-w-md rounded-t-[3rem] p-8 shadow-2xl transition-transform">
-            <div class="flex justify-between items-center mb-6"><h3 class="text-xl font-bold text-gray-800">🔍 ค้นหาข้อมูล</h3><button onclick="toggleSearchModal(false)" class="bg-gray-100 p-2 rounded-full">✕</button></div>
-            <input type="tel" oninput="handleSearch(this.value)" placeholder="กรอกเบอร์โทรศัพท์..." class="w-full p-4 bg-gray-50 border-2 border-indigo-100 rounded-2xl mb-6 outline-none focus:border-indigo-500">
-            <div id="searchResults" class="space-y-4 max-h-[50vh] overflow-y-auto pb-6"></div>
+    <div id="searchModal" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-[1000] p-4">
+        <div class="bg-white w-full max-w-md rounded-[2rem] p-6 shadow-2xl">
+            <div class="flex justify-between items-center mb-4"><h3 class="font-bold">🔍 ค้นหาข้อมูล</h3><button onclick="toggleSearchModal(false)">✕</button></div>
+            <input type="tel" oninput="handleSearch(this.value)" placeholder="กรอกเบอร์โทร..." class="w-full p-3 bg-gray-50 border rounded-xl mb-4 outline-none">
+            <div id="searchResults" class="space-y-3 max-h-[40vh] overflow-y-auto"></div>
         </div>
     </div>
 
     <div id="loginModal" class="fixed inset-0 bg-black/70 hidden items-center justify-center p-6 z-[1000]">
-        <div class="bg-white rounded-3xl p-8 w-full max-w-sm shadow-2xl">
-            <h3 class="text-xl font-bold mb-6 text-center text-gray-800">Admin Login 🔐</h3>
-            <input type="password" id="admPass" class="w-full px-4 py-3 border rounded-xl mb-4 text-center outline-none focus:ring-2 focus:ring-indigo-500" placeholder="รหัสผ่าน">
-            <div class="flex gap-3"><button onclick="toggleAdminLogin(false)" class="flex-1 py-3 text-gray-400">ยกเลิก</button><button onclick="checkAdmin()" class="flex-1 py-3 bg-indigo-600 text-white font-bold rounded-xl shadow-lg">ยืนยัน</button></div>
+        <div class="bg-white rounded-3xl p-8 w-full max-w-sm shadow-2xl text-center">
+            <h3 class="text-xl font-bold mb-6">🔐 แอดมินเข้าสู่ระบบ</h3>
+            <input type="password" id="admPass" class="w-full px-4 py-3 border rounded-xl mb-4 text-center outline-none" placeholder="รหัสผ่าน">
+            <div class="flex gap-3"><button onclick="toggleAdminLogin(false)" class="flex-1 text-gray-400">ยกเลิก</button><button onclick="checkAdmin()" class="flex-1 py-3 bg-indigo-600 text-white font-bold rounded-xl shadow-lg">ยืนยัน</button></div>
         </div>
     </div>
 
     <script>
         const LIFF_ID = "2008940385-theIq9K7"; 
-        const API_URL = "https://script.google.com/macros/s/AKfycbynMJZfK0llXJeSd8_thnWndhwMIVGB16MqFHW3qvsP2pyYdNTK-Tu04KLsM8S2DYat/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbyN_vG03u248P04FvX_O0u4_K00S0T5I4_r-99_qP5_I_P_O_I_T/exec"; // ** แก้ไขเป็น URL ของคุณ **
 
-        let currentConfig = JSON.parse(localStorage.getItem('merit_config')) || {
-            'act1': { label: 'ธรรมยาตรา', color: '#6366f1', list: ['2 ม.ค. - วัดพระธรรมกาย', '5 ม.ค. - อนุสรณ์สถาน'] }
+        let masterSettings = {
+            'txt-main-title': { text: 'ลงทะเบียนร่วมบุญ 🙏', color: '#ffffff', size: '24px', weight: '700' },
+            'lbl-fullname': { text: '👤 ชื่อ-นามสกุล', color: '#374151', size: '14px', weight: '500' },
+            'lbl-phone': { text: '📞 เบอร์โทรศัพท์', color: '#374151', size: '14px', weight: '500' },
+            'lbl-activity': { text: '🗓️ เลือกกิจกรรม', color: '#374151', size: '14px', weight: '500' },
+            'lbl-detail': { text: '📝 ระบุรายละเอียด', color: '#374151', size: '14px', weight: '500' },
+            'st-submitBtn': { text: '✨ ยืนยันข้อมูล', color: '#ffffff', size: '18px', weight: '600' },
+            'st-successHeader': { text: 'บันทึกข้อมูลสำเร็จ ✅', color: '#1f2937', size: '24px', weight: '700' },
+            'txt-summary-title': { text: '📜 รายละเอียดการลงทะเบียน', color: '#9ca3af', size: '12px', weight: '700' },
+            'st-summaryCard': { text: 'สีพื้นหลังกล่องสรุป', color: '#f9fafb', size: '0', weight: '0' }
         };
 
-        let uiStyles = JSON.parse(localStorage.getItem('merit_ui_v5')) || {
-            'st-label': { color: '#374151', size: '14px', weight: '500' },
-            'st-submitBtn': { color: '#ffffff', size: '18px', weight: '600' },
-            'st-successHeader': { color: '#1f2937', size: '24px', weight: '700' },
-            'st-summaryCard': { color: '#f3f4f6', size: '14px', weight: '400' },
-            'st-summaryInfo': { color: '#4b5563', size: '16px', weight: '400' }
-        };
-
-        let sysTexts = JSON.parse(localStorage.getItem('merit_texts')) || {
-            'txt-main-title': 'ลงทะเบียนร่วมบุญ 🙏',
-            'txt-welcome-prefix': 'สวัสดีคุณ',
-            'lbl-fullname': '👤 ชื่อ-นามสกุล',
-            'ph-fullname': 'ระบุชื่อผู้ร่วมบุญ',
-            'lbl-phone': '📞 เบอร์โทรศัพท์',
-            'ph-phone': '08xxxxxxxx',
-            'lbl-activity': '🗓️ เลือกกิจกรรม',
-            'lbl-detail': '📝 ระบุรายละเอียด',
-            'st-submitBtn': '✨ ยืนยันข้อมูล',
-            'st-successHeader': 'บันทึกข้อมูลสำเร็จ',
-            'txt-summary-title': '📜 รายละเอียดการลงทะเบียน',
-            'btn-reload': '➕ ลงทะเบียนเพิ่มเติม'
-        };
+        let currentConfig = {};
 
         async function init() {
             if (/Chrome/.test(navigator.userAgent)) document.getElementById('adminLoginBtn').classList.remove('hidden');
-            applyGlobalStyles();
-            applyAllTexts();
+            await loadCloudData();
             try {
                 await liff.init({ liffId: LIFF_ID });
                 if (liff.isLoggedIn()) {
@@ -248,163 +198,166 @@
                     document.getElementById('userNameDisplay').textContent = p.displayName;
                 } else liff.login();
             } catch(e){}
-            renderOptions();
         }
 
-        // --- Text Management Logic ---
-        function applyAllTexts() {
-            Object.keys(sysTexts).forEach(id => {
-                if(id.startsWith('ph-')) {
-                    const el = document.getElementById(id.replace('ph-', ''));
-                    if(el) el.placeholder = sysTexts[id];
-                } else {
-                    const el = document.getElementById(id);
-                    if(el) el.innerText = sysTexts[id];
+        async function loadCloudData() {
+            toggleLoading(true);
+            try {
+                const response = await fetch(API_URL);
+                const cloud = await response.json();
+                if(cloud.settings) masterSettings = cloud.settings;
+                if(cloud.activities) currentConfig = cloud.activities;
+                applyAllSettings();
+                renderOptions();
+                renderEditor();
+            } catch (e) { console.warn("Load failed, using default."); }
+            toggleLoading(false);
+        }
+
+        function applyAllSettings() {
+            let css = "";
+            Object.keys(masterSettings).forEach(id => {
+                const s = masterSettings[id];
+                const el = document.getElementById(id);
+                const pv = document.getElementById('pv-' + id);
+                
+                if (el && id !== 'st-summaryCard') {
+                    el.innerText = s.text;
+                    el.style.color = s.color;
+                    el.style.fontSize = s.size;
+                    el.style.fontWeight = s.weight;
+                }
+                if (pv && id !== 'st-summaryCard') {
+                    pv.innerText = s.text;
+                    pv.style.color = s.color;
+                    pv.style.fontSize = (parseInt(s.size) * 0.7) + 'px'; // Scale down for mobile preview
+                    pv.style.fontWeight = s.weight;
+                }
+                if (id === 'st-summaryCard') {
+                    document.getElementById('st-summaryCard').style.backgroundColor = s.color;
+                    document.getElementById('pv-st-summaryCard').style.backgroundColor = s.color;
                 }
             });
         }
 
-        function updateSystemText(id, val) {
-            sysTexts[id] = val;
-            const el = document.getElementById(id); if(el) el.innerText = val;
-            const pv = document.getElementById('pv-'+id); if(pv) pv.innerText = val;
+        function renderEditor() {
+            const formKeys = ['txt-main-title', 'lbl-fullname', 'lbl-phone', 'lbl-activity', 'lbl-detail', 'st-submitBtn'];
+            const successKeys = ['st-successHeader', 'txt-summary-title', 'st-summaryCard'];
+            
+            const createUI = (key) => {
+                const s = masterSettings[key];
+                return `
+                <div class="bg-white border p-4 rounded-2xl shadow-sm space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-[10px] font-bold text-gray-400 uppercase">ID: ${key}</span>
+                    </div>
+                    ${key !== 'st-summaryCard' ? `<input type="text" value="${s.text}" oninput="updateMaster('${key}', 'text', this.value)" class="w-full font-bold border-b p-1 outline-none focus:border-indigo-500">` : `<span class="font-bold text-sm">${s.text}</span>`}
+                    <div class="flex flex-wrap gap-4 items-center text-xs">
+                        <div class="flex items-center gap-1">🎨 <input type="color" value="${s.color}" oninput="updateMaster('${key}', 'color', this.value)"></div>
+                        ${key !== 'st-summaryCard' ? `
+                        <div class="flex items-center gap-1">📏 <input type="number" value="${parseInt(s.size)}" oninput="updateMaster('${key}', 'size', this.value + 'px')" class="w-10 border rounded text-center"> px</div>
+                        <div class="flex items-center gap-1">🔠 <select onchange="updateMaster('${key}', 'weight', this.value)" class="border rounded px-1">
+                            <option value="300" ${s.weight=='300'?'selected':''}>บาง</option>
+                            <option value="400" ${s.weight=='400'?'selected':''}>ปกติ</option>
+                            <option value="700" ${s.weight=='700'?'selected':''}>หนา</option>
+                        </select></div>
+                        ` : ''}
+                    </div>
+                </div>`;
+            };
+
+            document.getElementById('editor-form').innerHTML = formKeys.map(createUI).join('');
+            document.getElementById('editor-success').innerHTML = successKeys.map(createUI).join('');
         }
 
-        function updateInputPlaceholder(id, val) {
-            sysTexts['ph-'+id] = val;
-            const el = document.getElementById(id); if(el) el.placeholder = val;
-            const pv = document.getElementById('pv-'+id); if(pv) pv.placeholder = val;
+        function updateMaster(key, field, val) {
+            masterSettings[key][field] = val;
+            applyAllSettings();
         }
 
-        function saveAllTexts() {
-            localStorage.setItem('merit_texts', JSON.stringify(sysTexts));
-            alert('✅ บันทึกข้อความทั้งหมดเรียบร้อยแล้ว');
+        async function saveAllToCloud() {
+            toggleLoading(true);
+            try {
+                await fetch(API_URL, { method: 'POST', body: JSON.stringify({ type: 'SAVE_ALL', settings: masterSettings }) });
+                alert("✨ บันทึกดีไซน์และข้อความลง Cloud เรียบร้อย!");
+            } catch (e) { alert("เกิดข้อผิดพลาดในการบันทึก"); }
+            toggleLoading(false);
         }
 
-        function loadTextInputs() {
-            Object.keys(sysTexts).forEach(id => {
-                const input = document.getElementById('in-'+id);
-                if(input) input.value = sysTexts[id];
-                const pv = document.getElementById('pv-'+id);
-                if(pv) { if(id.startsWith('ph-')) pv.placeholder = sysTexts[id]; else pv.innerText = sysTexts[id]; }
-            });
-        }
-
-        // --- Styles Logic ---
-        function applyGlobalStyles() {
-            let css = "";
-            Object.keys(uiStyles).forEach(id => {
-                const s = uiStyles[id];
-                if (id === 'st-summaryCard') css += `#st-summaryCard { background-color: ${s.color} !important; }`;
-                else if (id === 'st-label') css += `.st-label, .pv-st-label { color: ${s.color} !important; font-size: ${s.size} !important; font-weight: ${s.weight} !important; }`;
-                else css += `#${id} { color: ${s.color} !important; font-size: ${s.size} !important; font-weight: ${s.weight} !important; }`;
-            });
-            document.getElementById('live-styles').innerHTML += css;
-        }
-
-        function loadTargetStyles() {
-            const id = document.getElementById('style-target').value;
-            const s = uiStyles[id];
-            document.getElementById('val-size').value = parseInt(s.size);
-            document.getElementById('display-size').textContent = s.size;
-            document.getElementById('val-color').value = s.color;
-            document.getElementById('val-weight').value = s.weight;
-            updateLiveUI();
-        }
-
-        function updateLiveUI() {
-            const id = document.getElementById('style-target').value;
-            const size = document.getElementById('val-size').value + 'px';
-            const color = document.getElementById('val-color').value;
-            const weight = document.getElementById('val-weight').value;
-            document.getElementById('display-size').textContent = size;
-            const lbl = document.querySelector('.pv-st-label');
-            const btn = document.getElementById('pv-st-submitBtn-style');
-            if(id === 'st-label') { lbl.style.color = color; lbl.style.fontSize = size; lbl.style.fontWeight = weight; }
-            if(id === 'st-submitBtn') { btn.style.color = color; btn.style.fontSize = size; btn.style.fontWeight = weight; }
-        }
-
-        function saveStyles() {
-            const id = document.getElementById('style-target').value;
-            uiStyles[id] = { size: document.getElementById('val-size').value + 'px', color: document.getElementById('val-color').value, weight: document.getElementById('val-weight').value };
-            localStorage.setItem('merit_ui_v5', JSON.stringify(uiStyles));
-            applyGlobalStyles();
-            alert('🌈 บันทึกดีไซน์เรียบร้อย');
-        }
-
-        // --- Business & Admin Logic ---
+        // --- Tab Management ---
         function switchTab(t) {
-            ['list', 'manage', 'text', 'style'].forEach(tab => {
+            ['list', 'manage', 'form-design', 'success-design'].forEach(tab => {
                 document.getElementById('tab-'+tab).classList.toggle('hidden', tab !== t);
-                document.getElementById('t-'+tab).className = tab === t ? 'px-6 py-5 font-bold active-tab' : 'px-6 py-5 font-bold text-gray-400';
+                document.getElementById('t-'+tab).className = tab === t ? 'px-6 py-4 font-bold active-tab' : 'px-6 py-4 font-bold text-gray-400';
             });
-            if(t === 'manage') renderAdminActs();
-            if(t === 'text') loadTextInputs();
+            // Preview logic
+            document.getElementById('pv-form-area').classList.toggle('hidden', t === 'success-design');
+            document.getElementById('pv-success-area').classList.toggle('hidden', t !== 'success-design');
             if(t === 'list') renderHistory();
-            if(t === 'style') {
-                const sel = document.getElementById('style-target');
-                sel.innerHTML = `<option value="st-label">หัวข้อช่องกรอก</option><option value="st-submitBtn">ปุ่มยืนยัน</option><option value="st-successHeader">หัวข้อสำเร็จ</option>`;
-                loadTargetStyles();
-            }
+            if(t === 'manage') renderAdminActs();
         }
 
-        function toggleSearchModal(s) { document.getElementById('searchModal').classList.toggle('hidden', !s); }
-        function handleSearch(q) {
-            const res = document.getElementById('searchResults');
-            if (q.length < 5) { res.innerHTML = '<p class="text-center text-gray-400 py-10">กรอกเบอร์โทรอย่างน้อย 5 หลัก</p>'; return; }
-            const history = JSON.parse(localStorage.getItem('merit_history') || '[]');
-            const filtered = history.filter(h => h.phone.includes(q));
-            res.innerHTML = filtered.length ? filtered.map(h => `<div class="p-5 bg-gray-50 rounded-2xl border-l-8 border-indigo-500"><div class="font-bold text-gray-800 text-lg">👤 ${h.fullname}</div><div class="text-sm text-gray-500 mt-1">🏷️ ${h.activity}</div></div>`).join('') : '<p class="text-center text-gray-400 py-10">❌ ไม่พบข้อมูล</p>';
-        }
-
-        function renderHistory() {
-            const h = JSON.parse(localStorage.getItem('merit_history') || '[]');
-            const q = document.getElementById('admSearch').value.toLowerCase();
-            document.getElementById('admTableBody').innerHTML = h.filter(x => x.fullname.toLowerCase().includes(q) || x.phone.includes(q))
-                .map(x => `<tr><td class="p-4 font-bold text-gray-700">${x.fullname}</td><td class="p-4 text-gray-500">${x.phone}</td><td class="p-4"><span class="px-3 py-1 rounded-full text-white text-[10px] font-bold" style="background-color: ${Object.values(currentConfig).find(c=>c.label===x.activity)?.color || '#6366f1'}">${x.activity}</span></td><td class="p-4 text-gray-400 text-xs">${x.subOption}</td></tr>`).join('');
+        // --- Activity Logic ---
+        function addActivity() {
+            const name = document.getElementById('newActName').value;
+            if(!name) return;
+            const id = 'act' + Date.now();
+            currentConfig[id] = { label: name, color: document.getElementById('newActColor').value, list: [] };
+            renderAdminActs();
+            document.getElementById('newActName').value = '';
         }
 
         function renderAdminActs() {
-            const grid = document.getElementById('actGrid');
-            grid.innerHTML = Object.keys(currentConfig).map(k => `<div class="bg-white border-2 rounded-3xl overflow-hidden shadow-sm"><div class="p-4 text-white flex justify-between items-center" style="background-color: ${currentConfig[k].color}"><span class="font-bold">🏷️ ${currentConfig[k].label}</span><button onclick="delAct('${k}')" class="bg-black/20 hover:bg-black/40 px-2 rounded">✕</button></div><div class="p-4 space-y-3"><div class="flex gap-2 pt-3 border-t"><input type="text" id="input-sub-${k}" placeholder="เพิ่มรายการย่อย..." class="flex-1 text-xs border p-2 rounded-xl outline-none"><button onclick="addSubItem('${k}')" class="bg-gray-800 text-white px-4 py-2 rounded-xl text-xs">เพิ่ม</button></div></div></div>`).join('');
+            document.getElementById('actGrid').innerHTML = Object.keys(currentConfig).map(k => `
+                <div class="flex items-center justify-between bg-gray-50 p-3 rounded-xl border">
+                    <div class="flex items-center gap-3">
+                        <div class="w-4 h-4 rounded-full" style="background:${currentConfig[k].color}"></div>
+                        <span class="font-bold">${currentConfig[k].label}</span>
+                    </div>
+                    <button onclick="delete currentConfig['${k}']; renderAdminActs();" class="text-red-400">✕</button>
+                </div>
+            `).join('');
         }
 
-        function addActivity() { const name = document.getElementById('newActName').value; if(!name) return; const id = 'act' + Date.now(); currentConfig[id] = { label: name, color: document.getElementById('newActColor').value, list: [] }; saveConf(); document.getElementById('newActName').value = ''; }
-        function delAct(k) { if(confirm('⚠️ ลบกิจกรรม?')) { delete currentConfig[k]; saveConf(); } }
-        function addSubItem(k) { const val = document.getElementById('input-sub-'+k).value; if(val) { currentConfig[k].list.push(val); saveConf(); } }
-        function saveConf() { localStorage.setItem('merit_config', JSON.stringify(currentConfig)); renderAdminActs(); renderOptions(); }
+        async function saveActToCloud() {
+            toggleLoading(true);
+            await fetch(API_URL, { method: 'POST', body: JSON.stringify({ type: 'SAVE_ACT', activities: currentConfig }) });
+            alert("✅ บันทึกกิจกรรมเรียบร้อย");
+            toggleLoading(false);
+            renderOptions();
+        }
 
         function renderOptions() {
             const sel = document.getElementById('activity');
-            sel.innerHTML = '<option value="" disabled selected>เลือกกิจกรรมบุญ...</option>' + Object.keys(currentConfig).map(k => `<option value="${k}">${currentConfig[k].label}</option>`).join('');
+            sel.innerHTML = '<option value="" disabled selected>เลือกกิจกรรม...</option>' + 
+                Object.keys(currentConfig).map(k => `<option value="${k}">${currentConfig[k].label}</option>`).join('');
         }
 
-        document.getElementById('activity').onchange = function() {
-            const sub = document.getElementById('subOption');
-            const data = currentConfig[this.value];
-            sub.innerHTML = data.list.map(i => `<option value="${i}">${i}</option>`).join('');
-            document.getElementById('subContainer').classList.toggle('hidden', data.list.length === 0);
-        };
-
+        // --- Form Submission ---
         document.getElementById('meritForm').onsubmit = async function(e) {
             e.preventDefault();
-            document.getElementById('loadingOverlay').style.display = 'flex';
+            toggleLoading(true);
             const act = currentConfig[document.getElementById('activity').value];
-            const data = { fullname: document.getElementById('fullname').value, phone: document.getElementById('phone').value, activity: act.label, subOption: document.getElementById('subOption').value };
+            const data = {
+                fullname: document.getElementById('fullname').value,
+                phone: document.getElementById('phone').value,
+                activity: act.label,
+                subOption: document.getElementById('subOption').value || '-'
+            };
             try {
-                await fetch(API_URL, {method:'POST', mode:'no-cors', body: JSON.stringify(data)});
-                const history = JSON.parse(localStorage.getItem('merit_history') || '[]');
-                history.unshift(data); localStorage.setItem('merit_history', JSON.stringify(history));
+                await fetch(API_URL, { method: 'POST', body: JSON.stringify(data) });
                 document.getElementById('sumName').textContent = data.fullname;
-                document.getElementById('sumDetail').textContent = `${data.activity} - ${data.subOption}`;
+                document.getElementById('sumDetail').textContent = data.activity;
                 document.getElementById('sumBar').style.backgroundColor = act.color;
                 document.getElementById('meritForm').classList.add('hidden');
                 document.getElementById('successView').classList.remove('hidden');
-            } catch(e){ alert('❌ ข้อผิดพลาด'); }
-            document.getElementById('loadingOverlay').style.display = 'none';
+            } catch(e){ alert("บันทึกไม่สำเร็จ"); }
+            toggleLoading(false);
         };
 
-        function toggleAdminLogin(s) { document.getElementById('loginModal').style.display = s ? 'flex' : 'none'; }
+        // --- Helper Functions ---
+        function toggleLoading(s) { document.getElementById('loadingOverlay').style.display = s ? 'flex' : 'none'; }
+        function toggleAdminLogin(s) { document.getElementById('loginModal').classList.toggle('hidden', !s); }
         function checkAdmin() {
             if(document.getElementById('admPass').value === '1234') {
                 toggleAdminLogin(false);
@@ -412,9 +365,10 @@
                 document.getElementById('userView').classList.add('hidden');
                 document.getElementById('adminView').classList.remove('hidden');
                 switchTab('list');
-            } else alert('❌ รหัสผ่านไม่ถูกต้อง');
+            } else alert('รหัสผ่านไม่ถูกต้อง');
         }
-
+        function toggleSearchModal(s) { document.getElementById('searchModal').classList.toggle('hidden', !s); }
+        
         window.onload = init;
     </script>
 </body>
