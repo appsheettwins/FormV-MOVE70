@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>สำรองที่นั่ง V-MOVE V3 🚗</title>
+    <title>สำรองที่นั่ง V-MOVE V4 🚗</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
@@ -29,11 +29,15 @@
             <div class="flex gap-3 items-center">
                 <button onclick="toggleAdminLogin(true)" class="glass-effect p-3 rounded-2xl hover:bg-white/30 transition-all">🛠️</button>
                 <div>
-                    <h1 class="text-2xl font-bold">V-MOVE 🚗</h1>
+                    <h1 class="text-2xl font-bold">สำรองที่นั่งV-MOVE 🚗</h1>
                     <p class="text-sm text-yellow-300">สวัสดีคุณ <span id="userNameDisplay" class="font-bold">...</span> 🙏</p>
                 </div>
             </div>
-            <button onclick="toggleSearchModal(true)" class="glass-effect p-3 rounded-2xl">🔍 ค้นหา</button>
+            <button onclick="toggleSearchModal(true)" class="glass-effect p-3 rounded-2xl">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+            </button>
         </div>
     </div>
 
@@ -41,7 +45,7 @@
         <div class="bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
             <form id="meritForm" class="space-y-5">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 ml-1 mb-1"> 👦ชื่อ-นามสกุล</label>
+                    <label class="block text-sm font-medium text-gray-700 ml-1 mb-1">👦 ชื่อ-นามสกุล</label>
                     <input type="text" id="fullname" required class="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-indigo-500" placeholder="ระบุชื่อผู้จอง">
                 </div>
                 <div>
@@ -60,24 +64,39 @@
             </form>
             <div id="successView" class="hidden text-center py-6 animate-in">
                 <div class="text-1xl mb-4">✅</div>
-                <h3 class="text-xl font-bold text-green-600 mb-6">ลงทะเบียนสำเร็จ! รอการยืนยันการสำรองที่นั่ง จะส่งข้อความให้ทาง LINE</h3>
+                <h3 class="text-xl font-bold text-green-600 mb-6">ลงทะเบียนสำเร็จ! รอการยืนยันการสำรองที่นั่ง จะส่งข้อความให้ทาง LINE🙏</h3>
                 <button onclick="location.reload()" class="w-full py-4 bg-gray-100 rounded-2xl font-bold text-gray-600">➕ จองเพิ่มอีกรายการ</button>
             </div>
         </div>
     </div>
 
-    <div id="adminView" class="max-w-4xl mx-auto px-4 relative z-10 hidden pt-10">
+    <div id="adminView" class="max-w-5xl mx-auto px-4 relative z-10 hidden pt-6">
         <div class="bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
+            <div class="bg-gray-800 text-white p-4 flex justify-between items-center px-6">
+                <div class="flex items-center gap-2">
+                    <span class="text-xl">🛠️</span>
+                    <h2 class="font-bold">ระบบจัดการหลังบ้าน</h2>
+                </div>
+                <button onclick="location.reload()" class="bg-red-500 hover:bg-red-600 px-4 py-1.5 rounded-xl text-sm font-bold transition-colors">
+                    🚪 ออกจากระบบ
+                </button>
+            </div>
+
             <div class="flex border-b bg-gray-50">
                 <button onclick="switchAdminTab('list')" id="tabBtn-list" class="flex-1 py-4 font-bold active-tab">📋 รายชื่อผู้จอง</button>
-                <button onclick="switchAdminTab('manage')" id="tabBtn-manage" class="flex-1 py-4 font-bold text-gray-400">🛠️ จัดการกิจกรรม</button>
+                <button onclick="switchAdminTab('manage')" id="tabBtn-manage" class="flex-1 py-4 font-bold text-gray-400">⚙️ จัดการกิจกรรม</button>
             </div>
 
             <div id="adminTab-list" class="p-6">
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm">
                         <thead class="bg-gray-50 text-gray-500 uppercase font-bold">
-                            <tr><th class="p-4">ชื่อ-นามสกุล</th><th class="p-4">เบอร์โทร</th><th class="p-4">กิจกรรม</th></tr>
+                            <tr>
+                                <th class="p-4">ชื่อ-นามสกุล</th>
+                                <th class="p-4">เบอร์โทร</th>
+                                <th class="p-4">กิจกรรมหลัก</th>
+                                <th class="p-4 text-indigo-600">จุดรับ/รายการย่อย</th>
+                            </tr>
                         </thead>
                         <tbody id="adminHistoryBody" class="divide-y divide-gray-100"></tbody>
                     </table>
@@ -95,20 +114,16 @@
                 </div>
                 <div id="adminActList" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
             </div>
-            
-            <div class="p-6 bg-gray-50 border-t flex justify-center">
-                <button onclick="location.reload()" class="text-red-500 font-bold hover:underline flex items-center gap-2">🚪 ออกจากโหมดผู้ดูแล</button>
-            </div>
         </div>
     </div>
 
     <div id="adminLoginModal" class="fixed inset-0 bg-black/50 z-[100] hidden flex items-center justify-center p-6 backdrop-blur-sm">
         <div class="bg-white rounded-3xl p-8 w-full max-w-sm text-center shadow-2xl">
-            <h3 class="text-xl font-bold mb-6 text-gray-800">ผู้ดูแลระบบ 🔐</h3>
+            <h3 class="text-xl font-bold mb-6 text-gray-800">รหัสแอดมิน 🔐</h3>
             <input type="password" id="adminPass" class="w-full px-4 py-4 border rounded-xl mb-6 text-center text-3xl outline-none focus:ring-2 focus:ring-indigo-500" placeholder="••••">
             <div class="flex gap-3">
                 <button onclick="toggleAdminLogin(false)" class="flex-1 py-3 text-gray-400 font-bold">ยกเลิก</button>
-                <button onclick="checkAdmin()" class="flex-1 py-3 gradient-bg text-white rounded-xl font-bold shadow-lg shadow-indigo-200">เข้าใช้งาน</button>
+                <button onclick="checkAdmin()" class="flex-1 py-3 gradient-bg text-white rounded-xl font-bold shadow-lg shadow-indigo-200">เข้าสู่ระบบ</button>
             </div>
         </div>
     </div>
@@ -144,7 +159,7 @@
             updateDropdowns();
         }
 
-        // --- Admin Core V3 ---
+        // --- Admin Core V4 ---
         function checkAdmin() {
             if (document.getElementById('adminPass').value === '1234') {
                 toggleAdminLogin(false);
@@ -173,17 +188,20 @@
                 card.innerHTML = `
                     <div class="p-5 text-white flex justify-between items-center" style="background-color: ${currentConfig[key].color}">
                         <span class="font-bold text-lg">${currentConfig[key].label}</span>
-                        <button onclick="deleteActivity('${key}')" class="bg-black/10 hover:bg-black/20 px-3 py-1 rounded-full text-sm">✕ ลบ</button>
+                        <div class="flex items-center gap-2">
+                             <input type="color" onchange="changeActColor('${key}', this.value)" value="${currentConfig[key].color}" class="w-8 h-8 rounded-lg border-2 border-white/50 cursor-pointer bg-transparent">
+                             <button onclick="deleteActivity('${key}')" class="bg-black/10 hover:bg-black/20 px-3 py-1 rounded-full text-sm">✕</button>
+                        </div>
                     </div>
                     <div class="p-5 space-y-2">
                         ${currentConfig[key].list.map((item, idx) => `
                             <div class="flex justify-between items-center text-sm bg-gray-50 p-3 rounded-xl">
-                                <span class="text-gray-700">${item}</span>
+                                <span class="text-gray-700 font-medium">${item}</span>
                                 <button onclick="removeItem('${key}', ${idx})" class="text-red-400 hover:text-red-600">ลบ</button>
                             </div>`).join('') || '<p class="text-center text-gray-300 text-xs py-4">ยังไม่มีจุดรับ/รายการย่อย</p>'}
                     </div>
                     <div class="p-5 border-t bg-gray-50/50 flex gap-2">
-                        <input type="text" id="input-${key}" class="flex-1 text-sm border rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-indigo-500" placeholder="เพิ่มจุดรับ/รายละเอียด...">
+                        <input type="text" id="input-${key}" class="flex-1 text-sm border rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-indigo-500" placeholder="เพิ่มรายการย่อย...">
                         <button onclick="addItem('${key}')" class="bg-indigo-600 text-white px-4 py-2 rounded-xl text-sm font-bold">เพิ่ม</button>
                     </div>`;
                 listDiv.appendChild(card);
@@ -195,13 +213,18 @@
             document.getElementById('adminHistoryBody').innerHTML = history.map(h => `
                 <tr class="hover:bg-gray-50 transition-colors">
                     <td class="p-4 font-bold text-gray-800">${h.fullname}</td>
-                    <td class="p-4 text-gray-600">${h.phone}</td>
-                    <td class="p-4"><span class="px-3 py-1 bg-indigo-50 text-indigo-600 rounded-full text-xs font-bold">${h.activity}</span></td>
+                    <td class="p-4 text-gray-600 font-medium">${h.phone}</td>
+                    <td class="p-4"><span class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-xs font-bold">${h.activity}</span></td>
+                    <td class="p-4"><span class="px-3 py-1 bg-indigo-50 text-indigo-600 rounded-full text-xs font-bold">${h.subOption}</span></td>
                 </tr>
-            `).join('') || '<tr><td colspan="3" class="p-20 text-center text-gray-400">ยังไม่มีข้อมูลในประวัติการจอง</td></tr>';
+            `).join('') || '<tr><td colspan="4" class="p-20 text-center text-gray-400 font-medium italic">ยังไม่มีข้อมูลการจอง...</td></tr>';
         }
 
         // --- Data Management ---
+        function changeActColor(key, newColor) {
+            currentConfig[key].color = newColor;
+            saveConfig();
+        }
         function addActivity() {
             const name = document.getElementById('newActInput').value.trim();
             const color = document.getElementById('newActColor').value;
@@ -211,7 +234,7 @@
             document.getElementById('newActInput').value = '';
             saveConfig();
         }
-        function deleteActivity(k) { if(confirm('ต้องการลบหมวดหมู่นี้หรือไม่?')) { delete currentConfig[k]; saveConfig(); } }
+        function deleteActivity(k) { if(confirm('ต้องการลบหมวดหมู่นี้และรายการย่อยทั้งหมดใช่หรือไม่?')) { delete currentConfig[k]; saveConfig(); } }
         function addItem(k) { 
             const val = document.getElementById('input-'+k).value.trim();
             if(val) { currentConfig[k].list.push(val); saveConfig(); }
@@ -219,10 +242,10 @@
         function removeItem(k, i) { currentConfig[k].list.splice(i, 1); saveConfig(); }
         function saveConfig() { localStorage.setItem('merit_config', JSON.stringify(currentConfig)); renderAdminPanel(); updateDropdowns(); }
 
-        // --- User Core V3 ---
+        // --- User Logic ---
         function updateDropdowns() {
             const sel = document.getElementById('activity');
-            sel.innerHTML = '<option value="" disabled selected>-- เลือกกิจกรรมที่ต้องการจอง --</option>' + 
+            sel.innerHTML = '<option value="" disabled selected>-- เลือกกิจกรรมหลัก --</option>' + 
                 Object.keys(currentConfig).map(k => `<option value="${k}">${currentConfig[k].label}</option>`).join('');
         }
         function updateSubOptions() {
@@ -243,21 +266,21 @@
                 action: 'register',
                 userId: liffProfile.userId || 'Guest',
                 displayName: liffProfile.displayName || 'Guest',
-                pictureUrl: liffProfile.pictureUrl || '',
-                statusMessage: liffProfile.statusMessage || '',
                 fullname: document.getElementById('fullname').value,
                 phone: document.getElementById('phone').value,
                 activity: currentConfig[actKey].label,
-                subOption: document.getElementById('subOption').value || '-'
+                subOption: document.getElementById('subOption').value || '-',
+                pictureUrl: liffProfile.pictureUrl || '',
+                statusMessage: liffProfile.statusMessage || ''
             };
             try {
-                await fetch(API_URL, { method: 'POST', body: JSON.stringify(data) });
+                await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
                 const history = JSON.parse(localStorage.getItem('vmove_history') || '[]');
                 history.unshift(data);
                 localStorage.setItem('vmove_history', JSON.stringify(history));
                 document.getElementById('meritForm').classList.add('hidden');
                 document.getElementById('successView').classList.remove('hidden');
-            } catch(e) { alert('ขออภัย ระบบขัดข้อง กรุณาลองใหม่'); }
+            } catch(e) { alert('ระบบขัดข้อง กรุณาลองใหม่ภายหลัง'); }
             document.getElementById('loadingOverlay').style.display = 'none';
         };
 
@@ -267,7 +290,7 @@
             const q = document.getElementById('searchPhone').value;
             const res = document.getElementById('searchResults');
             const history = JSON.parse(localStorage.getItem('vmove_history') || '[]');
-            if (q.length < 4) { res.innerHTML = '<p class="text-center text-gray-400">กรุณาพิมพ์เบอร์โทร 4 ตัวขึ้นไป</p>'; return; }
+            if (q.length < 4) { res.innerHTML = '<p class="text-center text-gray-400">กรุณาพิมพ์เบอร์โทรอย่างน้อย 4 ตัว</p>'; return; }
             const filtered = history.filter(h => h.phone.includes(q));
             res.innerHTML = filtered.length ? filtered.map(h => `
                 <div class="p-6 bg-gray-50 rounded-[2rem] border-l-[10px] border-indigo-500 shadow-sm animate-in">
