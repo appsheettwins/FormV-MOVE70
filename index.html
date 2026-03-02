@@ -13,9 +13,8 @@
         .glass-effect { background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
         .active-tab { border-bottom: 4px solid #6366f1; color: #4338ca; background: rgba(99, 102, 241, 0.05); }
         #loadingOverlay { display:none; position:fixed; inset:0; background:rgba(255,255,255,0.8); z-index:10000; align-items:center; justify-content:center; flex-direction: column; }
-        
-        /* Modal Center */
         #loginModal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); backdrop-filter:blur(4px); z-index:10000; align-items:center; justify-content:center; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body class="min-h-screen pb-12">
@@ -45,118 +44,91 @@
     <div id="userView" class="max-w-md mx-auto px-4 relative z-20">
         <div id="mainContentCard" class="bg-white rounded-3xl shadow-xl p-8 border border-gray-100 min-h-[400px]">
             <form id="meritForm" class="space-y-6">
-                <div class="space-y-2">
-                    <label id="lbl-fullname" class="block">ชื่อ-นามสกุล</label>
-                    <input type="text" id="fullname" required class="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-indigo-500">
-                </div>
-                <div class="space-y-2">
-                    <label id="lbl-phone" class="block">เบอร์โทรศัพท์</label>
-                    <input type="tel" id="phone" required maxlength="10" class="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none">
-                </div>
-                <div class="space-y-2">
-                    <label id="lbl-activity" class="block">เลือกกิจกรรม</label>
-                    <select id="activity" required class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white outline-none" onchange="handleActivityChange(this.value)"></select>
-                </div>
-                <div id="subContainer" class="hidden space-y-2">
-                    <label id="lbl-detail" class="block">รายละเอียด</label>
-                    <select id="subOption" class="w-full px-4 py-3 rounded-xl border border-indigo-200 bg-indigo-50 outline-none"></select>
-                </div>
-                <button type="submit" id="st-submitBtn" class="w-full gradient-bg text-white font-semibold py-4 rounded-2xl shadow-lg active:scale-95 transition-all">ยืนยันข้อมูล</button>
+                <div class="space-y-2"><label id="lbl-fullname" class="block"></label><input type="text" id="fullname" required class="w-full px-4 py-3 rounded-xl border outline-none"></div>
+                <div class="space-y-2"><label id="lbl-phone" class="block"></label><input type="tel" id="phone" required maxlength="10" class="w-full px-4 py-3 rounded-xl border outline-none"></div>
+                <div class="space-y-2"><label id="lbl-activity" class="block"></label><select id="activity" required class="w-full px-4 py-3 rounded-xl border bg-white outline-none" onchange="handleActivityChange(this.value)"></select></div>
+                <div id="subContainer" class="hidden space-y-2"><label id="lbl-detail" class="block"></label><select id="subOption" class="w-full px-4 py-3 rounded-xl border border-indigo-200 bg-indigo-50 outline-none"></select></div>
+                <button type="submit" id="st-submitBtn" class="w-full gradient-bg text-white font-semibold py-4 rounded-2xl shadow-lg">ยืนยัน</button>
             </form>
 
             <div id="successView" class="hidden text-center py-4">
                 <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 text-green-500 text-4xl">✅</div>
-                <h3 id="st-successHeader" class="font-bold mb-6">สำเร็จ</h3>
-                <div id="st-summaryCard" class="rounded-2xl p-6 text-left relative overflow-hidden mb-6 border">
+                <h3 id="st-successHeader" class="font-bold mb-6"></h3>
+                <div id="st-summaryCard" class="rounded-2xl p-6 text-left relative overflow-hidden mb-4 border">
                     <div id="sumBar" class="absolute left-0 top-0 bottom-0 w-2 bg-indigo-500"></div>
-                    <div class="space-y-1">
-                        <p id="txt-summary-title" class="text-xs uppercase font-bold tracking-tighter">รายละเอียด</p>
-                        <p id="sumName" class="font-bold text-lg text-gray-800"></p>
-                        <p id="sumDetail" class="text-gray-600"></p>
-                    </div>
+                    <p id="txt-summary-title" class="text-xs uppercase font-bold tracking-tighter mb-2"></p>
+                    <p id="sumName" class="font-bold text-lg text-gray-800"></p>
+                    <p id="sumDetail" class="text-gray-600 mb-2"></p>
+                    <p id="txt-summary-footer" class="text-xs text-gray-400"></p>
                 </div>
-                <button onclick="location.reload()" class="w-full py-4 bg-gray-100 rounded-2xl font-bold text-gray-600 hover:bg-gray-200">➕ ลงทะเบียนเพิ่มเติม</button>
+                <button onclick="location.reload()" class="w-full py-4 bg-gray-100 rounded-2xl font-bold text-gray-600">➕ ลงทะเบียนเพิ่มเติม</button>
             </div>
         </div>
     </div>
 
     <div id="adminView" class="max-w-6xl mx-auto px-4 py-6 hidden relative z-30">
         <div class="gradient-bg p-6 rounded-t-[3rem] text-white flex justify-between items-center shadow-lg">
-            <div>
-                <h2 class="text-2xl font-bold">ระบบจัดการแบบรวมศูนย์ 🛠️</h2>
-                <p class="opacity-80 text-sm">จัดการกิจกรรม ข้อความ และดีไซน์ผ่าน Cloud</p>
-            </div>
-            <button onclick="location.reload()" class="bg-white/20 hover:bg-white/40 px-4 py-2 rounded-xl font-bold flex items-center gap-2">ออกจากระบบ 🚪</button>
+            <h2 class="text-2xl font-bold">Admin Central 🛠️</h2>
+            <button onclick="location.reload()" class="bg-white/20 px-4 py-2 rounded-xl font-bold">ออกจากระบบ 🚪</button>
         </div>
 
         <div class="bg-white rounded-b-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row border min-h-[600px]">
-            <div class="w-full md:w-3/5 border-r border-gray-100 bg-white">
+            <div class="w-full md:w-3/5 border-r border-gray-100">
                 <div class="flex border-b bg-gray-50 overflow-x-auto scrollbar-hide">
                     <button onclick="switchTab('list')" id="t-list" class="px-6 py-4 font-bold active-tab whitespace-nowrap">📋 รายชื่อ</button>
                     <button onclick="switchTab('manage')" id="t-manage" class="px-6 py-4 font-bold text-gray-400 whitespace-nowrap">🏷️ กิจกรรม</button>
-                    <button onclick="switchTab('form-design')" id="t-form-design" class="px-6 py-4 font-bold text-gray-400 whitespace-nowrap">📝 จัดการหน้าฟอร์ม</button>
-                    <button onclick="switchTab('success-design')" id="t-success-design" class="px-6 py-4 font-bold text-gray-400 whitespace-nowrap">✅ จัดการหน้าสรุป</button>
+                    <button onclick="switchTab('form-design')" id="t-form-design" class="px-6 py-4 font-bold text-gray-400 whitespace-nowrap">📝 หน้าฟอร์ม</button>
+                    <button onclick="switchTab('success-design')" id="t-success-design" class="px-6 py-4 font-bold text-gray-400 whitespace-nowrap">✅ หน้าสรุปผล</button>
                 </div>
 
                 <div class="p-6 overflow-y-auto max-h-[70vh]">
                     <div id="tab-list">
-                        <input type="text" id="admSearch" oninput="renderHistory()" placeholder="🔍 ค้นหาชื่อหรือเบอร์..." class="w-full border p-3 rounded-xl mb-4 outline-none focus:ring-2 focus:ring-indigo-500">
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-sm text-left">
-                                <thead class="bg-gray-50 text-gray-500 uppercase text-[10px] font-bold">
-                                    <tr><th class="p-3">ชื่อ-นามสกุล</th><th class="p-3">เบอร์โทร</th><th class="p-3">กิจกรรม</th></tr>
-                                </thead>
-                                <tbody id="admTableBody" class="divide-y"></tbody>
-                            </table>
-                        </div>
+                        <input type="text" id="admSearch" oninput="renderHistory()" placeholder="🔍 ค้นหา..." class="w-full border p-3 rounded-xl mb-4 outline-none focus:ring-2 focus:ring-indigo-500">
+                        <table class="w-full text-sm text-left"><tbody id="admTableBody" class="divide-y"></tbody></table>
                     </div>
 
                     <div id="tab-manage" class="hidden space-y-4">
-                        <div class="bg-indigo-50 p-6 rounded-2xl flex flex-col gap-3">
+                        <div class="bg-indigo-50 p-6 rounded-2xl space-y-3">
                             <div class="flex gap-2">
-                                <input type="text" id="newActName" placeholder="ชื่อกิจกรรมใหม่" class="flex-1 p-2 rounded-xl border outline-none">
-                                <input type="color" id="newActColor" value="#6366f1" class="w-12 h-10 rounded-lg cursor-pointer">
+                                <input type="text" id="newActName" placeholder="ชื่อกิจกรรมใหม่" class="flex-1 p-3 rounded-xl border">
+                                <input type="color" id="newActColor" value="#6366f1" class="w-14 h-12 rounded-xl cursor-pointer">
                             </div>
-                            <button onclick="addActivity()" class="w-full bg-indigo-600 text-white py-2 rounded-xl font-bold">➕ เพิ่มกิจกรรม</button>
+                            <button onclick="addActivity()" class="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold">➕ เพิ่มกิจกรรมหลัก</button>
                         </div>
-                        <div id="actGrid" class="space-y-3"></div>
-                        <button onclick="saveActToCloud()" class="w-full bg-green-600 text-white py-4 rounded-2xl font-bold shadow-lg mt-6">💾 บันทึกกิจกรรมลง Cloud</button>
+                        <div id="actGrid" class="space-y-4"></div>
+                        <button onclick="saveActToCloud()" class="w-full bg-green-600 text-white py-4 rounded-2xl font-bold shadow-lg mt-6 active:scale-95 transition-all">💾 บันทึกกิจกรรมไปที่ Cloud (Activities)</button>
                     </div>
 
-                    <div id="tab-form-design" class="hidden space-y-6">
-                        <div id="editor-form" class="space-y-4"></div>
-                        <button onclick="saveAllToCloud()" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold shadow-lg">💾 บันทึกหน้าฟอร์มลง Cloud</button>
+                    <div id="tab-form-design" class="hidden space-y-4">
+                        <div id="editor-form" class="space-y-3"></div>
+                        <button onclick="saveAllToCloud()" class="w-full bg-indigo-600 text-white py-4 rounded-xl font-bold shadow-lg">💾 บันทึกการตั้งค่า</button>
                     </div>
 
-                    <div id="tab-success-design" class="hidden space-y-6">
-                        <div id="editor-success" class="space-y-4"></div>
-                        <button onclick="saveAllToCloud()" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold shadow-lg">💾 บันทึกหน้าสรุปลง Cloud</button>
+                    <div id="tab-success-design" class="hidden space-y-4">
+                        <div id="editor-success" class="space-y-3"></div>
+                        <button onclick="saveAllToCloud()" class="w-full bg-indigo-600 text-white py-4 rounded-xl font-bold shadow-lg">💾 บันทึกการตั้งค่า</button>
                     </div>
                 </div>
             </div>
 
-            <div class="w-full md:w-2/5 bg-gray-50 p-6 flex flex-col items-center justify-start min-h-[500px]">
+            <div class="w-full md:w-2/5 bg-gray-50 p-6 flex flex-col items-center">
                 <div class="sticky top-6 w-full max-w-[280px]">
-                    <p class="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest text-center">📱 Live Preview</p>
                     <div id="preview-container" class="bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border-[6px] border-gray-800 min-h-[480px] relative">
-                        <div class="h-6 w-full bg-gray-800 flex justify-center items-end pb-1"><div class="w-12 h-1 bg-gray-700 rounded-full"></div></div>
-                        <div id="pv-header" class="gradient-bg p-4 pt-6 text-white text-sm">
-                            <div id="pv-txt-main-title" class="font-bold">...</div>
-                        </div>
-                        <div class="p-4 -mt-4 bg-white rounded-t-3xl min-h-[380px]">
+                        <div class="h-6 w-full bg-gray-800"></div>
+                        <div id="pv-header" class="gradient-bg p-4 pt-6 text-white text-xs font-bold"><div id="pv-txt-main-title">...</div></div>
+                        <div class="p-4 -mt-4 bg-white rounded-t-3xl min-h-[400px]">
                              <div id="pv-form-area" class="space-y-3">
                                 <label id="pv-lbl-fullname" class="block font-bold">...</label>
-                                <input type="text" disabled class="w-full border p-2 rounded-lg bg-gray-50 text-[10px]" placeholder="ตัวอย่างช่องกรอก">
-                                <label id="pv-lbl-phone" class="block font-bold">...</label>
                                 <input type="text" disabled class="w-full border p-2 rounded-lg bg-gray-50 text-[10px]">
-                                <button id="pv-st-submitBtn" class="w-full py-2 rounded-lg gradient-bg text-white text-xs font-bold mt-4">...</button>
+                                <button id="pv-st-submitBtn" class="w-full py-2 rounded-lg gradient-bg text-white text-[10px] font-bold mt-4">...</button>
                              </div>
                              <div id="pv-success-area" class="hidden text-center pt-8">
                                 <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2 text-green-500">✓</div>
                                 <h3 id="pv-st-successHeader" class="font-bold">...</h3>
                                 <div id="pv-st-summaryCard" class="rounded-xl p-4 border mt-4 text-left">
-                                    <p id="pv-txt-summary-title" class="text-[8px] font-bold uppercase text-gray-400">...</p>
-                                    <div class="h-2 w-20 bg-gray-100 mt-1 rounded"></div>
+                                    <p id="pv-txt-summary-title" class="text-[8px] font-bold uppercase text-gray-400"></p>
+                                    <div class="h-2 w-20 bg-gray-100 my-1 rounded"></div>
+                                    <p id="pv-txt-summary-footer" class="text-[8px] text-gray-400 mt-2"></p>
                                 </div>
                              </div>
                         </div>
@@ -168,30 +140,26 @@
 
     <div id="loginModal">
         <div class="bg-white rounded-[2.5rem] p-10 w-full max-w-sm shadow-2xl text-center mx-4">
-            <div class="w-20 h-20 gradient-bg rounded-3xl mx-auto mb-6 flex items-center justify-center shadow-lg">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
-            </div>
-            <h3 class="text-2xl font-bold mb-2">Admin Access</h3>
-            <p class="text-gray-400 text-sm mb-8">กรุณากรอกรหัสผ่านเพื่อจัดการระบบ</p>
-            <input type="password" id="admPass" class="w-full px-6 py-4 bg-gray-50 border-2 border-gray-100 rounded-2xl mb-6 text-center text-xl outline-none focus:border-indigo-500 transition-all" placeholder="••••">
+            <h3 class="text-2xl font-bold mb-8">Admin Login</h3>
+            <input type="password" id="admPass" class="w-full px-6 py-4 bg-gray-50 border rounded-2xl mb-6 text-center text-xl outline-none" placeholder="รหัสผ่าน">
             <div class="flex gap-3">
-                <button onclick="toggleAdminLogin(false)" class="flex-1 py-4 text-gray-400 font-bold">ยกเลิก</button>
-                <button onclick="checkAdmin()" class="flex-1 py-4 gradient-bg text-white font-bold rounded-2xl shadow-xl active:scale-95 transition-all">เข้าสู่ระบบ</button>
+                <button onclick="toggleAdminLogin(false)" class="flex-1 font-bold text-gray-400">ยกเลิก</button>
+                <button onclick="checkAdmin()" class="flex-1 py-4 gradient-bg text-white font-bold rounded-2xl">เข้าสู่ระบบ</button>
             </div>
         </div>
     </div>
 
     <div id="searchModal" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-[1000] p-4">
         <div class="bg-white w-full max-w-md rounded-[2.5rem] p-8 shadow-2xl">
-            <div class="flex justify-between items-center mb-6"><h3 class="text-xl font-bold">🔍 ค้นหาข้อมูล</h3><button onclick="toggleSearchModal(false)" class="text-gray-400 text-2xl">✕</button></div>
-            <input type="tel" oninput="handleSearch(this.value)" placeholder="กรอกเบอร์โทร..." class="w-full p-4 bg-gray-50 border rounded-2xl mb-6 outline-none focus:ring-2 focus:ring-indigo-500">
-            <div id="searchResults" class="space-y-3 max-h-[40vh] overflow-y-auto"></div>
+            <div class="flex justify-between items-center mb-6"><h3 class="text-xl font-bold">🔍 ค้นหาข้อมูล</h3><button onclick="toggleSearchModal(false)" class="text-gray-400">✕</button></div>
+            <input type="tel" oninput="handleSearch(this.value)" placeholder="กรอกเบอร์โทร..." class="w-full p-4 bg-gray-50 border rounded-2xl mb-6 outline-none">
+            <div id="searchResults" class="space-y-3 max-h-[40vh] overflow-y-auto scrollbar-hide"></div>
         </div>
     </div>
 
     <script>
         const LIFF_ID = "2008940385-theIq9K7"; 
-        const API_URL = "https://script.google.com/macros/s/AKfycbynMJZfK0llXJeSd8_thnWndhwMIVGB16MqFHW3qvsP2pyYdNTK-Tu04KLsM8S2DYat/exec"; 
+        const API_URL = "https://script.google.com/macros/s/AKfycbyN_vG03u248P04FvX_O0u4_K00S0T5I4_r-99_qP5_I_P_O_I_T/exec"; // เปลี่ยนเป็น URL ของคุณ
 
         let masterSettings = {
             'txt-main-title': { text: 'ลงทะเบียนร่วมบุญ 🙏', color: '#ffffff', size: '24px', weight: '700' },
@@ -202,7 +170,8 @@
             'st-submitBtn': { text: '✨ ยืนยันข้อมูล', color: '#ffffff', size: '18px', weight: '600' },
             'st-successHeader': { text: 'บันทึกข้อมูลสำเร็จ ✅', color: '#1f2937', size: '24px', weight: '700' },
             'txt-summary-title': { text: '📜 รายละเอียดการลงทะเบียน', color: '#9ca3af', size: '12px', weight: '700' },
-            'st-summaryCard': { text: 'สีพื้นหลังกล่องสรุป', color: '#f9fafb', size: '0', weight: '0' }
+            'txt-summary-footer': { text: '* กรุณาเตรียมหลักฐานการโอนเงินหน้างาน', color: '#9ca3af', size: '11px', weight: '400' },
+            'st-summaryCard': { text: 'สีพื้นกล่องสรุป', color: '#f9fafb', size: '0', weight: '0' }
         };
 
         let currentConfig = {};
@@ -227,14 +196,12 @@
                 const cloud = await response.json();
                 if(cloud.settings) masterSettings = cloud.settings;
                 if(cloud.activities) currentConfig = cloud.activities;
-                // Simulating History for display
                 registrationHistory = JSON.parse(localStorage.getItem('merit_history') || '[]');
-                
                 applyAllSettings();
                 renderOptions();
                 renderEditor();
                 renderHistory();
-            } catch (e) { console.warn("Cloud Sync Error", e); }
+            } catch (e) { console.warn("Sync failed"); }
             toggleLoading(false);
         }
 
@@ -243,18 +210,11 @@
                 const s = masterSettings[id];
                 const el = document.getElementById(id);
                 const pv = document.getElementById('pv-' + id);
-                
                 if (el && id !== 'st-summaryCard') {
-                    el.innerText = s.text;
-                    el.style.color = s.color;
-                    el.style.fontSize = s.size;
-                    el.style.fontWeight = s.weight;
+                    el.innerText = s.text; el.style.color = s.color; el.style.fontSize = s.size; el.style.fontWeight = s.weight;
                 }
                 if (pv && id !== 'st-summaryCard') {
-                    pv.innerText = s.text;
-                    pv.style.color = s.color;
-                    pv.style.fontSize = (parseInt(s.size) * 0.7) + 'px';
-                    pv.style.fontWeight = s.weight;
+                    pv.innerText = s.text; pv.style.color = s.color; pv.style.fontSize = (parseInt(s.size) * 0.65) + 'px'; pv.style.fontWeight = s.weight;
                 }
                 if (id === 'st-summaryCard') {
                     document.getElementById('st-summaryCard').style.backgroundColor = s.color;
@@ -265,23 +225,17 @@
 
         function renderEditor() {
             const formKeys = ['txt-main-title', 'lbl-fullname', 'lbl-phone', 'lbl-activity', 'lbl-detail', 'st-submitBtn'];
-            const successKeys = ['st-successHeader', 'txt-summary-title', 'st-summaryCard'];
+            const successKeys = ['st-successHeader', 'txt-summary-title', 'txt-summary-footer', 'st-summaryCard'];
             
             const createUI = (key) => {
                 const s = masterSettings[key];
-                return `
-                <div class="bg-white border p-4 rounded-2xl shadow-sm space-y-3">
-                    <div class="flex justify-between items-center"><span class="text-[10px] font-bold text-gray-400 uppercase">ID: ${key}</span></div>
-                    ${key !== 'st-summaryCard' ? `<input type="text" value="${s.text}" oninput="updateMaster('${key}', 'text', this.value)" class="w-full font-bold border-b p-1 outline-none focus:border-indigo-500">` : `<span class="font-bold text-sm">${s.text}</span>`}
-                    <div class="flex flex-wrap gap-4 items-center text-xs">
-                        <div class="flex items-center gap-1">🎨 <input type="color" value="${s.color}" oninput="updateMaster('${key}', 'color', this.value)" class="w-6 h-6 rounded cursor-pointer"></div>
-                        ${key !== 'st-summaryCard' ? `
-                        <div class="flex items-center gap-1">📏 <input type="number" value="${parseInt(s.size)}" oninput="updateMaster('${key}', 'size', this.value + 'px')" class="w-12 border rounded text-center"> px</div>
-                        <div class="flex items-center gap-1">🔠 <select onchange="updateMaster('${key}', 'weight', this.value)" class="border rounded px-1">
-                            <option value="300" ${s.weight=='300'?'selected':''}>บาง</option>
-                            <option value="400" ${s.weight=='400'?'selected':''}>ปกติ</option>
-                            <option value="700" ${s.weight=='700'?'selected':''}>หนา</option>
-                        </select></div>` : ''}
+                return `<div class="bg-white border p-4 rounded-2xl shadow-sm space-y-3">
+                    <span class="text-[9px] font-bold text-gray-300 uppercase">${key}</span>
+                    ${key !== 'st-summaryCard' ? `<input type="text" value="${s.text}" oninput="updateMaster('${key}', 'text', this.value)" class="w-full font-bold border-b outline-none focus:border-indigo-500">` : `<div class="text-sm font-bold">พื้นหลังกล่องสรุป</div>`}
+                    <div class="flex gap-4 items-center text-xs">
+                        🎨 <input type="color" value="${s.color}" oninput="updateMaster('${key}', 'color', this.value)" class="w-6 h-6 cursor-pointer">
+                        ${key !== 'st-summaryCard' ? `📏 <input type="number" value="${parseInt(s.size)}" oninput="updateMaster('${key}', 'size', this.value + 'px')" class="w-10 border text-center"> px
+                        🔠 <select onchange="updateMaster('${key}', 'weight', this.value)" class="border rounded"><option value="300" ${s.weight=='300'?'selected':''}>บาง</option><option value="400" ${s.weight=='400'?'selected':''}>ปกติ</option><option value="700" ${s.weight=='700'?'selected':''}>หนา</option></select>` : ''}
                     </div>
                 </div>`;
             };
@@ -289,30 +243,16 @@
             document.getElementById('editor-success').innerHTML = successKeys.map(createUI).join('');
         }
 
-        function updateMaster(key, field, val) {
-            masterSettings[key][field] = val;
-            applyAllSettings();
-        }
+        function updateMaster(key, field, val) { masterSettings[key][field] = val; applyAllSettings(); }
 
         async function saveAllToCloud() {
             toggleLoading(true);
-            try {
-                await fetch(API_URL, { method: 'POST', body: JSON.stringify({ type: 'SAVE_ALL', settings: masterSettings }) });
-                alert("✨ บันทึกข้อมูลลง Cloud เรียบร้อย!");
-            } catch (e) { alert("Error saving data"); }
+            await fetch(API_URL, { method: 'POST', body: JSON.stringify({ type: 'SAVE_ALL', settings: masterSettings }) });
+            alert("✅ บันทึกดีไซน์เรียบร้อย");
             toggleLoading(false);
         }
 
-        function switchTab(t) {
-            ['list', 'manage', 'form-design', 'success-design'].forEach(tab => {
-                document.getElementById('tab-'+tab).classList.toggle('hidden', tab !== t);
-                document.getElementById('t-'+tab).className = tab === t ? 'px-6 py-4 font-bold active-tab whitespace-nowrap' : 'px-6 py-4 font-bold text-gray-400 whitespace-nowrap';
-            });
-            document.getElementById('pv-form-area').classList.toggle('hidden', t === 'success-design');
-            document.getElementById('pv-success-area').classList.toggle('hidden', t !== 'success-design');
-        }
-
-        // --- Activity Management ---
+        // --- Activity Management (Original Sub-item style) ---
         function addActivity() {
             const name = document.getElementById('newActName').value;
             if(!name) return;
@@ -324,28 +264,32 @@
 
         function renderAdminActs() {
             document.getElementById('actGrid').innerHTML = Object.keys(currentConfig).map(k => `
-                <div class="flex items-center justify-between bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
-                    <div class="flex items-center gap-3">
-                        <div class="w-4 h-4 rounded-full shadow-inner" style="background:${currentConfig[k].color}"></div>
-                        <span class="font-bold text-gray-700">${currentConfig[k].label}</span>
+                <div class="bg-white border rounded-2xl p-4 shadow-sm space-y-3 border-l-8" style="border-left-color: ${currentConfig[k].color}">
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold text-indigo-900 text-lg">${currentConfig[k].label}</span>
+                        <button onclick="delete currentConfig['${k}']; renderAdminActs();" class="text-red-400">✕ ลบ</button>
                     </div>
-                    <div class="flex gap-2">
-                        <button onclick="addSubItem('${k}')" class="text-[10px] bg-gray-100 px-2 py-1 rounded-lg">เพิ่มรายย่อย</button>
-                        <button onclick="delete currentConfig['${k}']; renderAdminActs();" class="text-red-400 px-2">✕</button>
+                    <div class="flex flex-wrap gap-2">
+                        ${currentConfig[k].list.map((sub, idx) => `
+                            <span class="bg-gray-100 px-3 py-1 rounded-full text-xs flex items-center gap-2">
+                                ${sub} <button onclick="currentConfig['${k}'].list.splice(${idx},1); renderAdminActs();" class="text-red-300">✕</button>
+                            </span>
+                        `).join('')}
+                        <button onclick="addSubItem('${k}')" class="bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full text-xs font-bold">+ เพิ่มรายการย่อย</button>
                     </div>
                 </div>
             `).join('');
         }
 
         function addSubItem(k) {
-            const item = prompt("ระบุชื่อรายการย่อย:");
+            const item = prompt("ระบุรายการย่อย (เช่น ชื่อพระ / ประเภทสินค้า):");
             if(item) { currentConfig[k].list.push(item); renderAdminActs(); }
         }
 
         async function saveActToCloud() {
             toggleLoading(true);
             await fetch(API_URL, { method: 'POST', body: JSON.stringify({ type: 'SAVE_ACT', activities: currentConfig }) });
-            alert("✅ อัปเดตกิจกรรมเรียบร้อย");
+            alert("✅ บันทึกกิจกรรมลง Cloud (Activities) เรียบร้อย!");
             toggleLoading(false);
             renderOptions();
         }
@@ -362,60 +306,50 @@
             if(data && data.list && data.list.length > 0) {
                 sub.innerHTML = data.list.map(i => `<option value="${i}">${i}</option>`).join('');
                 document.getElementById('subContainer').classList.remove('hidden');
-            } else {
-                document.getElementById('subContainer').classList.add('hidden');
-            }
+            } else { document.getElementById('subContainer').classList.add('hidden'); }
         }
 
-        // --- History Management ---
+        // --- Core Logic ---
+        function switchTab(t) {
+            ['list', 'manage', 'form-design', 'success-design'].forEach(tab => {
+                document.getElementById('tab-'+tab).classList.toggle('hidden', tab !== t);
+                document.getElementById('t-'+tab).className = tab === t ? 'px-6 py-4 font-bold active-tab whitespace-nowrap' : 'px-6 py-4 font-bold text-gray-400 whitespace-nowrap';
+            });
+            document.getElementById('pv-form-area').classList.toggle('hidden', t === 'success-design');
+            document.getElementById('pv-success-area').classList.toggle('hidden', t !== 'success-design');
+            if(t === 'manage') renderAdminActs();
+        }
+
         function renderHistory() {
             const q = document.getElementById('admSearch').value.toLowerCase();
             const filtered = registrationHistory.filter(x => x.fullname.toLowerCase().includes(q) || x.phone.includes(q));
-            document.getElementById('admTableBody').innerHTML = filtered.map(x => `
-                <tr>
-                    <td class="p-3 font-bold text-gray-800">${x.fullname}</td>
-                    <td class="p-3 text-gray-500">${x.phone}</td>
-                    <td class="p-3"><span class="px-2 py-1 bg-indigo-50 text-indigo-600 rounded-lg text-[10px] font-bold">${x.activity}</span></td>
-                </tr>
-            `).join('');
+            document.getElementById('admTableBody').innerHTML = filtered.map(x => `<tr><td class="p-3 font-bold">${x.fullname}</td><td class="p-3 text-gray-400">${x.phone}</td><td class="p-3 text-indigo-600 font-bold">${x.activity}</td></tr>`).join('');
         }
 
-        // --- Form Submission ---
         document.getElementById('meritForm').onsubmit = async function(e) {
             e.preventDefault();
             toggleLoading(true);
-            const actKey = document.getElementById('activity').value;
-            const act = currentConfig[actKey];
-            const data = {
-                fullname: document.getElementById('fullname').value,
-                phone: document.getElementById('phone').value,
-                activity: act.label,
-                subOption: document.getElementById('subOption').value || '-'
-            };
+            const act = currentConfig[document.getElementById('activity').value];
+            const data = { fullname: document.getElementById('fullname').value, phone: document.getElementById('phone').value, activity: act.label, subOption: document.getElementById('subOption').value || '-' };
             try {
                 await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
-                registrationHistory.unshift(data);
-                localStorage.setItem('merit_history', JSON.stringify(registrationHistory));
+                registrationHistory.unshift(data); localStorage.setItem('merit_history', JSON.stringify(registrationHistory));
                 document.getElementById('sumName').textContent = data.fullname;
                 document.getElementById('sumDetail').textContent = `${data.activity} ${data.subOption !== '-' ? '('+data.subOption+')' : ''}`;
                 document.getElementById('sumBar').style.backgroundColor = act.color;
                 document.getElementById('meritForm').classList.add('hidden');
                 document.getElementById('successView').classList.remove('hidden');
-            } catch(e){ alert("บันทึกไม่สำเร็จ ลองใหม่อีกครั้ง"); }
+            } catch(e){ alert("Error"); }
             toggleLoading(false);
         };
 
-        // --- UI Helpers ---
         function toggleLoading(s) { document.getElementById('loadingOverlay').style.display = s ? 'flex' : 'none'; }
         function toggleAdminLogin(s) { document.getElementById('loginModal').style.display = s ? 'flex' : 'none'; }
         function checkAdmin() {
             if(document.getElementById('admPass').value === '1234') {
-                toggleAdminLogin(false);
-                document.getElementById('appHeader').classList.add('hidden');
-                document.getElementById('userView').classList.add('hidden');
-                document.getElementById('adminView').classList.remove('hidden');
+                toggleAdminLogin(false); document.getElementById('appHeader').classList.add('hidden');
+                document.getElementById('userView').classList.add('hidden'); document.getElementById('adminView').classList.remove('hidden');
                 switchTab('list');
-                renderAdminActs();
             } else alert('รหัสผ่านไม่ถูกต้อง');
         }
         function toggleSearchModal(s) { document.getElementById('searchModal').classList.toggle('hidden', !s); }
@@ -423,14 +357,8 @@
             const res = document.getElementById('searchResults');
             if (q.length < 5) { res.innerHTML = '<p class="text-center text-gray-400 py-10">กรอกเบอร์โทร 5 หลักขึ้นไป</p>'; return; }
             const filtered = registrationHistory.filter(h => h.phone.includes(q));
-            res.innerHTML = filtered.length ? filtered.map(h => `
-                <div class="p-4 bg-gray-50 rounded-2xl border-l-4 border-indigo-500">
-                    <div class="font-bold text-gray-800">${h.fullname}</div>
-                    <div class="text-xs text-gray-500">${h.activity} - ${h.subOption}</div>
-                </div>
-            `).join('') : '<p class="text-center text-gray-400 py-10">ไม่พบข้อมูล</p>';
+            res.innerHTML = filtered.length ? filtered.map(h => `<div class="p-4 bg-gray-50 rounded-2xl border-l-4 border-indigo-500"><div class="font-bold text-gray-800">${h.fullname}</div><div class="text-xs text-gray-500">${h.activity}</div></div>`).join('') : '<p class="text-center text-gray-400 py-10">ไม่พบข้อมูล</p>';
         }
-        
         window.onload = init;
     </script>
 </body>
