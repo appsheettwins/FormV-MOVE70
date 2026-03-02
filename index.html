@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบลงทะเบียนกิจกรรมบุญ</title>
+    <title>ระบบลงทะเบียนกิจกรรมบุญ 🌟</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
@@ -11,7 +11,7 @@
         body { font-family: 'Kanit', sans-serif; background-color: #f8fafc; }
         .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
         .glass-effect { background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .active-tab { border-bottom: 3px solid #6366f1; color: #4338ca; }
+        .active-tab { border-bottom: 4px solid #6366f1; color: #4338ca; background: rgba(99, 102, 241, 0.05); }
         #loadingOverlay { display:none; position:fixed; inset:0; background:rgba(255,255,255,0.8); z-index:10000; align-items:center; justify-content:center; flex-direction: column; }
     </style>
 </head>
@@ -19,7 +19,7 @@
 
     <div id="loadingOverlay">
         <div class="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-4"></div>
-        <p class="font-bold text-indigo-600">กำลังประมวลผล...</p>
+        <p class="font-bold text-indigo-600">กำลังประมวลผล... ✨</p>
     </div>
 
     <div id="appHeader" class="gradient-bg text-white pt-10 pb-24 px-6 rounded-b-[3rem] shadow-lg mb-[-40px] relative z-10">
@@ -29,10 +29,13 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" /></svg>
                 </button>
                 <div>
-                    <h1 class="text-2xl font-bold">ลงทะเบียนร่วมบุญ</h1>
-                    <p class="opacity-90 font-light text-xs text-yellow-200">สวัสดีคุณ <span id="userNameDisplay">...</span></p>
+                    <h1 class="text-2xl font-bold">ลงทะเบียนร่วมบุญ 🙏</h1>
+                    <p class="opacity-90 font-light text-xs text-yellow-200">สวัสดีคุณ <span id="userNameDisplay">...</span> ✨</p>
                 </div>
             </div>
+            <button onclick="toggleSearchModal(true)" class="glass-effect p-3 rounded-2xl hover:bg-white/30">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+            </button>
         </div>
     </div>
 
@@ -40,52 +43,62 @@
         <div id="mainContentCard" class="bg-white rounded-3xl shadow-xl p-8 border border-gray-100 min-h-[400px]">
             <form id="meritForm" class="space-y-6">
                 <div class="space-y-2">
-                    <label class="st-label block text-sm font-medium text-gray-700">ชื่อ-นามสกุล</label>
-                    <input type="text" id="fullname" required class="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-indigo-500" placeholder="ชื่อผู้ร่วมบุญ">
+                    <label class="st-label block text-sm font-medium text-gray-700">👤 ชื่อ-นามสกุล</label>
+                    <input type="text" id="fullname" required class="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-indigo-500" placeholder="ระบุชื่อผู้ร่วมบุญ">
                 </div>
                 <div class="space-y-2">
-                    <label class="st-label block text-sm font-medium text-gray-700">เบอร์โทรศัพท์</label>
+                    <label class="st-label block text-sm font-medium text-gray-700">📞 เบอร์โทรศัพท์</label>
                     <input type="tel" id="phone" required maxlength="10" class="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none" placeholder="08xxxxxxxx">
                 </div>
                 <div class="space-y-2">
-                    <label class="st-label block text-sm font-medium text-gray-700">เลือกกิจกรรม</label>
+                    <label class="st-label block text-sm font-medium text-gray-700">🗓️ เลือกกิจกรรม</label>
                     <select id="activity" required class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white outline-none"></select>
                 </div>
                 <div id="subContainer" class="hidden space-y-2">
-                    <label class="st-label block text-sm font-medium text-gray-700">ระบุรายละเอียด</label>
+                    <label class="st-label block text-sm font-medium text-gray-700">📝 ระบุรายละเอียด</label>
                     <select id="subOption" class="w-full px-4 py-3 rounded-xl border border-indigo-200 bg-indigo-50 outline-none"></select>
                 </div>
-                <button type="submit" id="st-submitBtn" class="w-full gradient-bg text-white font-semibold py-4 rounded-2xl shadow-lg active:scale-95 text-lg">ยืนยันข้อมูล</button>
+                <button type="submit" id="st-submitBtn" class="w-full gradient-bg text-white font-semibold py-4 rounded-2xl shadow-lg active:scale-95 text-lg transition-all">✨ ยืนยันข้อมูล</button>
             </form>
 
             <div id="successView" class="hidden text-center py-4">
-                <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 text-green-500 text-4xl">✓</div>
-                <h3 id="st-successHeader" class="font-bold text-gray-800 mb-6 text-2xl">บันทึกสำเร็จ</h3>
+                <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 text-green-500 text-4xl">✅</div>
+                <h3 id="st-successHeader" class="font-bold text-gray-800 mb-6 text-2xl">บันทึกข้อมูลสำเร็จ</h3>
                 <div id="st-summaryCard" class="bg-gray-50 rounded-2xl p-6 text-left relative overflow-hidden mb-6 border border-gray-100">
                     <div id="sumBar" class="absolute left-0 top-0 bottom-0 w-2 bg-indigo-500"></div>
                     <div id="st-summaryInfo" class="space-y-1">
-                        <p class="text-xs text-gray-400 uppercase tracking-widest font-bold">ข้อมูลผู้ลงทะเบียน</p>
+                        <p class="text-xs text-gray-400 uppercase font-bold tracking-tighter">📜 รายละเอียดการลงทะเบียน</p>
                         <p id="sumName" class="font-bold text-lg text-gray-800"></p>
                         <p id="sumDetail" class="text-gray-600"></p>
                     </div>
                 </div>
-                <button onclick="location.reload()" class="w-full py-4 bg-gray-100 rounded-2xl font-bold text-gray-600 hover:bg-gray-200 transition-colors">ลงทะเบียนเพิ่ม</button>
+                <button onclick="location.reload()" class="w-full py-4 bg-gray-100 rounded-2xl font-bold text-gray-600 hover:bg-gray-200 transition-colors">➕ ลงทะเบียนเพิ่มเติม</button>
             </div>
         </div>
     </div>
 
     <div id="adminView" class="max-w-5xl mx-auto px-4 py-6 hidden relative z-30">
-        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
+        <div class="gradient-bg p-8 rounded-t-[3rem] text-white shadow-lg">
+            <h2 class="text-2xl font-bold">ระบบจัดการหลังบ้าน 🛠️</h2>
+            <p class="opacity-80 text-sm">จัดการข้อมูลและปรับแต่งดีไซน์แอปพลิเคชัน</p>
+        </div>
+
+        <div class="bg-white rounded-b-3xl shadow-2xl overflow-hidden border border-gray-100">
             <div class="flex border-b bg-gray-50 overflow-x-auto">
-                <button onclick="switchTab('list')" id="t-list" class="px-8 py-5 font-bold active-tab">รายชื่อ</button>
-                <button onclick="switchTab('manage')" id="t-manage" class="px-8 py-5 font-bold text-gray-400">เมนูกิจกรรม</button>
-                <button onclick="switchTab('style')" id="t-style" class="px-8 py-5 font-bold text-gray-400">ปรับแต่งดีไซน์ 🎨</button>
+                <button onclick="switchTab('list')" id="t-list" class="px-8 py-5 font-bold active-tab">📋 รายชื่อ</button>
+                <button onclick="switchTab('manage')" id="t-manage" class="px-8 py-5 font-bold text-gray-400">🏷️ เมนูกิจกรรม</button>
+                <button onclick="switchTab('style')" id="t-style" class="px-8 py-5 font-bold text-gray-400">🎨 ปรับแต่งดีไซน์</button>
             </div>
 
             <div id="tab-list" class="p-6">
+                <div class="flex gap-4 mb-4">
+                    <input type="text" id="admSearch" oninput="renderHistory()" placeholder="🔍 ค้นหาชื่อหรือเบอร์..." class="flex-1 border p-3 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm text-left">
-                        <thead class="bg-gray-50"><tr><th class="p-4">ชื่อ</th><th class="p-4">เบอร์</th><th class="p-4">กิจกรรม</th><th class="p-4">รายละเอียด</th></tr></thead>
+                        <thead class="bg-gray-50 text-gray-500 uppercase text-xs">
+                            <tr><th class="p-4">ชื่อผู้ร่วมบุญ</th><th class="p-4">เบอร์โทร</th><th class="p-4">กิจกรรม</th><th class="p-4">รายละเอียด</th></tr>
+                        </thead>
                         <tbody id="admTableBody" class="divide-y"></tbody>
                     </table>
                 </div>
@@ -93,15 +106,15 @@
 
             <div id="tab-manage" class="p-6 hidden">
                 <div class="bg-indigo-50 p-6 rounded-2xl mb-8 flex flex-wrap gap-4 items-end">
-                    <div class="flex-1">
-                        <label class="block text-xs font-bold mb-1">ชื่อกิจกรรมใหม่</label>
-                        <input type="text" id="newActName" class="w-full border p-2 rounded-xl outline-none">
+                    <div class="flex-1 min-w-[200px]">
+                        <label class="block text-xs font-bold mb-1 text-indigo-600">🆕 ชื่อกิจกรรมใหม่</label>
+                        <input type="text" id="newActName" class="w-full border p-2 rounded-xl outline-none" placeholder="ระบุชื่อกิจกรรม">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold mb-1">สีประจำกิจกรรม</label>
-                        <input type="color" id="newActColor" value="#6366f1" class="h-10 w-16 p-1 bg-white border rounded-xl">
+                        <label class="block text-xs font-bold mb-1 text-indigo-600">🎨 สี</label>
+                        <input type="color" id="newActColor" value="#6366f1" class="h-10 w-16 p-1 bg-white border rounded-xl cursor-pointer">
                     </div>
-                    <button onclick="addActivity()" class="bg-indigo-600 text-white px-8 py-2 rounded-xl font-bold">สร้างกิจกรรม</button>
+                    <button onclick="addActivity()" class="bg-indigo-600 text-white px-8 py-2 rounded-xl font-bold hover:bg-indigo-700">➕ สร้าง</button>
                 </div>
                 <div id="actGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
             </div>
@@ -110,55 +123,55 @@
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
                     <div class="bg-gray-50 p-6 rounded-3xl space-y-6">
                         <div>
-                            <label class="block font-bold mb-2">1. เลือกหน้าที่ต้องการปรับ</label>
+                            <label class="block font-bold mb-2">1️⃣ เลือกหน้า</label>
                             <select id="style-page" onchange="togglePreviewPage()" class="w-full border p-3 rounded-xl">
-                                <option value="form">หน้าฟอร์มกรอกข้อมูล</option>
+                                <option value="form">หน้าฟอร์ม (Form)</option>
                                 <option value="success">หน้าสรุปข้อมูล (Success)</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block font-bold mb-2">2. เลือกส่วนที่ต้องการแก้</label>
+                            <label class="block font-bold mb-2">2️⃣ เลือกส่วนที่จะแก้ไข</label>
                             <select id="style-target" onchange="loadTargetStyles()" class="w-full border p-3 rounded-xl bg-white"></select>
                         </div>
 
                         <div class="space-y-5 pt-4 border-t border-gray-200">
                             <div class="flex items-center justify-between">
-                                <span class="text-sm font-medium">ขนาดตัวอักษร: <b id="display-size" class="text-indigo-600">16px</b></span>
+                                <span class="text-sm font-medium">📏 ขนาด: <b id="display-size" class="text-indigo-600 ml-2">16px</b></span>
                                 <input type="range" id="val-size" min="12" max="60" oninput="updateLiveUI()" class="w-1/2">
                             </div>
                             <div class="flex items-center justify-between">
-                                <span class="text-sm font-medium">สี (รหัส HEX Code):</span>
+                                <span class="text-sm font-medium">🎨 สี (Hex Code):</span>
                                 <div class="flex gap-2">
                                     <input type="text" id="val-color-hex" oninput="updateColorFromHex(this.value)" class="border rounded-lg px-2 py-1 text-xs w-24 font-mono uppercase">
-                                    <input type="color" id="val-color" oninput="updateHexFromColor(this.value)" class="h-8 w-8 rounded cursor-pointer">
+                                    <input type="color" id="val-color" oninput="updateHexFromColor(this.value)" class="h-8 w-8 rounded cursor-pointer border">
                                 </div>
                             </div>
                             <div class="flex items-center justify-between">
-                                <span class="text-sm font-medium">ความหนา:</span>
-                                <select id="val-weight" onchange="updateLiveUI()" class="border p-1 rounded-lg text-sm">
-                                    <option value="300">บาง (Light)</option>
-                                    <option value="400">ปกติ (Normal)</option>
-                                    <option value="600">หนา (Bold)</option>
-                                    <option value="800">หนามาก (Extra Bold)</option>
+                                <span class="text-sm font-medium">🔠 ความหนา:</span>
+                                <select id="val-weight" onchange="updateLiveUI()" class="border p-1 rounded-lg text-sm bg-white">
+                                    <option value="300">บาง</option>
+                                    <option value="400">ปกติ</option>
+                                    <option value="600">หนา</option>
+                                    <option value="800">หนาพิเศษ</option>
                                 </select>
                             </div>
                         </div>
-                        <button onclick="saveStyles()" class="w-full bg-green-600 text-white font-bold py-4 rounded-2xl shadow-lg hover:bg-green-700 transition-all">บันทึกการตั้งค่า</button>
+                        <button onclick="saveStyles()" class="w-full bg-green-600 text-white font-bold py-4 rounded-2xl shadow-lg hover:bg-green-700 transition-all">💾 บันทึกการตั้งค่า</button>
                     </div>
 
-                    <div class="border-4 border-dashed border-gray-200 rounded-3xl p-8 bg-white relative">
-                        <span class="absolute top-4 left-4 text-[10px] font-bold bg-gray-100 px-2 py-1 rounded text-gray-400 uppercase tracking-widest">Live Preview</span>
+                    <div class="border-4 border-dashed border-gray-200 rounded-3xl p-8 bg-white relative flex flex-col justify-center min-h-[300px]">
+                        <span class="absolute top-4 left-4 text-[10px] font-bold bg-indigo-50 text-indigo-400 px-2 py-1 rounded-full uppercase">👁️ Live Preview</span>
                         <div id="preview-form" class="space-y-4 pt-4">
-                            <label class="pv-st-label block font-medium">ชื่อ-นามสกุล</label>
-                            <input type="text" disabled placeholder="ตัวอย่างช่องกรอก..." class="w-full border p-3 rounded-xl bg-gray-50">
-                            <button id="pv-st-submitBtn" class="w-full gradient-bg text-white py-3 rounded-xl font-bold">ปุ่มยืนยันข้อมูล</button>
+                            <label class="pv-st-label block font-medium">👤 ชื่อ-นามสกุล</label>
+                            <input type="text" disabled placeholder="..." class="w-full border p-3 rounded-xl bg-gray-50">
+                            <button id="pv-st-submitBtn" class="w-full gradient-bg text-white py-3 rounded-xl font-bold">✨ ปุ่มยืนยันข้อมูล</button>
                         </div>
                         <div id="preview-success" class="hidden text-center pt-4">
-                            <h3 id="pv-st-successHeader" class="font-bold">บันทึกสำเร็จ</h3>
+                            <h3 id="pv-st-successHeader" class="font-bold">✅ บันทึกสำเร็จ</h3>
                             <div id="pv-st-summaryCard" class="bg-gray-100 rounded-2xl p-6 border mt-4 text-left">
                                 <div id="pv-st-summaryInfo">
-                                    <p class="font-bold">ทดสอบ 1</p>
-                                    <p class="text-sm opacity-75">กิจกรรมธรรมยาตรา - 5 ม.ค.</p>
+                                    <p class="font-bold">ตัวอย่างชื่อผู้สมัคร</p>
+                                    <p class="text-sm opacity-75">กิจกรรมธรรมยาตรา - วัดพระธรรมกาย</p>
                                 </div>
                             </div>
                         </div>
@@ -166,19 +179,32 @@
                 </div>
             </div>
 
-            <div class="p-6 bg-gray-50 border-t flex justify-center">
-                <button onclick="location.reload()" class="text-red-500 font-bold hover:underline">ออกจากระบบ</button>
+            <div class="p-8 bg-gray-50 border-t flex justify-center">
+                <button onclick="location.reload()" class="text-red-500 font-bold hover:bg-red-50 px-6 py-2 rounded-xl transition-all">🚪 ออกจากระบบ</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="searchModal" class="fixed inset-0 bg-black/60 hidden flex items-end justify-center z-[1000]">
+        <div class="bg-white w-full max-w-md rounded-t-[3rem] p-8 shadow-2xl transition-transform duration-300">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-gray-800">🔍 ค้นหาข้อมูล</h3>
+                <button onclick="toggleSearchModal(false)" class="bg-gray-100 p-2 rounded-full">✕</button>
+            </div>
+            <input type="tel" oninput="handleSearch(this.value)" placeholder="กรอกเบอร์โทรศัพท์เพื่อค้นหา..." class="w-full p-4 bg-gray-50 border-2 border-indigo-100 rounded-2xl mb-6 outline-none focus:border-indigo-500">
+            <div id="searchResults" class="space-y-4 max-h-[50vh] overflow-y-auto pb-6">
+                <p class="text-center text-gray-400 py-10">พิมพ์เบอร์โทร 5 หลักขึ้นไปเพื่อเริ่มค้นหา</p>
             </div>
         </div>
     </div>
 
     <div id="loginModal" class="fixed inset-0 bg-black/70 hidden items-center justify-center p-6 z-[1000]">
         <div class="bg-white rounded-3xl p-8 w-full max-w-sm shadow-2xl">
-            <h3 class="text-xl font-bold mb-6 text-center">Admin Login</h3>
-            <input type="password" id="admPass" class="w-full px-4 py-3 border rounded-xl mb-4 text-center outline-none focus:ring-2 focus:ring-indigo-500" placeholder="รหัสผ่าน">
+            <h3 class="text-xl font-bold mb-6 text-center text-gray-800">Admin Login 🔐</h3>
+            <input type="password" id="admPass" class="w-full px-4 py-3 border rounded-xl mb-4 text-center outline-none focus:ring-2 focus:ring-indigo-500" placeholder="ระบุรหัสผ่าน">
             <div class="flex gap-3">
                 <button onclick="toggleAdminLogin(false)" class="flex-1 py-3 text-gray-400">ยกเลิก</button>
-                <button onclick="checkAdmin()" class="flex-1 py-3 bg-indigo-600 text-white font-bold rounded-xl">เข้าสู่ระบบ</button>
+                <button onclick="checkAdmin()" class="flex-1 py-3 bg-indigo-600 text-white font-bold rounded-xl shadow-lg">ยืนยัน</button>
             </div>
         </div>
     </div>
@@ -191,7 +217,7 @@
             'act1': { label: 'ธรรมยาตรา', color: '#6366f1', list: ['2 ม.ค. - วัดพระธรรมกาย', '5 ม.ค. - อนุสรณ์สถาน'] }
         };
 
-        let uiStyles = JSON.parse(localStorage.getItem('merit_ui_v3')) || {
+        let uiStyles = JSON.parse(localStorage.getItem('merit_ui_v4')) || {
             'st-label': { color: '#374151', size: '14px', weight: '500' },
             'st-submitBtn': { color: '#ffffff', size: '18px', weight: '600' },
             'st-successHeader': { color: '#1f2937', size: '24px', weight: '700' },
@@ -200,8 +226,8 @@
         };
 
         const targetMap = {
-            'form': { 'st-label': 'ข้อความหัวข้อ (Label)', 'st-submitBtn': 'ปุ่มยืนยันข้อมูล' },
-            'success': { 'st-successHeader': 'หัวข้อ "บันทึกสำเร็จ"', 'st-summaryCard': 'สีพื้นหลังกล่องสรุป', 'st-summaryInfo': 'ข้อความสรุปข้อมูล' }
+            'form': { 'st-label': 'หัวข้อช่องกรอก', 'st-submitBtn': 'ปุ่มยืนยัน' },
+            'success': { 'st-successHeader': 'หัวข้อสำเร็จ', 'st-summaryCard': 'สีพื้นหลังกล่อง', 'st-summaryInfo': 'ข้อความสรุป' }
         };
 
         async function init() {
@@ -218,24 +244,20 @@
             renderOptions();
         }
 
-        // --- UI & Styling ---
+        // --- Styles Logic ---
         function applyGlobalStyles() {
             let css = "";
             Object.keys(uiStyles).forEach(id => {
                 const s = uiStyles[id];
-                if (id === 'st-summaryCard') {
-                    css += `#st-summaryCard, #pv-st-summaryCard { background-color: ${s.color} !important; }`;
-                } else if (id === 'st-label') {
-                    css += `.st-label, .pv-st-label { color: ${s.color} !important; font-size: ${s.size} !important; font-weight: ${s.weight} !important; }`;
-                } else {
-                    css += `#${id}, #pv-${id} { color: ${s.color} !important; font-size: ${s.size} !important; font-weight: ${s.weight} !important; }`;
-                }
+                if (id === 'st-summaryCard') { css += `#st-summaryCard, #pv-st-summaryCard { background-color: ${s.color} !important; }`; }
+                else if (id === 'st-label') { css += `.st-label, .pv-st-label { color: ${s.color} !important; font-size: ${s.size} !important; font-weight: ${s.weight} !important; }`; }
+                else { css += `#${id}, #pv-${id} { color: ${s.color} !important; font-size: ${s.size} !important; font-weight: ${s.weight} !important; }`; }
             });
             document.getElementById('live-styles').innerHTML = `
                 body { font-family: 'Kanit', sans-serif; background-color: #f8fafc; }
                 .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
                 .glass-effect { background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
-                .active-tab { border-bottom: 3px solid #6366f1; color: #4338ca; }
+                .active-tab { border-bottom: 4px solid #6366f1; color: #4338ca; background: rgba(99, 102, 241, 0.05); }
                 #loadingOverlay { display:none; position:fixed; inset:0; background:rgba(255,255,255,0.8); z-index:10000; align-items:center; justify-content:center; flex-direction: column; }
                 ${css}
             `;
@@ -266,57 +288,133 @@
             const size = document.getElementById('val-size').value + 'px';
             const color = document.getElementById('val-color').value;
             const weight = document.getElementById('val-weight').value;
-            
             document.getElementById('display-size').textContent = size;
             document.getElementById('val-color-hex').value = color;
-
             const el = document.getElementById('pv-' + id);
-            if (id === 'st-summaryCard') {
-                el.style.backgroundColor = color;
-            } else if (id === 'st-label') {
-                document.querySelectorAll('.pv-st-label').forEach(l => {
-                    l.style.color = color; l.style.fontSize = size; l.style.fontWeight = weight;
-                });
-            } else {
-                el.style.color = color; el.style.fontSize = size; el.style.fontWeight = weight;
-            }
+            if (id === 'st-summaryCard') el.style.backgroundColor = color;
+            else if (id === 'st-label') document.querySelectorAll('.pv-st-label').forEach(l => { l.style.color = color; l.style.fontSize = size; l.style.fontWeight = weight; });
+            else { el.style.color = color; el.style.fontSize = size; el.style.fontWeight = weight; }
         }
 
-        function updateColorFromHex(hex) {
-            if(/^#[0-9A-F]{6}$/i.test(hex)) {
-                document.getElementById('val-color').value = hex;
-                updateLiveUI();
-            }
-        }
-        function updateHexFromColor(color) {
-            document.getElementById('val-color-hex').value = color;
-            updateLiveUI();
-        }
+        function updateColorFromHex(hex) { if(/^#[0-9A-F]{6}$/i.test(hex)) { document.getElementById('val-color').value = hex; updateLiveUI(); }}
+        function updateHexFromColor(color) { document.getElementById('val-color-hex').value = color; updateLiveUI(); }
 
         function saveStyles() {
             const id = document.getElementById('style-target').value;
-            uiStyles[id] = {
-                size: document.getElementById('val-size').value + 'px',
-                color: document.getElementById('val-color').value,
-                weight: document.getElementById('val-weight').value
-            };
-            localStorage.setItem('merit_ui_v3', JSON.stringify(uiStyles));
-            applyGlobalStyles(); // อัปเดตทันทีไม่ต้องรีโหลด
-            alert('บันทึกดีไซน์เรียบร้อย');
+            uiStyles[id] = { size: document.getElementById('val-size').value + 'px', color: document.getElementById('val-color').value, weight: document.getElementById('val-weight').value };
+            localStorage.setItem('merit_ui_v4', JSON.stringify(uiStyles));
+            applyGlobalStyles();
+            alert('🌈 บันทึกดีไซน์เรียบร้อย');
         }
 
-        // --- Business Logic ---
+        // --- Search Logic ---
+        function toggleSearchModal(s) { 
+            const m = document.getElementById('searchModal');
+            m.classList.toggle('hidden', !s);
+            if(!s) document.getElementById('searchResults').innerHTML = '<p class="text-center text-gray-400 py-10">พิมพ์เบอร์โทร 5 หลักขึ้นไปเพื่อเริ่มค้นหา</p>';
+        }
+
+        function handleSearch(q) {
+            const res = document.getElementById('searchResults');
+            if (q.length < 5) { res.innerHTML = '<p class="text-center text-gray-400 py-10">กรอกเบอร์โทรอย่างน้อย 5 หลัก</p>'; return; }
+            const history = JSON.parse(localStorage.getItem('merit_history') || '[]');
+            const filtered = history.filter(h => h.phone.includes(q));
+            res.innerHTML = filtered.length ? filtered.map(h => {
+                const configKey = Object.keys(currentConfig).find(k => currentConfig[k].label === h.activity);
+                const color = currentConfig[configKey]?.color || '#6366f1';
+                return `<div class="p-5 bg-gray-50 rounded-2xl border-l-8" style="border-color: ${color}">
+                    <div class="font-bold text-gray-800 text-lg">👤 ${h.fullname}</div>
+                    <div class="text-sm text-gray-500 mt-1">🏷️ ${h.activity}</div>
+                    <div class="text-xs text-indigo-500 font-medium mt-1">📝 ${h.subOption}</div>
+                </div>`;
+            }).join('') : '<p class="text-center text-gray-400 py-10">❌ ไม่พบข้อมูลการลงทะเบียน</p>';
+        }
+
+        // --- Admin Logic ---
+        function switchTab(t) {
+            ['list', 'manage', 'style'].forEach(tab => {
+                document.getElementById('tab-'+tab).classList.toggle('hidden', tab !== t);
+                document.getElementById('t-'+tab).className = tab === t ? 'px-8 py-5 font-bold active-tab' : 'px-8 py-5 font-bold text-gray-400';
+            });
+            if(t === 'manage') renderAdminActs();
+            if(t === 'list') renderHistory();
+        }
+
+        function renderHistory() {
+            const h = JSON.parse(localStorage.getItem('merit_history') || '[]');
+            const q = document.getElementById('admSearch').value.toLowerCase();
+            document.getElementById('admTableBody').innerHTML = h.filter(x => x.fullname.toLowerCase().includes(q) || x.phone.includes(q))
+                .map(x => {
+                    const configKey = Object.keys(currentConfig).find(k => currentConfig[k].label === x.activity);
+                    const color = currentConfig[configKey]?.color || '#6366f1';
+                    return `<tr>
+                        <td class="p-4 font-bold text-gray-700">${x.fullname}</td>
+                        <td class="p-4 text-gray-500">${x.phone}</td>
+                        <td class="p-4"><span class="px-3 py-1 rounded-full text-white text-[10px] font-bold shadow-sm" style="background-color: ${color}">${x.activity}</span></td>
+                        <td class="p-4 text-gray-400 text-xs">${x.subOption}</td>
+                    </tr>`;
+                }).join('') || '<tr><td colspan="4" class="p-10 text-center text-gray-300">ไม่มีข้อมูล</td></tr>';
+        }
+
+        function renderAdminActs() {
+            const grid = document.getElementById('actGrid');
+            grid.innerHTML = Object.keys(currentConfig).map(k => `
+                <div class="bg-white border-2 rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                    <div class="p-4 text-white flex justify-between items-center" style="background-color: ${currentConfig[k].color}">
+                        <span class="font-bold">🏷️ ${currentConfig[k].label}</span>
+                        <div class="flex gap-2">
+                            <input type="color" value="${currentConfig[k].color}" onchange="updateActColor('${k}', this.value)" class="w-6 h-6 rounded border-none bg-transparent cursor-pointer">
+                            <button onclick="delAct('${k}')" class="bg-black/20 hover:bg-black/40 px-2 rounded">✕</button>
+                        </div>
+                    </div>
+                    <div class="p-4 space-y-3">
+                        <div id="sub-list-${k}" class="space-y-2">
+                            ${currentConfig[k].list.map((item, idx) => `
+                                <div class="flex justify-between items-center bg-gray-50 px-3 py-2 rounded-xl text-xs border border-gray-100">
+                                    <span class="text-gray-600 font-medium">🔹 ${item}</span>
+                                    <button onclick="delSubItem('${k}', ${idx})" class="text-red-300 hover:text-red-500">ลบ</button>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="flex gap-2 pt-3 border-t border-dashed">
+                            <input type="text" id="input-sub-${k}" placeholder="เพิ่มรายการย่อย..." class="flex-1 text-xs border p-2 rounded-xl outline-none focus:ring-1 focus:ring-indigo-300">
+                            <button onclick="addSubItem('${k}')" class="bg-gray-800 text-white px-4 py-2 rounded-xl text-xs hover:bg-black transition-colors">เพิ่ม</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateActColor(k, color) { currentConfig[k].color = color; saveConf(); }
+        function addActivity() {
+            const name = document.getElementById('newActName').value;
+            if(!name) return;
+            const id = 'act' + Date.now();
+            currentConfig[id] = { label: name, color: document.getElementById('newActColor').value, list: [] };
+            saveConf();
+            document.getElementById('newActName').value = '';
+        }
+        function delAct(k) { if(confirm('⚠️ ลบกิจกรรมนี้และรายการย่อยทั้งหมด?')) { delete currentConfig[k]; saveConf(); } }
+        function addSubItem(k) { const val = document.getElementById('input-sub-'+k).value; if(val) { currentConfig[k].list.push(val); saveConf(); } }
+        function delSubItem(k, idx) { currentConfig[k].list.splice(idx, 1); saveConf(); }
+        function saveConf() { 
+            localStorage.setItem('merit_config', JSON.stringify(currentConfig)); 
+            renderAdminActs(); 
+            renderOptions(); 
+        }
+
+        // --- Main Form Logic ---
         function renderOptions() {
             const sel = document.getElementById('activity');
             const opt = Object.keys(currentConfig).map(k => `<option value="${k}">${currentConfig[k].label}</option>`).join('');
-            sel.innerHTML = '<option value="" disabled selected>เลือกกิจกรรม...</option>' + opt;
+            sel.innerHTML = '<option value="" disabled selected>เลือกกิจกรรมบุญ...</option>' + opt;
         }
 
         document.getElementById('activity').onchange = function() {
             const sub = document.getElementById('subOption');
             const data = currentConfig[this.value];
             sub.innerHTML = data.list.map(i => `<option value="${i}">${i}</option>`).join('');
-            document.getElementById('subContainer').classList.remove('hidden');
+            document.getElementById('subContainer').classList.toggle('hidden', data.list.length === 0);
         };
 
         document.getElementById('meritForm').onsubmit = async function(e) {
@@ -334,99 +432,24 @@
                 const history = JSON.parse(localStorage.getItem('merit_history') || '[]');
                 history.unshift(data);
                 localStorage.setItem('merit_history', JSON.stringify(history));
-
-                // แสดงหน้าสรุป (Success View)
                 document.getElementById('sumName').textContent = data.fullname;
                 document.getElementById('sumDetail').textContent = `${data.activity} - ${data.subOption}`;
                 document.getElementById('sumBar').style.backgroundColor = act.color;
                 document.getElementById('meritForm').classList.add('hidden');
                 document.getElementById('successView').classList.remove('hidden');
-            } catch(e){ alert('ระบบขัดข้อง'); }
+            } catch(e){ alert('❌ เกิดข้อผิดพลาด กรุณาลองใหม่'); }
             document.getElementById('loadingOverlay').style.display = 'none';
         };
 
-        // --- Admin Tabs ---
-        function switchTab(t) {
-            ['list', 'manage', 'style'].forEach(tab => {
-                document.getElementById('tab-'+tab).classList.toggle('hidden', tab !== t);
-                document.getElementById('t-'+tab).className = tab === t ? 'px-8 py-5 font-bold active-tab' : 'px-8 py-5 font-bold text-gray-400';
-            });
-            if(t === 'manage') renderAdminActs();
-            if(t === 'list') renderHistory();
-        }
-
-        function renderAdminActs() {
-            const grid = document.getElementById('actGrid');
-            grid.innerHTML = Object.keys(currentConfig).map(k => `
-                <div class="bg-white border rounded-3xl overflow-hidden shadow-sm">
-                    <div class="p-4 text-white flex justify-between items-center" style="background-color: ${currentConfig[k].color}">
-                        <span class="font-bold">${currentConfig[k].label}</span>
-                        <button onclick="delAct('${k}')" class="bg-black/20 hover:bg-black/40 p-1 rounded">✕</button>
-                    </div>
-                    <div class="p-4 space-y-2">
-                        <div id="sub-list-${k}" class="space-y-1">
-                            ${currentConfig[k].list.map((item, idx) => `
-                                <div class="flex justify-between items-center bg-gray-50 p-2 rounded-lg text-xs">
-                                    <span>${item}</span>
-                                    <button onclick="delSubItem('${k}', ${idx})" class="text-red-400">ลบ</button>
-                                </div>
-                            `).join('')}
-                        </div>
-                        <div class="flex gap-2 pt-2 border-t">
-                            <input type="text" id="input-sub-${k}" placeholder="เพิ่มรายการย่อย..." class="flex-1 text-xs border p-2 rounded-lg outline-none">
-                            <button onclick="addSubItem('${k}')" class="bg-gray-800 text-white px-3 py-1 rounded-lg text-xs">เพิ่ม</button>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function addActivity() {
-            const name = document.getElementById('newActName').value;
-            if(!name) return;
-            const id = 'act' + Date.now();
-            currentConfig[id] = { label: name, color: document.getElementById('newActColor').value, list: [] };
-            saveConf();
-            document.getElementById('newActName').value = '';
-        }
-
-        function delAct(k) { if(confirm('ยืนยันลบกิจกรรม?')) { delete currentConfig[k]; saveConf(); } }
-        function addSubItem(k) {
-            const val = document.getElementById('input-sub-'+k).value;
-            if(!val) return;
-            currentConfig[k].list.push(val);
-            saveConf();
-        }
-        function delSubItem(k, idx) {
-            currentConfig[k].list.splice(idx, 1);
-            saveConf();
-        }
-        function saveConf() { 
-            localStorage.setItem('merit_config', JSON.stringify(currentConfig)); 
-            renderAdminActs(); 
-            renderOptions(); 
-        }
-
-        function renderHistory() {
-            const h = JSON.parse(localStorage.getItem('merit_history') || '[]');
-            document.getElementById('admTableBody').innerHTML = h.map(x => `
-                <tr><td class="p-4 font-bold">${x.fullname}</td><td class="p-4">${x.phone}</td><td class="p-4 text-indigo-600">${x.activity}</td><td class="p-4 text-gray-500">${x.subOption}</td></tr>
-            `).join('') || '<tr><td colspan="4" class="p-10 text-center text-gray-400">ยังไม่มีข้อมูลลงทะเบียน</td></tr>';
-        }
-
-        function toggleAdminLogin(s) {
-            const m = document.getElementById('loginModal');
-            m.style.display = s ? 'flex' : 'none';
-        }
-
+        function toggleAdminLogin(s) { document.getElementById('loginModal').style.display = s ? 'flex' : 'none'; }
         function checkAdmin() {
             if(document.getElementById('admPass').value === '1234') {
                 toggleAdminLogin(false);
                 document.getElementById('appHeader').classList.add('hidden');
                 document.getElementById('userView').classList.add('hidden');
                 document.getElementById('adminView').classList.remove('hidden');
-                renderHistory();
-            } else alert('รหัสผ่านไม่ถูกต้อง');
+                switchTab('list');
+            } else alert('❌ รหัสผ่านไม่ถูกต้อง');
         }
 
         window.onload = init;
