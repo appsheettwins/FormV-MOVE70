@@ -22,7 +22,7 @@
 
     <div id="loadingOverlay">
         <div class="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-4"></div>
-        <p class="font-bold text-indigo-600 animate-pulse">กำลังบันทึก... 🚗✨</p>
+        <p class="font-bold text-indigo-600 animate-pulse" id="loadingText">กำลังดำเนินการ... 🚗✨</p>
     </div>
 
     <div id="appHeader" class="gradient-bg text-white pt-10 pb-24 px-6 rounded-b-[3rem] shadow-lg mb-[-40px] relative z-10">
@@ -67,10 +67,7 @@
             <div id="successView" class="hidden text-center py-4 animate-in">
                 <h3 class="text-2xl font-bold text-green-600 mb-2">ลงทะเบียนสำเร็จ!</h3>
                 <p class="text-sm text-gray-500 mb-6">รอการยืนยันผ่านทาง LINE นะคะ 🙏</p>
-                
-                <div id="bookingSummary" class="bg-gray-50 rounded-2xl p-5 mb-8 text-left border-l-8 border-indigo-500 space-y-2">
-                    </div>
-
+                <div id="bookingSummary" class="bg-gray-50 rounded-2xl p-5 mb-8 text-left border-l-8 border-indigo-500 space-y-2"></div>
                 <button onclick="location.reload()" class="w-full py-4 bg-gray-100 rounded-2xl font-bold text-gray-600 hover:bg-gray-200 transition-all">➕ จองเพิ่มอีกรายการ</button>
             </div>
         </div>
@@ -125,8 +122,7 @@
                                 <th class="p-4">จุดรับ/รายการย่อย</th>
                             </tr>
                         </thead>
-                        <tbody id="adminHistoryBody" class="divide-y divide-gray-100 bg-white">
-                            </tbody>
+                        <tbody id="adminHistoryBody" class="divide-y divide-gray-100 bg-white"></tbody>
                     </table>
                 </div>
             </div>
@@ -169,11 +165,9 @@
 
     <script>
         const LIFF_ID = "2008940385-theIq9K7"; 
-        const API_URL = "https://script.google.com/macros/s/AKfycbynMJZfK0llXJeSd8_thnWndhwMIVGB16MqFHW3qvsP2pyYdNTK-Tu04KLsM8S2DYat/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbynMJZfK0llXJeSd8_thnWndhwMIVGB16MqFHW3qvsP2pyYdNTK-Tu04KLsM8S2DYat/exec"; 
 
-        let currentConfig = JSON.parse(localStorage.getItem('merit_config')) || {
-            'act1': { label: 'ธรรมยาตรา 🚶', color: '#6366f1', list: ['วัดพระธรรมกาย', 'อนุสรณ์สถาน'] }
-        };
+        let currentConfig = {};
         let allBookingData = []; 
         let liffProfile = {};
 
@@ -184,162 +178,108 @@
                     liffProfile = await liff.getProfile();
                     document.getElementById('userNameDisplay').textContent = liffProfile.displayName;
                 } else { liff.login(); }
+                await loadGlobalConfig();
             } catch (e) { console.error('LIFF Error', e); }
-            updateDropdowns();
         }
 
-        // --- Admin Dashbord ---
-        async function fetchAllDataFromSheet() {
-    try {
-        // เพิ่ม Parameter timestamp เพื่อป้องกัน Browser จำค่าเก่า (Anti-cache)
-        const response = await fetch(`${API_URL}?action=read&t=${new Date().getTime()}`); 
-        const data = await response.json();
-        
-        if (data && data.results) {
-            allBookingData = data.results;
-            console.log("ดึงข้อมูลล่าสุดสำเร็จ:", allBookingData.length, "รายการ");
+        async function loadGlobalConfig() {
+            try {
+                const res = await fetch(`${API_URL}?action=getConfig&t=${new Date().getTime()}`);
+                const data = await res.json();
+                if (data && Object.keys(data).length > 0) {
+                    currentConfig = data;
+                    updateDropdowns();
+                }
+            } catch (e) { console.log("Config load failed"); }
         }
-    } catch (e) { 
-        console.error("เชื่อมต่อ Google Sheet ไม่ได้:", e);
-        // หากเชื่อมต่อไม่ได้จริงๆ ให้ใช้ข้อมูลในเครื่องสำรอง
-        allBookingData = JSON.parse(localStorage.getItem('vmove_history') || '[]'); 
-    }
-}
 
-// ปรับส่วนการเช็ค Admin ให้รอการดึงข้อมูลจนเสร็จก่อน
-async function checkAdmin() {
-    if (document.getElementById('adminPass').value === '1129') {
-        document.getElementById('loadingOverlay').style.display = 'flex';
-        document.getElementById('loadingOverlay').querySelector('p').textContent = "กำลังดึงข้อมูลล่าสุดจาก Sheet... 🔄";
-        
-        toggleAdminLogin(false);
-        
-        // บังคับดึงข้อมูลใหม่จาก Sheet
-        await fetchAllDataFromSheet(); 
+        async function checkAdmin() {
+            if (document.getElementById('adminPass').value === '1129') { // รหัสผ่านของคุณ
+                document.getElementById('loadingOverlay').style.display = 'flex';
+                document.getElementById('loadingText').textContent = "กำลังซิงค์ข้อมูลล่าสุด... 🔄";
+                toggleAdminLogin(false);
+                try {
+                    const res = await fetch(`${API_URL}?action=read&t=${new Date().getTime()}`);
+                    const data = await res.json();
+                    allBookingData = data.results || [];
+                    document.getElementById('userView').classList.add('hidden');
+                    document.getElementById('appHeader').classList.add('hidden');
+                    document.getElementById('adminView').classList.remove('hidden');
+                    switchAdminTab('list');
+                } catch (e) { alert('โหลดข้อมูลไม่สำเร็จ'); }
+                document.getElementById('loadingOverlay').style.display = 'none';
+            } else { alert('รหัสผ่านไม่ถูกต้อง'); }
+        }
 
-        document.getElementById('userView').classList.add('hidden');
-        document.getElementById('appHeader').classList.add('hidden');
-        document.getElementById('adminView').classList.remove('hidden');
-        
-        switchAdminTab('list');
-        document.getElementById('loadingOverlay').style.display = 'none';
-    } else { 
-        alert('รหัสผ่านไม่ถูกต้อง'); 
-    }
-}
+        async function saveConfig() {
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            document.getElementById('loadingText').textContent = "กำลังบันทึกกิจกรรมลงระบบกลาง... ☁️";
+            try {
+                await fetch(API_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: JSON.stringify({ action: 'saveConfig', config: currentConfig })
+                });
+                renderAdminPanel();
+                updateDropdowns();
+            } catch (e) { alert('บันทึกล้มเหลว'); }
+            document.getElementById('loadingOverlay').style.display = 'none';
+        }
 
+        // --- Admin UI Logic ---
         function switchAdminTab(t) {
             document.getElementById('adminTab-list').classList.toggle('hidden', t !== 'list');
             document.getElementById('adminTab-manage').classList.toggle('hidden', t !== 'manage');
             document.getElementById('tabBtn-list').className = t === 'list' ? 'flex-1 py-4 font-bold active-tab' : 'flex-1 py-4 font-bold text-gray-400';
             document.getElementById('tabBtn-manage').className = t === 'manage' ? 'flex-1 py-4 font-bold active-tab' : 'flex-1 py-4 font-bold text-gray-400';
             if(t === 'list') {
-                updateFilterOptions();
+                const fAct = document.getElementById('filterAct');
+                fAct.innerHTML = '<option value="all">ทั้งหมด</option>' + Object.keys(currentConfig).map(k => `<option value="${currentConfig[k].label}">${currentConfig[k].label}</option>`).join('');
                 filterAdminHistory();
-            }
-            if(t === 'manage') renderAdminPanel();
-        }
-
-        function updateFilterOptions() {
-            const fAct = document.getElementById('filterAct');
-            fAct.innerHTML = '<option value="all">ทั้งหมด</option>' + 
-                Object.keys(currentConfig).map(k => `<option value="${currentConfig[k].label}">${currentConfig[k].label}</option>`).join('');
+            } else { renderAdminPanel(); }
         }
 
         function filterAdminHistory() {
             const selAct = document.getElementById('filterAct').value;
             const selSub = document.getElementById('filterSub').value;
             const searchKeyword = document.getElementById('adminSearchInput').value.toLowerCase();
-
-            // กรอง Dropdown ย่อย
-            if(selAct !== 'all') {
-                const configKey = Object.keys(currentConfig).find(k => currentConfig[k].label === selAct);
-                const subList = currentConfig[configKey]?.list || [];
-                document.getElementById('filterSub').innerHTML = '<option value="all">ทั้งหมด</option>' + 
-                    subList.map(s => `<option value="${s}">${s}</option>`).join('');
-            } else {
-                document.getElementById('filterSub').innerHTML = '<option value="all">ทั้งหมด</option>';
-            }
-
-            const filtered = allBookingData.filter(h => {
-                const matchAct = selAct === 'all' || h.activity === selAct;
-                const matchSub = selSub === 'all' || h.subOption === selSub;
-                const matchSearch = h.fullname.toLowerCase().includes(searchKeyword) || h.phone.includes(searchKeyword);
-                return matchAct && matchSub && matchSearch;
-            });
-
+            const filtered = allBookingData.filter(h => (selAct === 'all' || h.activity === selAct) && (h.fullname.toLowerCase().includes(searchKeyword) || h.phone.includes(searchKeyword)));
             document.getElementById('summaryCount').textContent = filtered.length;
-            renderAdminHistoryTable(filtered);
+            document.getElementById('adminHistoryBody').innerHTML = filtered.map(h => `
+                <tr class="hover:bg-gray-50 border-b border-gray-100">
+                    <td class="p-4 font-bold">${h.fullname}</td>
+                    <td class="p-4">${h.phone}</td>
+                    <td class="p-4"><span class="px-2 py-1 rounded-full bg-indigo-100 text-indigo-600 text-xs">${h.activity}</span></td>
+                    <td class="p-4 text-gray-500">${h.subOption}</td>
+                </tr>`).join('');
         }
-
-        function renderAdminHistoryTable(data) {
-    document.getElementById('adminHistoryBody').innerHTML = data.map(h => {
-        const configKey = Object.keys(currentConfig).find(k => currentConfig[k].label === h.activity);
-        const color = configKey ? currentConfig[configKey].color : '#e5e7eb';
-        
-        // ล้างเครื่องหมาย ' ออกถ้ามี (ป้องกันการแสดงผลผิดพลาด)
-        const cleanPhone = h.phone.replace(/'/g, ""); 
-
-        return `
-            <tr class="hover:bg-gray-50 transition-colors border-b border-gray-100">
-                <td class="p-4 font-bold text-gray-800">${h.fullname}</td>
-                <td class="p-4 text-gray-600 font-medium">${cleanPhone}</td>
-                <td class="p-4"><span class="px-3 py-1 rounded-full text-[10px] font-black text-white shadow-sm" style="background-color: ${color}">${h.activity}</span></td>
-                <td class="p-4 font-medium text-indigo-500">${h.subOption}</td>
-            </tr>
-        `;
-    }).join('');
-}
-
-        // --- Data Management (Admin) ---
-        function changeActColor(key, newColor) { currentConfig[key].color = newColor; saveConfig(); }
-        function addActivity() {
-            const name = document.getElementById('newActInput').value.trim();
-            const color = document.getElementById('newActColor').value;
-            if (!name) return;
-            const id = 'act_' + Date.now();
-            currentConfig[id] = { label: name, color: color, list: [] };
-            document.getElementById('newActInput').value = '';
-            saveConfig();
-        }
-        function deleteActivity(k) { if(confirm('ต้องการลบหมวดหมู่นี้?')) { delete currentConfig[k]; saveConfig(); } }
-        function addItem(k) { 
-            const val = document.getElementById('input-'+k).value.trim();
-            if(val) { currentConfig[k].list.push(val); saveConfig(); }
-        }
-        function removeItem(k, i) { currentConfig[k].list.splice(i, 1); saveConfig(); }
-        function saveConfig() { localStorage.setItem('merit_config', JSON.stringify(currentConfig)); renderAdminPanel(); updateDropdowns(); }
 
         function renderAdminPanel() {
-            const listDiv = document.getElementById('adminActList');
-            listDiv.innerHTML = Object.keys(currentConfig).map(key => `
+            document.getElementById('adminActList').innerHTML = Object.keys(currentConfig).map(key => `
                 <div class="bg-white border rounded-3xl overflow-hidden shadow-sm animate-in">
                     <div class="p-5 text-white flex justify-between items-center" style="background-color: ${currentConfig[key].color}">
                         <span class="font-bold text-lg">${currentConfig[key].label}</span>
-                        <div class="flex items-center gap-2">
-                             <input type="color" onchange="changeActColor('${key}', this.value)" value="${currentConfig[key].color}" class="w-8 h-8 rounded-lg border-2 border-white/50 cursor-pointer bg-transparent">
-                             <button onclick="deleteActivity('${key}')" class="bg-black/10 hover:bg-black/20 px-3 py-1 rounded-full text-sm">✕</button>
-                        </div>
+                        <button onclick="deleteActivity('${key}')" class="bg-black/10 px-3 py-1 rounded-full text-sm">✕</button>
                     </div>
                     <div class="p-5 space-y-2">
-                        ${currentConfig[key].list.map((item, idx) => `
-                            <div class="flex justify-between items-center text-sm bg-gray-50 p-3 rounded-xl border border-gray-100">
-                                <span class="text-gray-700 font-medium">${item}</span>
-                                <button onclick="removeItem('${key}', ${idx})" class="text-red-400 hover:text-red-600 font-bold">ลบ</button>
-                            </div>`).join('') || '<p class="text-center text-gray-300 text-xs py-4 italic">ไม่มีรายการย่อย</p>'}
+                        ${currentConfig[key].list.map((item, idx) => `<div class="flex justify-between text-sm bg-gray-50 p-3 rounded-xl"><span>${item}</span><button onclick="removeItem('${key}',${idx})" class="text-red-400">ลบ</button></div>`).join('')}
                     </div>
-                    <div class="p-5 border-t bg-gray-50/50 flex gap-2">
+                    <div class="p-5 border-t flex gap-2">
                         <input type="text" id="input-${key}" class="flex-1 text-sm border rounded-xl px-4 py-2 outline-none" placeholder="เพิ่มรายการย่อย...">
-                        <button onclick="addItem('${key}')" class="bg-indigo-600 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-md">เพิ่ม</button>
+                        <button onclick="addItem('${key}')" class="bg-indigo-600 text-white px-4 py-2 rounded-xl text-sm font-bold">เพิ่ม</button>
                     </div>
                 </div>`).join('');
         }
 
-        // --- User Interface Logic ---
+        function addActivity() { const name = document.getElementById('newActInput').value.trim(); if (name) { currentConfig['act_'+Date.now()] = { label: name, color: document.getElementById('newActColor').value, list: [] }; saveConfig(); document.getElementById('newActInput').value = ''; } }
+        function deleteActivity(k) { if(confirm('ลบหมวดหมู่?')) { delete currentConfig[k]; saveConfig(); } }
+        function addItem(k) { const val = document.getElementById('input-'+k).value.trim(); if(val) { currentConfig[k].list.push(val); saveConfig(); } }
+        function removeItem(k, i) { currentConfig[k].list.splice(i, 1); saveConfig(); }
+
+        // --- User UI Logic ---
         function updateDropdowns() {
             const sel = document.getElementById('activity');
-            sel.innerHTML = '<option value="" disabled selected>-- เลือกกิจกรรมหลัก --</option>' + 
-                Object.keys(currentConfig).map(k => `<option value="${k}">${currentConfig[k].label}</option>`).join('');
+            sel.innerHTML = '<option value="" disabled selected>-- เลือกกิจกรรมหลัก --</option>' + Object.keys(currentConfig).map(k => `<option value="${k}">${currentConfig[k].label}</option>`).join('');
         }
         function updateSubOptions() {
             const val = document.getElementById('activity').value;
@@ -354,55 +294,34 @@ async function checkAdmin() {
         document.getElementById('meritForm').onsubmit = async function(e) {
             e.preventDefault();
             document.getElementById('loadingOverlay').style.display = 'flex';
+            document.getElementById('loadingText').textContent = "กำลังบันทึกการจอง... 🚗";
             const actKey = document.getElementById('activity').value;
-            const data = {
-                action: 'register',
-                userId: liffProfile.userId || 'Guest',
-                displayName: liffProfile.displayName || 'Guest',
-                fullname: document.getElementById('fullname').value,
-                phone: document.getElementById('phone').value,
-                activity: currentConfig[actKey].label,
-                subOption: document.getElementById('subOption').value || '-',
-                pictureUrl: liffProfile.pictureUrl || ''
-            };
+            const data = { action: 'register', userId: liffProfile.userId || 'Guest', displayName: liffProfile.displayName || 'Guest', fullname: document.getElementById('fullname').value, phone: document.getElementById('phone').value, activity: currentConfig[actKey].label, subOption: document.getElementById('subOption').value || '-', pictureUrl: liffProfile.pictureUrl || '' };
             try {
                 await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
-                
                 const history = JSON.parse(localStorage.getItem('vmove_history') || '[]');
                 history.unshift(data);
                 localStorage.setItem('vmove_history', JSON.stringify(history));
-                
-                showSummary(data);
+                document.getElementById('bookingSummary').innerHTML = `<p><b>ผู้จอง:</b> ${data.fullname}</p><p><b>กิจกรรม:</b> ${data.activity}</p><p><b>จุดรับ:</b> ${data.subOption}</p>`;
                 document.getElementById('meritForm').classList.add('hidden');
                 document.getElementById('successView').classList.remove('hidden');
-            } catch(e) { alert('ระบบขัดข้อง แต่บันทึกข้อมูลเบื้องต้นแล้ว'); }
+            } catch(e) { alert('ระบบขัดข้อง'); }
             document.getElementById('loadingOverlay').style.display = 'none';
         };
 
-        function showSummary(data) {
-            document.getElementById('bookingSummary').innerHTML = `
-                <p><span class="text-xs text-gray-400 block uppercase">ชื่อผู้ลงทะเบียน</span> <strong class="text-gray-700">${data.fullname}</strong></p>
-                <p><span class="text-xs text-gray-400 block uppercase">เบอร์โทรติดต่อ</span> <strong class="text-gray-700">${data.phone}</strong></p>
-                <p><span class="text-xs text-gray-400 block uppercase">กิจกรรมที่จอง</span> <strong class="text-indigo-600">${data.activity}</strong></p>
-                <p><span class="text-xs text-gray-400 block uppercase">จุดรับ/รายละเอียด</span> <strong class="text-gray-700">${data.subOption}</strong></p>
-            `;
-        }
-
         function toggleAdminLogin(s) { document.getElementById('adminLoginModal').classList.toggle('hidden', !s); }
         function toggleSearchModal(s) { document.getElementById('searchModal').classList.toggle('hidden', !s); }
-        
         function runSearch() {
             const q = document.getElementById('searchPhone').value;
             const res = document.getElementById('searchResults');
             const history = JSON.parse(localStorage.getItem('vmove_history') || '[]');
-            if (q.length < 4) { res.innerHTML = '<p class="text-center text-gray-400 py-10">กรุณาพิมพ์อย่างน้อย 4 ตัว</p>'; return; }
-            const filtered = history.filter(h => h.phone.includes(q) || h.fullname.includes(q));
+            if (q.length < 4) { res.innerHTML = '<p class="text-center text-gray-400">ระบุเบอร์โทร 4 ตัวขึ้นไป</p>'; return; }
+            const filtered = history.filter(h => h.phone.includes(q));
             res.innerHTML = filtered.length ? filtered.map(h => `
                 <div class="p-6 bg-gray-50 rounded-[2rem] border-l-[10px] border-indigo-500 shadow-sm animate-in">
-                    <div class="text-xl font-bold text-gray-800">${h.fullname}</div>
-                    <div class="text-indigo-600 font-medium mt-1">${h.activity} (${h.subOption})</div>
-                    <div class="text-xs text-gray-400 mt-2">ติดต่อ: ${h.phone}</div>
-                </div>`).join('') : '<p class="text-center text-gray-400 py-10">ไม่พบข้อมูลการจอง</p>';
+                    <div class="text-xl font-bold">${h.fullname}</div>
+                    <div class="text-indigo-600 mt-1">${h.activity} (${h.subOption})</div>
+                </div>`).join('') : '<p class="text-center text-gray-400">ไม่พบข้อมูล</p>';
         }
 
         window.onload = initApp;
