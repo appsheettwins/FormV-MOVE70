@@ -172,44 +172,72 @@
         let liffProfile = {};
 
         async function initApp() {
-            try {
-                await liff.init({ liffId: LIFF_ID });
-                if (liff.isLoggedIn()) {
-                    liffProfile = await liff.getProfile();
-                    document.getElementById('userNameDisplay').textContent = liffProfile.displayName;
-                } else { liff.login(); }
-                await loadGlobalConfig();
-            } catch (e) { console.error('LIFF Error', e); }
+        showLoading(true, "กำลังเตรียมข้อมูล... 🚀");
+        try {
+            // โหลด Config ก่อน เพื่อให้ Dropdown มีข้อมูล
+            await loadGlobalConfig();
+
+            await liff.init({ liffId: LIFF_ID });
+            if (liff.isLoggedIn()) {
+                liffProfile = await liff.getProfile();
+                document.getElementById('userNameDisplay').textContent = liffProfile.displayName;
+            } else { 
+                liff.login(); 
+            }
+        } catch (e) { 
+            console.error('LIFF/Init Error', e); 
+        } finally {
+            showLoading(false);
         }
+    }
 
         async function loadGlobalConfig() {
-            try {
-                const res = await fetch(`${API_URL}?action=getConfig&t=${new Date().getTime()}`);
-                const data = await res.json();
-                if (data && Object.keys(data).length > 0) {
-                    currentConfig = data;
-                    updateDropdowns();
-                }
-            } catch (e) { console.log("Config load failed"); }
+        try {
+            const res = await fetch(`${API_URL}?action=getConfig&t=${new Date().getTime()}`);
+            const data = await res.json();
+            if (data && Object.keys(data).length > 0) {
+                currentConfig = data;
+                updateDropdowns();
+            }
+        } catch (e) { 
+            console.error("Config load failed", e);
+            // กรณีโหลดไม่สำเร็จ ให้ใช้ค่าสำรอง (Fallback)
+            currentConfig = { 'act_default': { label: 'ธรรมยาตรา 🚶', color: '#6366f1', list: ['วัดพระธรรมกาย'] } };
+            updateDropdowns();
         }
+    }
 
         async function checkAdmin() {
-            if (document.getElementById('adminPass').value === '1129') { // รหัสผ่านของคุณ
-                document.getElementById('loadingOverlay').style.display = 'flex';
-                document.getElementById('loadingText').textContent = "กำลังซิงค์ข้อมูลล่าสุด... 🔄";
-                toggleAdminLogin(false);
-                try {
-                    const res = await fetch(`${API_URL}?action=read&t=${new Date().getTime()}`);
-                    const data = await res.json();
-                    allBookingData = data.results || [];
-                    document.getElementById('userView').classList.add('hidden');
-                    document.getElementById('appHeader').classList.add('hidden');
-                    document.getElementById('adminView').classList.remove('hidden');
-                    switchAdminTab('list');
-                } catch (e) { alert('โหลดข้อมูลไม่สำเร็จ'); }
-                document.getElementById('loadingOverlay').style.display = 'none';
-            } else { alert('รหัสผ่านไม่ถูกต้อง'); }
+        const pass = document.getElementById('adminPass').value;
+        if (pass === '1129') {
+            showLoading(true, "กำลังซิงค์ข้อมูลล่าสุด... 🔄");
+            toggleAdminLogin(false);
+            try {
+                // เพิ่ม t=... เพื่อป้องกัน Cache
+                const res = await fetch(`${API_URL}?action=read&t=${new Date().getTime()}`);
+                const data = await res.json();
+                allBookingData = data.results || [];
+                
+                document.getElementById('userView').classList.add('hidden');
+                document.getElementById('appHeader').classList.add('hidden');
+                document.getElementById('adminView').classList.remove('hidden');
+                switchAdminTab('list');
+            } catch (e) { 
+                alert('โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่'); 
+            } finally {
+                showLoading(false);
+            }
+        } else { 
+            alert('รหัสผ่านไม่ถูกต้อง'); 
         }
+    }
+
+
+      function showLoading(show, text = "") {
+        const overlay = document.getElementById('loadingOverlay');
+        if (text) document.getElementById('loadingText').textContent = text;
+        overlay.style.display = show ? 'flex' : 'none';
+    }  
 
         async function saveConfig() {
             document.getElementById('loadingOverlay').style.display = 'flex';
