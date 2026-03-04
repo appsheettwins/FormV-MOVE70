@@ -76,44 +76,51 @@
 
     <script>
         const LIFF_ID = "2008940385-theIq9K7"; 
-        const API_URL = "https://script.google.com/macros/s/AKfycbynMJZfK0llXJeSd8_thnWndhwMIVGB16MqFHW3qvsP2pyYdNTK-Tu04KLsM8S2DYat/exec"; 
+    const API_URL = "https://script.google.com/macros/s/AKfycbynMJZfK0llXJeSd8_thnWndhwMIVGB16MqFHW3qvsP2pyYdNTK-Tu04KLsM8S2DYat/exec"; 
 
-        let activityConfig = {};
-        let liffProfile = {};
+    let activityConfig = {};
+    let liffProfile = {};
 
-        async function initApp() {
-            showLoad(true);
-            try {
-                // 1. บังคับโหลด Config ใหม่จาก API โดยไม่ใช้ Cache
-                const res = await fetch(`${API_URL}?action=getConfig&v=${new Date().getTime()}`);
-                activityConfig = await res.json();
-                
-                // 2. เริ่มต้น LIFF
-                await liff.init({ liffId: LIFF_ID });
-                if (liff.isLoggedIn()) {
-                    liffProfile = await liff.getProfile();
-                    document.getElementById('userNameDisplay').textContent = liffProfile.displayName;
-                } else { liff.login(); }
-                
-                // 3. อัปเดต Dropdown
-                updateDropdowns();
-            } catch (e) { 
-                console.error('Error:', e); 
-                alert('ไม่สามารถโหลดข้อมูลกิจกรรมได้ กรุณาลองใหม่');
+    async function initApp() {
+        showLoad(true);
+        try {
+            // ดึงข้อมูลกิจกรรม (เพิ่ม timestamp เพื่อป้องกัน cache)
+            const response = await fetch(`${API_URL}?action=getConfig&t=${new Date().getTime()}`);
+            
+            if (!response.ok) throw new Error('Network response was not ok');
+            
+            activityConfig = await response.json();
+            console.log("Loaded Config:", activityConfig); // ตรวจสอบใน Console
+
+            // เริ่มต้น LIFF
+            await liff.init({ liffId: LIFF_ID });
+            if (liff.isLoggedIn()) {
+                liffProfile = await liff.getProfile();
+                document.getElementById('userNameDisplay').textContent = liffProfile.displayName;
+            } else {
+                liff.login();
             }
-            showLoad(false);
+
+            updateDropdowns();
+        } catch (e) {
+            console.error('Error loading app:', e);
+            // ถ้าดึงไม่ได้ ให้ลองดึงอีกครั้งหลังจากผ่านไป 2 วินาที
+            setTimeout(initApp, 2000);
         }
+        showLoad(false);
+    }
 
-        function updateDropdowns() {
-            const sel = document.getElementById('activity');
-            const keys = Object.keys(activityConfig);
-            if (keys.length === 0) {
-                sel.innerHTML = '<option value="" disabled selected>-- ไม่มีข้อมูลกิจกรรม --</option>';
-                return;
-            }
+    function updateDropdowns() {
+        const sel = document.getElementById('activity');
+        const keys = Object.keys(activityConfig);
+        
+        if (keys.length > 0) {
             sel.innerHTML = '<option value="" disabled selected>-- เลือกกิจกรรม --</option>' + 
                 keys.map(k => `<option value="${k}">${k}</option>`).join('');
+        } else {
+            sel.innerHTML = '<option value="" disabled selected>❌ ไม่พบข้อมูลกิจกรรม</option>';
         }
+    }
 
         function updateSubOptions() {
             const actKey = document.getElementById('activity').value;
