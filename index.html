@@ -3,75 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>V-MOVE 🚗 สำรองที่นั่ง</title>
+    <title>V-MOVE 🚗</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <style>
         body { font-family: 'Kanit', sans-serif; background-color: #f1f5f9; }
         .gradient-bg { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); }
-        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); }
+        .glass-card { background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.5); }
+        .success-card { background: linear-gradient(to bottom, #ffffff, #f9fafb); border-top: 8px solid #4f46e5; }
         #loadingOverlay { display:none; position:fixed; inset:0; background:rgba(255,255,255,0.8); z-index:9999; align-items:center; justify-content:center; flex-direction: column; }
-        .success-animate { animation: scaleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-        @keyframes scaleIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     </style>
 </head>
-<body class="min-h-screen pb-10">
+<body class="min-h-screen">
 
     <div id="loadingOverlay">
         <div class="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-4"></div>
-        <p class="font-bold text-indigo-600 animate-pulse text-sm">กำลังบันทึกข้อมูล... 🚗</p>
+        <p class="font-bold text-indigo-600 animate-pulse">กำลังเชื่อมต่อฐานข้อมูล...</p>
     </div>
 
-    <div id="appHeader" class="gradient-bg text-white pt-14 pb-32 px-6 rounded-b-[3.5rem] shadow-2xl relative z-10 text-center">
+    <div class="gradient-bg text-white pt-14 pb-32 px-6 rounded-b-[4rem] shadow-2xl relative z-10 text-center">
         <h1 class="text-4xl font-black tracking-tighter">V-MOVE 🚗</h1>
-        <p class="text-indigo-100 text-sm mt-2 opacity-80">สวัสดี <span id="userNameDisplay" class="font-bold text-yellow-300">...</span> ✨</p>
+        <p class="text-indigo-100 text-sm mt-2">สวัสดีคุณ <span id="userNameDisplay" class="font-bold text-yellow-300">...</span></p>
     </div>
 
     <div class="max-w-md mx-auto px-5 -mt-24 relative z-20">
-        <div id="mainBox" class="glass-card rounded-[3rem] shadow-2xl p-8 border border-white">
+        <div class="glass-card rounded-[3rem] shadow-2xl p-8 mb-10">
             
             <div id="formSection">
                 <div class="text-center mb-8">
-                    <h2 class="text-xl font-black text-gray-800 uppercase tracking-wide">จองที่นั่ง ✨</h2>
+                    <h2 class="text-xl font-black text-gray-800 uppercase tracking-widest">สำรองที่นั่ง ✨</h2>
                 </div>
 
                 <form id="meritForm" class="space-y-6">
-                    <div class="space-y-1">
-                        <label class="text-xs font-bold text-gray-400 ml-3 uppercase">👤 ชื่อ-นามสกุล</label>
-                        <input type="text" id="fullname" required class="w-full px-6 py-4 rounded-2xl border border-gray-100 bg-gray-50/50 outline-none focus:ring-4 focus:ring-indigo-100 transition-all" placeholder="พิมพ์ชื่อของคุณที่นี่">
+                    <div>
+                        <label class="text-[10px] font-black text-gray-400 ml-4 uppercase tracking-widest">👤 ชื่อ-นามสกุล</label>
+                        <input type="text" id="fullname" required class="w-full px-6 py-4 rounded-2xl border border-gray-100 bg-gray-50/50 outline-none focus:ring-4 focus:ring-indigo-100 transition-all" placeholder="พิมพ์ชื่อ-นามสกุล">
                     </div>
 
-                    <div class="space-y-1">
-                        <label class="text-xs font-bold text-gray-400 ml-3 uppercase">📞 เบอร์โทรศัพท์</label>
+                    <div>
+                        <label class="text-[10px] font-black text-gray-400 ml-4 uppercase tracking-widest">📞 เบอร์โทรศัพท์</label>
                         <input type="tel" id="phone" required maxlength="10" class="w-full px-6 py-4 rounded-2xl border border-gray-100 bg-gray-50/50 outline-none focus:ring-4 focus:ring-indigo-100 transition-all" placeholder="08XXXXXXXX">
                     </div>
 
-                    <div class="space-y-1">
-                        <label class="text-xs font-bold text-gray-400 ml-3 uppercase">🗓️ กิจกรรม</label>
-                        <select id="activity" required class="w-full px-6 py-4 rounded-2xl border border-gray-100 bg-white outline-none focus:ring-4 focus:ring-indigo-100" onchange="updateSubOptions()"></select>
+                    <div>
+                        <label class="text-[10px] font-black text-gray-400 ml-4 uppercase tracking-widest">🗓️ กิจกรรม</label>
+                        <select id="activity" required class="w-full px-6 py-4 rounded-2xl border border-gray-100 bg-white outline-none focus:ring-4 focus:ring-indigo-100 appearance-none" onchange="updateSubOptions()"></select>
                     </div>
 
-                    <div id="subContainer" class="hidden space-y-1">
-                        <label class="text-xs font-bold text-indigo-400 ml-3 uppercase">📍 รายละเอียด</label>
+                    <div id="subContainer" class="hidden">
+                        <label class="text-[10px] font-black text-indigo-400 ml-4 uppercase tracking-widest">📍 จุดรับ</label>
                         <select id="subOption" class="w-full px-6 py-4 rounded-2xl border border-indigo-100 bg-indigo-50/50 outline-none focus:ring-4 focus:ring-indigo-100 font-bold"></select>
                     </div>
 
                     <button type="submit" class="w-full gradient-bg text-white font-black py-5 rounded-[2rem] shadow-xl shadow-indigo-200 active:scale-95 transition-all text-lg mt-4">
-                        ยืนยันการลงทะเบียน 🚀
+                        ยืนยันข้อมูลจอง 🚀
                     </button>
                 </form>
             </div>
 
-            <div id="successView" class="hidden text-center py-6 success-animate">
-                <div class="text-1xl mb-6">✅</div>
-                <h3 class="text-1xl font-black text-green-600 mb-2">บันทึกสำเร็จ!</h3>
-                <p class="text-gray-400 text-sm mb-8">ข้อมูลของคุณถูกส่งเข้าระบบเรียบร้อยแล้ว รอข้อความยืนยังผ่านทาง LINE</p>
+            <div id="successView" class="hidden">
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl font-black text-indigo-600 uppercase tracking-tight">ลงทะเบียนสำเร็จ</h2>
+                    <p class="text-gray-400 text-xs">ตรวจสอบข้อมูลการจองของคุณด้านล่าง</p>
+                </div>
                 
-                <div id="summaryDetails" class="bg-gray-50 rounded-[2.5rem] p-8 text-left space-y-5 border border-gray-100 shadow-inner mb-8">
+                <div id="summaryDetails" class="success-card rounded-[2.5rem] p-8 space-y-6 shadow-inner mb-8">
                     </div>
 
-                <button onclick="location.reload()" class="w-full py-5 bg-gray-100 rounded-2xl font-bold text-gray-600 hover:bg-gray-200 transition-all">
+                <button onclick="location.reload()" class="w-full py-5 bg-gray-100 rounded-[2rem] font-bold text-gray-500 hover:bg-gray-200 transition-all uppercase text-sm tracking-widest">
                     จองเพิ่ม ➕
                 </button>
             </div>
@@ -83,37 +83,46 @@
         const LIFF_ID = "2008940385-theIq9K7"; 
         const API_URL = "https://script.google.com/macros/s/AKfycbynMJZfK0llXJeSd8_thnWndhwMIVGB16MqFHW3qvsP2pyYdNTK-Tu04KLsM8S2DYat/exec"; 
 
-        let currentConfig = JSON.parse(localStorage.getItem('merit_config')) || {
-            'act1': { label: 'ธรรมยาตรา 🚶', list: ['จุดรับ A', 'จุดรับ B'] },
-            'act2': { label: 'จองรถตู้ 🚐', list: ['หน้าวัด', 'เสา 100 ปี'] }
-        };
+        let activityConfig = {};
         let liffProfile = {};
 
         async function initApp() {
+            showLoad(true);
             try {
+                // ดึงข้อมูลกิจกรรมจากชีท
+                const res = await fetch(`${API_URL}?action=getConfig`);
+                activityConfig = await res.json();
+                
                 await liff.init({ liffId: LIFF_ID });
                 if (liff.isLoggedIn()) {
                     liffProfile = await liff.getProfile();
                     document.getElementById('userNameDisplay').textContent = liffProfile.displayName;
                 } else { liff.login(); }
-            } catch (e) { console.error('LIFF Error', e); }
-            updateDropdowns();
+                
+                updateDropdowns();
+            } catch (e) { console.error('Error:', e); }
+            showLoad(false);
         }
 
         function updateDropdowns() {
             const sel = document.getElementById('activity');
+            const keys = Object.keys(activityConfig);
             sel.innerHTML = '<option value="" disabled selected>-- เลือกกิจกรรม --</option>' + 
-                Object.keys(currentConfig).map(k => `<option value="${k}">${currentConfig[k].label}</option>`).join('');
+                keys.map(k => `<option value="${k}">${k}</option>`).join('');
         }
 
         function updateSubOptions() {
-            const val = document.getElementById('activity').value;
-            const sub = document.getElementById('subOption');
-            const data = currentConfig[val];
-            if (data && data.list.length > 0) {
-                sub.innerHTML = data.list.map(t => `<option value="${t}">${t}</option>`).join('');
-                document.getElementById('subContainer').classList.remove('hidden');
-            } else { document.getElementById('subContainer').classList.add('hidden'); }
+            const actKey = document.getElementById('activity').value;
+            const subSel = document.getElementById('subOption');
+            const container = document.getElementById('subContainer');
+            
+            if (actKey && activityConfig[actKey]) {
+                const list = activityConfig[actKey].list;
+                subSel.innerHTML = list.map(item => `<option value="${item.detail}">${item.detail}</option>`).join('');
+                container.classList.remove('hidden');
+            } else {
+                container.classList.add('hidden');
+            }
         }
 
         document.getElementById('meritForm').onsubmit = async function(e) {
@@ -121,42 +130,52 @@
             showLoad(true);
             
             const actKey = document.getElementById('activity').value;
-            const data = {
+            const detailKey = document.getElementById('subOption').value;
+            const matchedItem = activityConfig[actKey].list.find(i => i.detail === detailKey);
+
+            const payload = {
                 action: 'register',
                 userId: liffProfile.userId || 'Guest',
                 displayName: liffProfile.displayName || 'Guest',
                 fullname: document.getElementById('fullname').value,
                 phone: document.getElementById('phone').value,
-                activity: currentConfig[actKey].label,
-                subOption: document.getElementById('subOption').value || '-'
+                activity: actKey,
+                subOption: detailKey,
+                travelTime: matchedItem ? matchedItem.time : '-'
             };
 
             try {
-                await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
-                renderSummary(data);
+                await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
+                renderSummary(payload);
                 document.getElementById('formSection').classList.add('hidden');
                 document.getElementById('successView').classList.remove('hidden');
-            } catch(e) { alert('ระบบขัดข้อง กรุณาลองใหม่'); }
+            } catch(e) { alert('ขออภัย ระบบขัดข้อง'); }
             showLoad(false);
         };
 
         function renderSummary(data) {
             document.getElementById('summaryDetails').innerHTML = `
                 <div class="space-y-1">
-                    <p class="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Name</p>
+                    <p class="text-[10px] font-black text-indigo-300 uppercase tracking-[0.2em]">Passenger</p>
                     <p class="text-xl font-bold text-gray-800">${data.fullname}</p>
                 </div>
-                <div class="space-y-1 border-t border-gray-200 pt-4">
-                    <p class="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Phone</p>
+                <div class="space-y-1 border-t border-gray-100 pt-4">
+                    <p class="text-[10px] font-black text-indigo-300 uppercase tracking-[0.2em]">Contact</p>
                     <p class="text-xl font-bold text-gray-800">${data.phone}</p>
                 </div>
-                <div class="space-y-1 border-t border-gray-200 pt-4">
-                    <p class="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Activity</p>
+                <div class="space-y-1 border-t border-gray-100 pt-4">
+                    <p class="text-[10px] font-black text-indigo-300 uppercase tracking-[0.2em]">Activity</p>
                     <p class="text-xl font-bold text-indigo-600">${data.activity}</p>
                 </div>
-                <div class="space-y-1 border-t border-gray-200 pt-4">
-                    <p class="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Location</p>
-                    <p class="text-xl font-bold text-gray-800">${data.subOption}</p>
+                <div class="flex justify-between border-t border-gray-100 pt-4">
+                    <div class="space-y-1">
+                        <p class="text-[10px] font-black text-indigo-300 uppercase tracking-[0.2em]">Location</p>
+                        <p class="text-lg font-bold text-gray-800">${data.subOption}</p>
+                    </div>
+                    <div class="space-y-1 text-right">
+                        <p class="text-[10px] font-black text-orange-400 uppercase tracking-[0.2em]">Departure</p>
+                        <p class="text-xl font-black text-gray-900 underline decoration-orange-300">${data.travelTime}</p>
+                    </div>
                 </div>
             `;
         }
