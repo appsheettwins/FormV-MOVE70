@@ -11,8 +11,6 @@
         body { font-family: 'Kanit', sans-serif; background-color: #f1f5f9; }
         .gradient-bg { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); }
         .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); }
-        .input-focus { transition: all 0.3s ease; }
-        .input-focus:focus { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
         #loadingOverlay { display:none; position:fixed; inset:0; background:rgba(255,255,255,0.8); z-index:9999; align-items:center; justify-content:center; flex-direction: column; }
         .success-animate { animation: scaleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         @keyframes scaleIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -22,63 +20,62 @@
 
     <div id="loadingOverlay">
         <div class="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-4"></div>
-        <p class="font-bold text-indigo-600 animate-pulse">กำลังบันทึกข้อมูล... 🚗</p>
+        <p class="font-bold text-indigo-600 animate-pulse text-sm">กำลังบันทึกข้อมูล... 🚗</p>
     </div>
 
-    <div id="appHeader" class="gradient-bg text-white pt-12 pb-28 px-6 rounded-b-[3.5rem] shadow-2xl relative z-10">
-        <div class="max-w-md mx-auto">
-            <h1 class="text-3xl font-black tracking-tight text-center">V-MOVE 🚗</h1>
-            <p class="text-indigo-100 text-sm opacity-90 text-center mt-1">ยินดีต้อนรับคุณ <span id="userNameDisplay" class="font-bold text-yellow-300">...</span> ✨</p>
-        </div>
+    <div id="appHeader" class="gradient-bg text-white pt-14 pb-32 px-6 rounded-b-[3.5rem] shadow-2xl relative z-10 text-center">
+        <h1 class="text-4xl font-black tracking-tighter">V-MOVE 🚗</h1>
+        <p class="text-indigo-100 text-sm mt-2 opacity-80">สวัสดี <span id="userNameDisplay" class="font-bold text-yellow-300">...</span> ✨</p>
     </div>
 
-    <div id="userView" class="max-w-md mx-auto px-5 -mt-20 relative z-20">
-        <div class="glass-card rounded-[2.5rem] shadow-2xl p-8 border border-white">
+    <div class="max-w-md mx-auto px-5 -mt-24 relative z-20">
+        <div id="mainBox" class="glass-card rounded-[3rem] shadow-2xl p-8 border border-white">
             
             <div id="formSection">
                 <div class="text-center mb-8">
-                    <h2 class="text-xl font-bold text-gray-800">กรอกข้อมูลสำรองที่นั่ง 📝</h2>
+                    <h2 class="text-xl font-black text-gray-800 uppercase tracking-wide">จองที่นั่ง ✨</h2>
                 </div>
 
                 <form id="meritForm" class="space-y-6">
                     <div class="space-y-1">
-                        <label class="text-sm font-semibold text-gray-500 ml-2">👤 ชื่อ-นามสกุล</label>
-                        <input type="text" id="fullname" required class="w-full px-5 py-4 rounded-2xl border border-gray-100 bg-gray-50/50 outline-none focus:ring-2 focus:ring-indigo-500 input-focus" placeholder="ระบุชื่อจริงของคุณ">
+                        <label class="text-xs font-bold text-gray-400 ml-3 uppercase">👤 ชื่อ-นามสกุล</label>
+                        <input type="text" id="fullname" required class="w-full px-6 py-4 rounded-2xl border border-gray-100 bg-gray-50/50 outline-none focus:ring-4 focus:ring-indigo-100 transition-all" placeholder="พิมพ์ชื่อของคุณที่นี่">
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-sm font-semibold text-gray-500 ml-2">📞 เบอร์โทรศัพท์</label>
-                        <input type="tel" id="phone" required maxlength="10" class="w-full px-5 py-4 rounded-2xl border border-gray-100 bg-gray-50/50 outline-none focus:ring-2 focus:ring-indigo-500 input-focus" placeholder="08X-XXX-XXXX">
+                        <label class="text-xs font-bold text-gray-400 ml-3 uppercase">📞 เบอร์โทรศัพท์</label>
+                        <input type="tel" id="phone" required maxlength="10" class="w-full px-6 py-4 rounded-2xl border border-gray-100 bg-gray-50/50 outline-none focus:ring-4 focus:ring-indigo-100 transition-all" placeholder="08XXXXXXXX">
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-sm font-semibold text-gray-500 ml-2">🗓️ เลือกกิจกรรม</label>
-                        <select id="activity" required class="w-full px-5 py-4 rounded-2xl border border-gray-100 bg-white outline-none focus:ring-2 focus:ring-indigo-500 appearance-none" onchange="updateSubOptions()"></select>
+                        <label class="text-xs font-bold text-gray-400 ml-3 uppercase">🗓️ กิจกรรม</label>
+                        <select id="activity" required class="w-full px-6 py-4 rounded-2xl border border-gray-100 bg-white outline-none focus:ring-4 focus:ring-indigo-100" onchange="updateSubOptions()"></select>
                     </div>
 
                     <div id="subContainer" class="hidden space-y-1">
-                        <label class="text-sm font-semibold text-indigo-600 ml-2">📍 จุดรับ/รายละเอียด</label>
-                        <select id="subOption" class="w-full px-5 py-4 rounded-2xl border border-indigo-100 bg-indigo-50/50 outline-none focus:ring-2 focus:ring-indigo-500"></select>
+                        <label class="text-xs font-bold text-indigo-400 ml-3 uppercase">📍 รายละเอียด</label>
+                        <select id="subOption" class="w-full px-6 py-4 rounded-2xl border border-indigo-100 bg-indigo-50/50 outline-none focus:ring-4 focus:ring-indigo-100 font-bold"></select>
                     </div>
 
-                    <button type="submit" class="w-full gradient-bg text-white font-black py-5 rounded-[1.5rem] shadow-xl shadow-indigo-200 active:scale-95 transition-all text-lg">
-                        ยืนยันข้อมูล ✨
+                    <button type="submit" class="w-full gradient-bg text-white font-black py-5 rounded-[2rem] shadow-xl shadow-indigo-200 active:scale-95 transition-all text-lg mt-4">
+                        ยืนยันการลงทะเบียน 🚀
                     </button>
                 </form>
             </div>
 
-            <div id="successView" class="hidden text-center py-4 success-animate">
-                <div class="text-6xl mb-4">✅</div>
-                <h3 class="text-2xl font-bold text-green-600 mb-2">ลงทะเบียนสำเร็จ!</h3>
-                <p class="text-gray-400 text-sm mb-6">สรุปข้อมูลการสำรองที่นั่งของคุณ</p>
+            <div id="successView" class="hidden text-center py-6 success-animate">
+                <div class="text-1xl mb-6">✅</div>
+                <h3 class="text-1xl font-black text-green-600 mb-2">บันทึกสำเร็จ!</h3>
+                <p class="text-gray-400 text-sm mb-8">ข้อมูลของคุณถูกส่งเข้าระบบเรียบร้อยแล้ว รอข้อความยืนยังผ่านทาง LINE</p>
                 
-                <div id="summaryDetails" class="bg-gray-50 rounded-[2rem] p-6 text-left space-y-4 mb-8 border border-gray-100 shadow-inner">
+                <div id="summaryDetails" class="bg-gray-50 rounded-[2.5rem] p-8 text-left space-y-5 border border-gray-100 shadow-inner mb-8">
                     </div>
 
-                <button onclick="location.reload()" class="w-full py-4 bg-gray-100 rounded-2xl font-bold text-gray-600 hover:bg-gray-200 transition-colors">
-                    ลงทะเบียนเพิ่ม ➕
+                <button onclick="location.reload()" class="w-full py-5 bg-gray-100 rounded-2xl font-bold text-gray-600 hover:bg-gray-200 transition-all">
+                    จองเพิ่ม ➕
                 </button>
             </div>
+
         </div>
     </div>
 
@@ -105,7 +102,7 @@
 
         function updateDropdowns() {
             const sel = document.getElementById('activity');
-            sel.innerHTML = '<option value="" disabled selected>-- เลือกกิจกรรมหลัก --</option>' + 
+            sel.innerHTML = '<option value="" disabled selected>-- เลือกกิจกรรม --</option>' + 
                 Object.keys(currentConfig).map(k => `<option value="${k}">${currentConfig[k].label}</option>`).join('');
         }
 
@@ -135,44 +132,36 @@
             };
 
             try {
-                // ส่งข้อมูลไปยัง Google Sheets
                 await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
-                
-                // แสดงหน้าสรุปข้อมูล
                 renderSummary(data);
                 document.getElementById('formSection').classList.add('hidden');
                 document.getElementById('successView').classList.remove('hidden');
-                
-            } catch(e) { 
-                alert('ขออภัย ระบบขัดข้อง กรุณาลองใหม่'); 
-            }
+            } catch(e) { alert('ระบบขัดข้อง กรุณาลองใหม่'); }
             showLoad(false);
         };
 
         function renderSummary(data) {
-            const container = document.getElementById('summaryDetails');
-            container.innerHTML = `
-                <div class="flex flex-col gap-1">
-                    <span class="text-xs text-indigo-400 font-bold uppercase tracking-wider">👤 ชื่อ-นามสกุล</span>
-                    <span class="text-lg font-bold text-gray-800">${data.fullname}</span>
+            document.getElementById('summaryDetails').innerHTML = `
+                <div class="space-y-1">
+                    <p class="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Name</p>
+                    <p class="text-xl font-bold text-gray-800">${data.fullname}</p>
                 </div>
-                <div class="flex flex-col gap-1 border-t border-gray-200 pt-3">
-                    <span class="text-xs text-indigo-400 font-bold uppercase tracking-wider">📞 เบอร์โทรศัพท์</span>
-                    <span class="text-lg font-bold text-gray-800">${data.phone}</span>
+                <div class="space-y-1 border-t border-gray-200 pt-4">
+                    <p class="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Phone</p>
+                    <p class="text-xl font-bold text-gray-800">${data.phone}</p>
                 </div>
-                <div class="flex flex-col gap-1 border-t border-gray-200 pt-3">
-                    <span class="text-xs text-indigo-400 font-bold uppercase tracking-wider">🗓️ กิจกรรม</span>
-                    <span class="text-lg font-bold text-indigo-600">${data.activity}</span>
+                <div class="space-y-1 border-t border-gray-200 pt-4">
+                    <p class="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Activity</p>
+                    <p class="text-xl font-bold text-indigo-600">${data.activity}</p>
                 </div>
-                <div class="flex flex-col gap-1 border-t border-gray-200 pt-3">
-                    <span class="text-xs text-indigo-400 font-bold uppercase tracking-wider">📍 จุดรับ/รายละเอียด</span>
-                    <span class="text-lg font-bold text-gray-800">${data.subOption}</span>
+                <div class="space-y-1 border-t border-gray-200 pt-4">
+                    <p class="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Location</p>
+                    <p class="text-xl font-bold text-gray-800">${data.subOption}</p>
                 </div>
             `;
         }
 
         function showLoad(s) { document.getElementById('loadingOverlay').style.display = s ? 'flex' : 'none'; }
-
         window.onload = initApp;
     </script>
 </body>
