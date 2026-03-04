@@ -11,21 +11,20 @@
         body { font-family: 'Kanit', sans-serif; background-color: #f1f5f9; }
         .gradient-bg { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); }
         .glass-card { background: white; border-radius: 3.5rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1); }
-        .summary-item { border-bottom: 1px solid #f1f5f9; padding: 1rem 0; }
-        .summary-item:last-child { border-bottom: none; }
-        #loadingOverlay { display:none; position:fixed; inset:0; background:rgba(255,255,255,0.9); z-index:9999; align-items:center; justify-content:center; flex-direction: column; }
+        .summary-item { border-bottom: 1px solid #f8fafc; padding: 1rem 0; }
+        #loadingOverlay { display:none; position:fixed; inset:0; background:rgba(255,255,255,0.8); z-index:9999; align-items:center; justify-content:center; flex-direction: column; }
     </style>
 </head>
 <body class="min-h-screen">
 
     <div id="loadingOverlay">
         <div class="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-4"></div>
-        <p class="font-bold text-indigo-600 text-sm">กำลังโหลดข้อมูล... 🚗</p>
+        <p class="font-bold text-indigo-600 text-sm">กำลังบันทึกข้อมูล... 🚀</p>
     </div>
 
     <div class="gradient-bg text-white pt-14 pb-36 px-6 rounded-b-[4rem] text-center relative z-10">
-        <h1 class="text-4xl font-black tracking-tighter italic">V-MOVE 🚗</h1>
-        <p class="text-indigo-100 text-sm mt-2">ยินดีต้อนรับคุณ <span id="userNameDisplay" class="font-bold text-yellow-300">...</span> ✨</p>
+        <h1 class="text-4xl font-black italic tracking-tighter">V-MOVE 🚗</h1>
+        <p class="text-indigo-100 text-sm mt-2">ยินดีต้อนรับคุณ <span id="userNameDisplay" class="font-bold text-yellow-300">...</span></p>
     </div>
 
     <div class="max-w-md mx-auto px-6 -mt-28 relative z-20 pb-10">
@@ -33,44 +32,41 @@
             
             <div id="formSection">
                 <form id="meritForm" class="space-y-6">
-                    <h2 class="text-xl font-black text-gray-800 text-center mb-8 uppercase tracking-widest">สำรองที่นั่ง</h2>
+                    <h2 class="text-xl font-black text-gray-800 text-center mb-8 uppercase tracking-widest">สำรองที่นั่ง ✨</h2>
                     
                     <div>
-                        <label class="text-[10px] font-black text-gray-400 ml-4 uppercase tracking-widest">👤 ชื่อ-นามสกุล</label>
-                        <input type="text" id="fullname" required class="w-full px-6 py-4 rounded-2xl border bg-gray-50 focus:ring-4 focus:ring-indigo-100 outline-none transition-all" placeholder="กรอกชื่อของคุณ">
+                        <label class="text-[10px] font-black text-gray-400 ml-4 uppercase">👤 ชื่อ-นามสกุล</label>
+                        <input type="text" id="fullname" required class="w-full px-6 py-4 rounded-2xl border bg-gray-50 focus:ring-4 focus:ring-indigo-100 outline-none" placeholder="กรอกชื่อของคุณ">
                     </div>
 
                     <div>
-                        <label class="text-[10px] font-black text-gray-400 ml-4 uppercase tracking-widest">📞 เบอร์โทรศัพท์</label>
-                        <input type="tel" id="phone" required maxlength="10" class="w-full px-6 py-4 rounded-2xl border bg-gray-50 focus:ring-4 focus:ring-indigo-100 outline-none transition-all" placeholder="08XXXXXXXX">
+                        <label class="text-[10px] font-black text-gray-400 ml-4 uppercase">📞 เบอร์โทรศัพท์</label>
+                        <input type="tel" id="phone" required maxlength="10" class="w-full px-6 py-4 rounded-2xl border bg-gray-50 focus:ring-4 focus:ring-indigo-100 outline-none" placeholder="08XXXXXXXX">
                     </div>
 
                     <div>
-                        <label class="text-[10px] font-black text-gray-400 ml-4 uppercase tracking-widest">🗓️ เลือกกิจกรรม</label>
-                        <select id="activity" required class="w-full px-6 py-4 rounded-2xl border bg-white focus:ring-4 focus:ring-indigo-100 outline-none appearance-none cursor-pointer" onchange="updateSubOptions()">
-                            <option value="" disabled selected>กำลังโหลดกิจกรรม...</option>
+                        <label class="text-[10px] font-black text-gray-400 ml-4 uppercase">🗓️ กิจกรรม</label>
+                        <select id="activity" required class="w-full px-6 py-4 rounded-2xl border bg-white focus:ring-4 focus:ring-indigo-100 outline-none" onchange="updateSubOptions()">
+                            <option value="" disabled selected>-- เลือกกิจกรรม --</option>
                         </select>
                     </div>
 
                     <div id="subContainer" class="hidden">
-                        <label class="text-[10px] font-black text-indigo-400 ml-4 uppercase tracking-widest">📍 จุดรับเดินทาง</label>
-                        <select id="subOption" class="w-full px-6 py-4 rounded-2xl border border-indigo-100 bg-indigo-50/30 focus:ring-4 focus:ring-indigo-100 outline-none font-bold appearance-none cursor-pointer"></select>
+                        <label class="text-[10px] font-black text-indigo-400 ml-4 uppercase">📍 จุดรับเดินทาง</label>
+                        <select id="subOption" class="w-full px-6 py-4 rounded-2xl border border-indigo-100 bg-indigo-50/30 focus:ring-4 focus:ring-indigo-100 outline-none font-bold"></select>
                     </div>
 
-                    <button type="submit" class="w-full gradient-bg text-white font-black py-5 rounded-[2rem] shadow-xl shadow-indigo-100 active:scale-95 transition-all text-lg mt-4">ยืนยันข้อมูลจอง 🚀</button>
+                    <button type="submit" class="w-full gradient-bg text-white font-black py-5 rounded-[2rem] shadow-xl active:scale-95 transition-all text-lg mt-4">ยืนยันการจอง 🚀</button>
                 </form>
             </div>
 
             <div id="successView" class="hidden">
                 <div class="text-center mb-10">
-                    <h2 class="text-2xl font-black text-indigo-600 uppercase tracking-tighter">ลงทะเบียนสำเร็จ</h2>
-                    <p class="text-gray-400 text-xs mt-1">ขอบคุณที่ใช้บริการ V-MOVE ครับ</p>
+                    <h2 class="text-2xl font-black text-indigo-600 uppercase">ลงทะเบียนสำเร็จ</h2>
+                    <p class="text-gray-400 text-xs mt-1">สรุปข้อมูลการเดินทางของคุณ</p>
                 </div>
-                
-                <div id="summaryDetails" class="bg-gray-50 rounded-[2.5rem] p-8 mb-10 border border-gray-100">
-                    </div>
-
-                <button onclick="location.reload()" class="w-full py-5 bg-gray-100 rounded-[2rem] font-bold text-gray-500 hover:bg-gray-200 transition-all uppercase text-xs tracking-[0.2em]">จองเพิ่ม ➕</button>
+                <div id="summaryDetails" class="bg-gray-50 rounded-[2.5rem] p-8 mb-10 border border-gray-100"></div>
+                <button onclick="location.reload()" class="w-full py-5 bg-gray-100 rounded-[2rem] font-bold text-gray-500 hover:bg-gray-200 transition-all uppercase text-xs tracking-widest">จองเพิ่ม ➕</button>
             </div>
         </div>
     </div>
@@ -79,44 +75,21 @@
         const LIFF_ID = "2008940385-theIq9K7"; 
         const API_URL = "https://script.google.com/macros/s/AKfycbynMJZfK0llXJeSd8_thnWndhwMIVGB16MqFHW3qvsP2pyYdNTK-Tu04KLsM8S2DYat/exec"; 
 
-        let activityConfig = {};
+        // ดึงข้อมูลที่ถูกส่งมาจากฝั่ง Server (Google Apps Script)
+        let activityConfig = <?!= activityData ?>; 
         let liffProfile = {};
 
-        // ฟังก์ชันโหลดข้อมูลผ่าน JSONP เพื่อแก้ปัญหา Chrome
-        function loadConfig() {
-            return new Promise((resolve, reject) => {
-                const script = document.createElement('script');
-                const callbackName = 'jsonpCallback_' + Math.round(100000 * Math.random());
-                window[callbackName] = function(data) {
-                    delete window[callbackName];
-                    document.body.removeChild(script);
-                    resolve(data);
-                };
-                script.src = `${API_URL}?action=getConfig&callback=${callbackName}&t=${new Date().getTime()}`;
-                script.onerror = reject;
-                document.body.appendChild(script);
-            });
-        }
-
         async function initApp() {
-            showLoad(true);
+            // โหลดกิจกรรมลง Dropdown ทันทีไม่ต้องรอ Fetch
+            updateDropdowns();
+
             try {
-                // โหลดข้อมูลกิจกรรม
-                activityConfig = await loadConfig();
-                
-                // เริ่ม LIFF
                 await liff.init({ liffId: LIFF_ID });
                 if (liff.isLoggedIn()) {
                     liffProfile = await liff.getProfile();
                     document.getElementById('userNameDisplay').textContent = liffProfile.displayName;
                 } else { liff.login(); }
-                
-                updateDropdowns();
-            } catch (e) {
-                console.error('Error:', e);
-                alert('ไม่สามารถโหลดข้อมูลกิจกรรมได้ กรุณา Reload หน้าจอนี้อีกครั้ง');
-            }
-            showLoad(false);
+            } catch (e) { console.error('LIFF Error', e); }
         }
 
         function updateDropdowns() {
@@ -125,8 +98,6 @@
             if (keys.length > 0) {
                 sel.innerHTML = '<option value="" disabled selected>-- เลือกกิจกรรม --</option>' + 
                     keys.map(k => `<option value="${k}">${k}</option>`).join('');
-            } else {
-                sel.innerHTML = '<option value="" disabled selected>❌ ไม่พบข้อมูล</option>';
             }
         }
 
@@ -142,7 +113,7 @@
 
         document.getElementById('meritForm').onsubmit = async function(e) {
             e.preventDefault();
-            showLoad(true);
+            document.getElementById('loadingOverlay').style.display = 'flex';
             
             const actKey = document.getElementById('activity').value;
             const detailKey = document.getElementById('subOption').value;
@@ -165,37 +136,21 @@
                 document.getElementById('formSection').classList.add('hidden');
                 document.getElementById('successView').classList.remove('hidden');
             } catch(e) { alert('ระบบขัดข้อง'); }
-            showLoad(false);
+            document.getElementById('loadingOverlay').style.display = 'none';
         };
 
         function renderSummary(data) {
             document.getElementById('summaryDetails').innerHTML = `
-                <div class="summary-item">
-                    <p class="text-[10px] font-black text-indigo-300 uppercase tracking-widest mb-1">Passenger Name</p>
-                    <p class="text-lg font-bold text-gray-800">${data.fullname}</p>
-                </div>
-                <div class="summary-item">
-                    <p class="text-[10px] font-black text-indigo-300 uppercase tracking-widest mb-1">Contact Phone</p>
-                    <p class="text-lg font-bold text-gray-800">${data.phone}</p>
-                </div>
-                <div class="summary-item">
-                    <p class="text-[10px] font-black text-indigo-300 uppercase tracking-widest mb-1">Activity</p>
-                    <p class="text-lg font-bold text-indigo-600">${data.activity}</p>
-                </div>
+                <div class="summary-item"><p class="text-[10px] font-black text-indigo-300 uppercase tracking-widest mb-1">Passenger</p><p class="text-lg font-bold text-gray-800">${data.fullname}</p></div>
+                <div class="summary-item"><p class="text-[10px] font-black text-indigo-300 uppercase tracking-widest mb-1">Contact</p><p class="text-lg font-bold text-gray-800">${data.phone}</p></div>
+                <div class="summary-item"><p class="text-[10px] font-black text-indigo-300 uppercase tracking-widest mb-1">Activity</p><p class="text-lg font-bold text-indigo-600">${data.activity}</p></div>
                 <div class="flex justify-between items-end pt-4">
-                    <div class="flex-1">
-                        <p class="text-[10px] font-black text-indigo-300 uppercase tracking-widest mb-1">Pickup Location</p>
-                        <p class="text-md font-bold text-gray-700">${data.subOption}</p>
-                    </div>
-                    <div class="text-right">
-                        <p class="text-[10px] font-black text-orange-400 uppercase tracking-widest mb-1">Departure</p>
-                        <p class="text-2xl font-black text-gray-900 underline decoration-orange-300 decoration-4">${data.travelTime}</p>
-                    </div>
+                    <div><p class="text-[10px] font-black text-indigo-300 uppercase tracking-widest mb-1">Location</p><p class="text-md font-bold text-gray-700">${data.subOption}</p></div>
+                    <div class="text-right"><p class="text-[10px] font-black text-orange-400 uppercase tracking-widest mb-1">Departure</p><p class="text-2xl font-black text-gray-900 underline decoration-orange-300 decoration-4">${data.travelTime}</p></div>
                 </div>
             `;
         }
 
-        function showLoad(s) { document.getElementById('loadingOverlay').style.display = s ? 'flex' : 'none'; }
         window.onload = initApp;
     </script>
 </body>
