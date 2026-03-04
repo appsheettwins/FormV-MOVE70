@@ -10,74 +10,113 @@
     <style>
         body { font-family: 'Kanit', sans-serif; background-color: #f8fafc; }
         .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-        .admin-gradient { background: linear-gradient(135deg, #0f172a 0%, #334155 100%); }
-        #loadingOverlay { display:none; position:fixed; inset:0; background:rgba(255,255,255,0.9); z-index:9999; align-items:center; justify-content:center; flex-direction: column; }
+        .admin-gradient { background: linear-gradient(135deg, #00dbde 0%, #fc00ff 100%); }
+        .glass-effect { background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .active-tab { border-bottom: 4px solid #6366f1; color: #4338ca; background: rgba(99, 102, 241, 0.05); }
+        #loadingOverlay { display:none; position:fixed; inset:0; background:rgba(255,255,255,0.8); z-index:9999; align-items:center; justify-content:center; flex-direction: column; }
     </style>
 </head>
-<body>
+<body class="min-h-screen pb-12">
+
     <div id="loadingOverlay">
         <div class="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-4"></div>
-        <p id="loadingText" class="font-bold text-indigo-600">กำลังโหลด...</p>
+        <p class="font-bold text-indigo-600">กำลังดำเนินการ... 🚗</p>
     </div>
 
-    <div id="appHeader" class="gradient-bg text-white pt-10 pb-20 px-6 rounded-b-[3rem] shadow-lg mb-[-30px] relative z-10">
-        <div class="max-w-md mx-auto flex justify-between items-center">
-            <h1 class="text-2xl font-bold">V-MOVE 🚗</h1>
-            <div class="flex gap-2">
-                <button onclick="openAdmin()" class="bg-white/20 p-3 rounded-2xl hover:bg-white/40">🛠️ แอดมิน</button>
-                <button onclick="toggleSearchModal(true)" class="bg-white/20 p-3 rounded-2xl">🔍 ค้นหา</button>
+    <div id="appHeader" class="gradient-bg text-white pt-10 pb-24 px-6 rounded-b-[3rem] shadow-lg mb-[-40px] relative z-10">
+        <div class="max-w-md mx-auto flex justify-between items-start">
+            <div class="flex gap-3 items-center">
+                <button onclick="toggleAdminLogin(true)" class="glass-effect p-3 rounded-2xl hover:bg-white/30 transition-all">🛠️</button>
+                <div>
+                    <h1 class="text-2xl font-bold">V-MOVE 🚗</h1>
+                    <p class="text-sm text-yellow-300">สวัสดีคุณ <span id="userNameDisplay" class="font-bold">...</span> 🙏</p>
+                </div>
             </div>
+            <button onclick="toggleSearchModal(true)" class="glass-effect p-3 rounded-2xl">🔍</button>
         </div>
     </div>
 
     <div id="userView" class="max-w-md mx-auto px-4 relative z-20">
         <div class="bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
-            <form id="meritForm" class="space-y-4">
-                <input type="text" id="fullname" required class="w-full p-4 rounded-xl border" placeholder="ชื่อ-นามสกุล">
-                <input type="tel" id="phone" required maxlength="10" class="w-full p-4 rounded-xl border" placeholder="เบอร์โทรศัพท์">
-                <select id="activity" required class="w-full p-4 rounded-xl border" onchange="updateSubOptions()"></select>
+            <form id="meritForm" class="space-y-5">
+                <input type="text" id="fullname" required class="w-full px-4 py-3 rounded-xl border" placeholder="ชื่อ-นามสกุล">
+                <input type="tel" id="phone" required maxlength="10" class="w-full px-4 py-3 rounded-xl border" placeholder="เบอร์โทรศัพท์">
+                <select id="activity" required class="w-full px-4 py-3 rounded-xl border bg-white" onchange="updateSubOptions()"></select>
                 <div id="subContainer" class="hidden">
-                    <select id="subOption" class="w-full p-4 rounded-xl border bg-indigo-50"></select>
+                    <select id="subOption" class="w-full px-4 py-3 rounded-xl border border-indigo-200 bg-indigo-50"></select>
                 </div>
-                <button type="submit" class="w-full gradient-bg text-white font-bold py-4 rounded-2xl">ยืนยันการจอง</button>
+                <button type="submit" class="w-full gradient-bg text-white font-bold py-4 rounded-2xl shadow-lg">ยืนยันการจอง</button>
             </form>
-            <div id="successView" class="hidden text-center py-10">
-                <div class="text-5xl mb-4">✅</div>
-                <h3 class="text-xl font-bold text-green-600">ลงทะเบียนสำเร็จ</h3>
-                <button onclick="location.reload()" class="mt-6 text-indigo-600 font-bold underline">จองเพิ่มอีกรายการ</button>
+            <div id="successView" class="hidden text-center py-4">
+                <h3 class="text-2xl font-bold text-green-600 mb-6">✅ ลงทะเบียนสำเร็จ!</h3>
+                <button onclick="location.reload()" class="w-full py-4 bg-gray-100 rounded-2xl font-bold">จองเพิ่มอีกรายการ</button>
             </div>
         </div>
     </div>
 
-    <div id="adminView" class="hidden fixed inset-0 bg-white z-[50] overflow-y-auto">
-        <div class="admin-gradient p-6 text-white flex justify-between items-center">
-            <h2 class="text-xl font-bold">รายชื่อผู้จองทั้งหมด</h2>
-            <button onclick="closeAdmin()" class="bg-red-500 px-4 py-2 rounded-xl text-sm font-bold">ปิดหน้าต่าง</button>
-        </div>
-        <div class="p-4">
-            <div class="flex gap-2 mb-4">
-                <input type="text" id="adminSearch" oninput="filterTable()" class="flex-1 p-3 border rounded-xl" placeholder="ค้นชื่อ/เบอร์...">
-                <div class="bg-indigo-100 text-indigo-700 p-3 rounded-xl font-bold">รวม <span id="total">0</span></div>
+    <div id="adminView" class="max-w-5xl mx-auto px-4 hidden pt-6">
+        <div class="bg-white rounded-[2.5rem] shadow-2xl overflow-hidden">
+            <div class="admin-gradient p-6 text-white flex justify-between items-center">
+                <h2 class="text-xl font-bold">Dashboard Admin</h2>
+                <button onclick="location.reload()" class="glass-effect px-5 py-2 rounded-xl text-sm font-bold">ออกจากระบบ</button>
             </div>
-            <div class="overflow-x-auto shadow-sm border rounded-xl">
-                <table class="w-full text-left text-sm">
-                    <thead class="bg-gray-100 text-gray-600 uppercase">
-                        <tr>
-                            <th class="p-4">ชื่อ</th><th class="p-4">เบอร์</th><th class="p-4">กิจกรรม</th><th class="p-4">รายละเอียด</th>
-                        </tr>
-                    </thead>
-                    <tbody id="adminBody" class="divide-y"></tbody>
-                </table>
+            <div class="flex border-b bg-gray-50/50">
+                <button onclick="switchAdminTab('list')" id="tabBtn-list" class="flex-1 py-4 font-bold active-tab">📋 รายชื่อ</button>
+                <button onclick="switchAdminTab('manage')" id="tabBtn-manage" class="flex-1 py-4 font-bold text-gray-400">⚙️ จัดการกิจกรรม</button>
+            </div>
+            
+            <div id="adminTab-list" class="p-6 space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <input type="text" id="adminSearchInput" oninput="filterAdminHistory()" class="p-3 rounded-xl border" placeholder="ค้นหาชื่อ/เบอร์...">
+                    <div class="bg-indigo-50 p-3 rounded-xl text-center">
+                        <span class="text-xs font-bold text-gray-400 block">ยอดรวมปัจจุบัน</span>
+                        <span id="summaryCount" class="text-2xl font-black text-indigo-600">0</span>
+                    </div>
+                </div>
+                <div class="overflow-x-auto rounded-2xl border border-gray-100">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-gray-800 text-white font-bold">
+                            <tr>
+                                <th class="p-4">ชื่อ-นามสกุล</th>
+                                <th class="p-4">เบอร์โทร</th>
+                                <th class="p-4">กิจกรรม</th>
+                                <th class="p-4">รายละเอียด</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminHistoryBody" class="divide-y divide-gray-100 bg-white"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="adminTab-manage" class="p-6 hidden">
+                <div class="bg-indigo-50 p-6 rounded-2xl mb-8 flex gap-3">
+                    <input type="text" id="newActInput" class="flex-1 px-4 py-2 border rounded-xl" placeholder="ชื่อกิจกรรมหลัก...">
+                    <button onclick="addActivity()" class="px-6 py-2 bg-indigo-600 text-white font-bold rounded-xl">เพิ่มกิจกรรม</button>
+                </div>
+                <div id="adminActList" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
             </div>
         </div>
     </div>
 
-    <div id="searchModal" class="fixed inset-0 bg-black/50 z-[100] hidden flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-sm rounded-3xl p-6">
-            <h3 class="font-bold text-lg mb-4">🔍 ค้นหาด้วยเบอร์โทร</h3>
-            <input type="tel" id="searchPhone" oninput="searchData()" class="w-full p-4 border rounded-xl mb-4" placeholder="ใส่เบอร์โทร...">
-            <div id="searchResults" class="max-h-60 overflow-y-auto space-y-2"></div>
-            <button onclick="toggleSearchModal(false)" class="w-full mt-4 text-gray-400 py-2">ปิด</button>
+    <div id="adminLoginModal" class="fixed inset-0 bg-black/50 z-[100] hidden flex items-center justify-center p-6 backdrop-blur-sm">
+        <div class="bg-white rounded-3xl p-8 w-full max-w-sm text-center shadow-2xl">
+            <h3 class="text-xl font-bold mb-6">รหัสแอดมิน 🔐</h3>
+            <input type="password" id="adminPass" class="w-full px-4 py-4 border rounded-xl mb-6 text-center text-3xl outline-none" placeholder="••••">
+            <div class="flex gap-3">
+                <button onclick="toggleAdminLogin(false)" class="flex-1 py-3 text-gray-400">ยกเลิก</button>
+                <button onclick="checkAdmin()" class="flex-1 py-3 gradient-bg text-white rounded-xl font-bold">เข้าสู่ระบบ</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="searchModal" class="fixed inset-0 bg-black/50 z-[100] hidden flex items-end">
+        <div class="bg-white rounded-t-[2.5rem] w-full p-8 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold">🔍 ค้นหาการจอง</h3>
+                <button onclick="toggleSearchModal(false)" class="p-2 bg-gray-100 rounded-full text-gray-400">✕</button>
+            </div>
+            <input type="tel" id="searchPhone" oninput="runSearch()" placeholder="ใส่เบอร์โทรศัพท์..." class="w-full px-6 py-5 bg-gray-50 rounded-2xl outline-none ring-2 ring-gray-100 focus:ring-indigo-500 mb-8 text-xl">
+            <div id="searchResults" class="space-y-4 pb-12"></div>
         </div>
     </div>
 
@@ -85,90 +124,163 @@
         const LIFF_ID = "2008940385-theIq9K7"; 
         const API_URL = "https://script.google.com/macros/s/AKfycbynMJZfK0llXJeSd8_thnWndhwMIVGB16MqFHW3qvsP2pyYdNTK-Tu04KLsM8S2DYat/exec"; 
 
-        let currentConfig = {};
-        let allData = [];
+        let currentConfig = JSON.parse(localStorage.getItem('merit_config')) || {
+            'act1': { label: 'ตัวอย่างกิจกรรม 🚶', color: '#6366f1', list: ['ตัวอย่างจุดรับ 1', 'ตัวอย่างจุดรับ 2'] }
+        };
+        let allBookingData = []; 
+        let liffProfile = {};
 
-        async function init() {
-            showLoad(true);
+        async function initApp() {
             try {
-                const res = await fetch(`${API_URL}?action=getConfig`);
-                currentConfig = await res.json();
-                const sel = document.getElementById('activity');
-                sel.innerHTML = '<option value="">-- เลือกกิจกรรม --</option>' + Object.keys(currentConfig).map(k => `<option value="${k}">${k}</option>`).join('');
-                
                 await liff.init({ liffId: LIFF_ID });
-                if(!liff.isLoggedIn()) liff.login();
-            } catch(e) { console.error(e); }
-            showLoad(false);
+                if (liff.isLoggedIn()) {
+                    liffProfile = await liff.getProfile();
+                    document.getElementById('userNameDisplay').textContent = liffProfile.displayName;
+                } else { liff.login(); }
+            } catch (e) { console.error('LIFF Error', e); }
+            updateDropdowns();
         }
 
+        async function checkAdmin() {
+            if (document.getElementById('adminPass').value === '1234') { // รหัสผ่านคือ 1234
+                showLoad(true, "กำลังดึงข้อมูลล่าสุด...");
+                const response = await fetch(`${API_URL}?action=read&t=${Date.now()}`);
+                const data = await response.json();
+                allBookingData = data.results || [];
+                
+                toggleAdminLogin(false);
+                document.getElementById('userView').classList.add('hidden');
+                document.getElementById('appHeader').classList.add('hidden');
+                document.getElementById('adminView').classList.remove('hidden');
+                switchAdminTab('list');
+                showLoad(false);
+            } else { alert('รหัสผ่านไม่ถูกต้อง'); }
+        }
+
+        function switchAdminTab(t) {
+            document.getElementById('adminTab-list').classList.toggle('hidden', t !== 'list');
+            document.getElementById('adminTab-manage').classList.toggle('hidden', t !== 'manage');
+            document.getElementById('tabBtn-list').className = t === 'list' ? 'flex-1 py-4 font-bold active-tab' : 'flex-1 py-4 font-bold text-gray-400';
+            document.getElementById('tabBtn-manage').className = t === 'manage' ? 'flex-1 py-4 font-bold active-tab' : 'flex-1 py-4 font-bold text-gray-400';
+            if(t === 'list') renderAdminHistoryTable(allBookingData);
+            if(t === 'manage') renderAdminPanel();
+        }
+
+        function renderAdminHistoryTable(data) {
+            document.getElementById('summaryCount').textContent = data.length;
+            document.getElementById('adminHistoryBody').innerHTML = data.map(h => `
+                <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="p-4 font-bold">${h.fullname}</td>
+                    <td class="p-4 text-gray-600">${h.phone}</td>
+                    <td class="p-4"><span class="bg-indigo-100 text-indigo-600 px-2 py-1 rounded text-xs">${h.activity}</span></td>
+                    <td class="p-4 text-gray-400">${h.subOption}</td>
+                </tr>`).join('');
+        }
+
+        function filterAdminHistory() {
+            const q = document.getElementById('adminSearchInput').value.toLowerCase();
+            const filtered = allBookingData.filter(h => h.fullname.toLowerCase().includes(q) || h.phone.includes(q));
+            renderAdminHistoryTable(filtered);
+        }
+
+        // --- ระบบจัดการกิจกรรม (Admin Manage) ---
+        function addActivity() {
+            const name = document.getElementById('newActInput').value.trim();
+            if (!name) return;
+            const id = 'act_' + Date.now();
+            currentConfig[id] = { label: name, color: '#6366f1', list: [] };
+            document.getElementById('newActInput').value = '';
+            saveConfig();
+        }
+        function deleteActivity(k) { if(confirm('ลบกิจกรรมนี้?')) { delete currentConfig[k]; saveConfig(); } }
+        function addItem(k) { 
+            const val = document.getElementById('input-'+k).value.trim();
+            if(val) { currentConfig[k].list.push(val); saveConfig(); }
+        }
+        function removeItem(k, i) { currentConfig[k].list.splice(i, 1); saveConfig(); }
+        function saveConfig() { localStorage.setItem('merit_config', JSON.stringify(currentConfig)); renderAdminPanel(); updateDropdowns(); }
+
+        function renderAdminPanel() {
+            const listDiv = document.getElementById('adminActList');
+            listDiv.innerHTML = Object.keys(currentConfig).map(key => `
+                <div class="bg-white border rounded-3xl overflow-hidden shadow-sm">
+                    <div class="p-5 bg-gray-800 text-white flex justify-between items-center">
+                        <span class="font-bold">${currentConfig[key].label}</span>
+                        <button onclick="deleteActivity('${key}')" class="text-red-400 font-bold">ลบหมวดหมู่</button>
+                    </div>
+                    <div class="p-5 space-y-2">
+                        ${currentConfig[key].list.map((item, idx) => `
+                            <div class="flex justify-between items-center text-sm bg-gray-50 p-2 rounded-lg">
+                                <span>${item}</span>
+                                <button onclick="removeItem('${key}', ${idx})" class="text-red-400">✕</button>
+                            </div>`).join('')}
+                    </div>
+                    <div class="p-5 border-t flex gap-2">
+                        <input type="text" id="input-${key}" class="flex-1 text-sm border rounded-lg px-3 py-1" placeholder="เพิ่มรายการย่อย...">
+                        <button onclick="addItem('${key}')" class="bg-indigo-600 text-white px-4 py-1 rounded-lg text-sm">เพิ่ม</button>
+                    </div>
+                </div>`).join('');
+        }
+
+        // --- ระบบ User ---
+        function updateDropdowns() {
+            const sel = document.getElementById('activity');
+            sel.innerHTML = '<option value="" disabled selected>-- เลือกกิจกรรม --</option>' + 
+                Object.keys(currentConfig).map(k => `<option value="${k}">${currentConfig[k].label}</option>`).join('');
+        }
         function updateSubOptions() {
             const val = document.getElementById('activity').value;
             const sub = document.getElementById('subOption');
-            const container = document.getElementById('subContainer');
-            if(val && currentConfig[val].list.length > 0) {
-                sub.innerHTML = currentConfig[val].list.map(i => `<option value="${i}">${i}</option>`).join('');
-                container.classList.remove('hidden');
-            } else { container.classList.add('hidden'); }
+            const data = currentConfig[val];
+            if (data && data.list.length > 0) {
+                sub.innerHTML = data.list.map(t => `<option value="${t}">${t}</option>`).join('');
+                document.getElementById('subContainer').classList.remove('hidden');
+            } else { document.getElementById('subContainer').classList.add('hidden'); }
         }
 
-        async function openAdmin() {
-            showLoad(true, "กำลังโหลดรายชื่อ...");
-            try {
-                const res = await fetch(`${API_URL}?action=read&t=${Date.now()}`);
-                const json = await res.json();
-                allData = json.results || [];
-                renderTable(allData);
-                document.getElementById('adminView').classList.remove('hidden');
-            } catch(e) { alert("โหลดข้อมูลไม่สำเร็จ กรุณาเช็กสิทธิ์การ Deploy"); }
-            showLoad(false);
-        }
-
-        function renderTable(data) {
-            document.getElementById('total').innerText = data.length;
-            document.getElementById('adminBody').innerHTML = data.map(i => `<tr><td class="p-4 font-medium">${i.fullname}</td><td class="p-4">${i.phone}</td><td class="p-4"><span class="bg-blue-100 px-2 py-1 rounded text-xs">${i.activity}</span></td><td class="p-4 text-gray-400">${i.subOption}</td></tr>`).join('');
-        }
-
-        function filterTable() {
-            const q = document.getElementById('adminSearch').value.toLowerCase();
-            const filtered = allData.filter(i => i.fullname.toLowerCase().includes(q) || i.phone.includes(q));
-            renderTable(filtered);
-        }
-
-        document.getElementById('meritForm').onsubmit = async (e) => {
+        document.getElementById('meritForm').onsubmit = async function(e) {
             e.preventDefault();
             showLoad(true, "กำลังบันทึก...");
-            const profile = await liff.getProfile();
-            const payload = {
+            const actKey = document.getElementById('activity').value;
+            const data = {
                 action: 'register',
-                userId: profile.userId,
-                displayName: profile.displayName,
+                userId: liffProfile.userId || 'Guest',
+                displayName: liffProfile.displayName || 'Guest',
                 fullname: document.getElementById('fullname').value,
                 phone: document.getElementById('phone').value,
-                activity: document.getElementById('activity').value,
+                activity: currentConfig[actKey].label,
                 subOption: document.getElementById('subOption').value || '-'
             };
-            await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
-            const history = JSON.parse(localStorage.getItem('vhistory') || '[]');
-            history.unshift(payload);
-            localStorage.setItem('vhistory', JSON.stringify(history));
-            document.getElementById('meritForm').classList.add('hidden');
-            document.getElementById('successView').classList.remove('hidden');
+            try {
+                await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
+                document.getElementById('meritForm').classList.add('hidden');
+                document.getElementById('successView').classList.remove('hidden');
+                // บันทึกประวัติลงในเครื่องด้วยสำหรับหน้าค้นหา
+                const history = JSON.parse(localStorage.getItem('vmove_history') || '[]');
+                history.unshift(data);
+                localStorage.setItem('vmove_history', JSON.stringify(history));
+            } catch(e) { alert('ระบบขัดข้อง'); }
             showLoad(false);
         };
 
-        function searchData() {
+        function runSearch() {
             const q = document.getElementById('searchPhone').value;
-            const history = JSON.parse(localStorage.getItem('vhistory') || '[]');
-            const filtered = history.filter(h => h.phone.includes(q));
-            document.getElementById('searchResults').innerHTML = filtered.map(h => `<div class="p-3 bg-gray-50 rounded-xl"><b>${h.fullname}</b><br><small>${h.activity} - ${h.subOption}</small></div>`).join('');
+            const res = document.getElementById('searchResults');
+            const history = JSON.parse(localStorage.getItem('vmove_history') || '[]');
+            if (q.length < 4) { res.innerHTML = '<p class="text-center text-gray-400 py-10">กรุณาพิมพ์อย่างน้อย 4 ตัว</p>'; return; }
+            const filtered = history.filter(h => h.phone.includes(q) || h.fullname.includes(q));
+            res.innerHTML = filtered.length ? filtered.map(h => `
+                <div class="p-6 bg-gray-50 rounded-2xl border-l-[10px] border-indigo-500 shadow-sm">
+                    <div class="text-xl font-bold">${h.fullname}</div>
+                    <div class="text-indigo-600 font-medium">${h.activity} (${h.subOption})</div>
+                </div>`).join('') : '<p class="text-center text-gray-400 py-10">ไม่พบข้อมูล</p>';
         }
 
-        function closeAdmin() { document.getElementById('adminView').classList.add('hidden'); }
+        function toggleAdminLogin(s) { document.getElementById('adminLoginModal').classList.toggle('hidden', !s); }
         function toggleSearchModal(s) { document.getElementById('searchModal').classList.toggle('hidden', !s); }
-        function showLoad(s, t="โหลดข้อมูล...") { document.getElementById('loadingText').innerText = t; document.getElementById('loadingOverlay').style.display = s ? 'flex' : 'none'; }
-        
-        window.onload = init;
+        function showLoad(s, t) { document.getElementById('loadingOverlay').style.display = s ? 'flex' : 'none'; }
+
+        window.onload = initApp;
     </script>
 </body>
 </html>
